@@ -7,17 +7,14 @@ const styles = {
 };
 
 class Visualizer extends Component {
+
+    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/public/model.gltf";
+
     render() {
         return (
             <div style={styles}>
-                <Scene />
-                <div
-                    style={{
-                        zIndex: 1,
-                        position: "absolute"
-                    }}
-                >
-                </div>
+                <Scene modelLocation={this.modelLocation} />
+                <div style={{ zIndex: 1, position: "absolute" }}></div>
             </div>
         );
     }
