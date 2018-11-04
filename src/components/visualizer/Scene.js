@@ -51,7 +51,7 @@ class Scene extends Component {
 
     // model
     var loader = new GLTFLoader();
-    loader.load('models/DamagedHelmet/glTF/DamagedHelmet.gltf', function (gltf) {
+    loader.load(this.props.modelLocation, function (gltf) {
 
       var box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
 
