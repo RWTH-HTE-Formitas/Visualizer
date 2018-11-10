@@ -83,7 +83,7 @@ class Scene extends Component {
   function onKeyPress(event){
     var keyPressed = event.which;
     var delta = 50; 
-    //var rotation = 0.01;
+    var theta = 0.01;
     var zoom = 1.0;
 
     switch(keyPressed){
@@ -111,13 +111,17 @@ class Scene extends Component {
       case 121: // y : zoom in
         camera.position.z = camera.position.z - zoom;        
         break;
-      case 115: // s : rotate down
+      case 115: // s : camera rotates down
+        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
         break;
-      case 119: // w : rotate up
+      case 119: // w : camera rotates up
+        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
         break;
-      case 97: //a: rotate left
+      case 97: //a: camera rotates to left
+        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta);
         break;
-      case 100: //d: rotate right
+      case 100: //d: camera rotates to right
+        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta));
         break;
 
       default:
@@ -138,8 +142,6 @@ class Scene extends Component {
     var intersects = raycaster.intersectObjects( scene.children, true );
 
     if(objectSelection === 0){    
-      
-
       if (intersects.length > 0) {
         intersects[0].object.material.transparent = true;
         if (intersects[0].object.material.opacity < 1) {
@@ -147,28 +149,11 @@ class Scene extends Component {
         } else {
             intersects[0].object.material.opacity = 0.3;
         }
-
       }
     }
 
     else if(objectSelection === 1){
-      /*if (intersects.length > 0) {
-        intersects[0].object.material.transparent = true;
-       if(intersects[0].object.material.opacity === 1){
-          for ( var i = 0; i < intersects.length; i++ ) {
-            intersects[i].object.material.color.setHex(0xffff00);
-            intersects[0].object.material.opacity = 0.9;
-          }
-        }
-        else {
-          for ( var i = 0; i < intersects.length; i++ ) {
-            intersects[i].object.material.color.setHex(0xffffff);
-            intersects[0].object.material.opacity = 1;
-          }
-        }
-      }*/
-
-
+      /* Object is selected, can be used to add notes etc. */
   }
 }
 
