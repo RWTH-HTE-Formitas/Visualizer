@@ -87,11 +87,11 @@ class Scene extends Component {
     var zoom = 1.0;
 
     switch(keyPressed){
-      case 122: // z: Object transparency off
-        objectSelection = 1;
-        break;
-      case 116:// t: Object transparency on
-        objectSelection = 0;
+      case 116:// t: Toggle object transparency
+        if (objectSelection === 1)
+          objectSelection = 0;
+        else
+          objectSelection = 1;
         break;
       case 37: //left arrow: move camera
         camera.position.x = camera.position.x - delta;
