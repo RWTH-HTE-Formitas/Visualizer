@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
 import GLTFLoader from 'three-gltf-loader';
+import VREffect from "three-vreffect-module";
+import VRControls from "three-vrcontrols-module";
+import * as webvrui from 'webvr-ui';
 
 class Scene extends Component {
   render() {
@@ -29,11 +32,19 @@ class Scene extends Component {
     );
     camera.position.z = 100;
 
+
     // renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xffffff, 1.0);
+    //renderer.vr.enabled = true;
 
+    var vrControls = new VRControls(camera);
+    vrControls.standing = true;
+
+    var vrEffect = new VREffect( renderer );
+    vrEffect.setSize( window.innerWidth, window.innerHeight );
     // controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enabled = true;
@@ -158,11 +169,24 @@ class Scene extends Component {
 }
 
       
+ // Adds button for VR component
+  var options = {
+    color: 'black',
+    textEnterVRTitle: 'START VR MODE',
+    textExitVRTitle: 'STOP VR MODE',
+    textVRNotFoundTitle: 'NO VR HEADSET FOUND'
+  };
+  var enterVR = new webvrui.EnterVRButton(renderer.domElement, options);
+  document.getElementById('vr-button').appendChild(enterVR.domElement);
 
     // animate
     const animate = () => {
+      vrControls.update();
+      //manager.render(scene, camera);
       requestAnimationFrame(animate);
-      renderer.render(scene, camera);
+      //renderer.render(scene, camera);
+      vrEffect.render(scene, camera);  
+
     };
     this.container.appendChild(renderer.domElement);
 
