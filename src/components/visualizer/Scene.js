@@ -74,14 +74,15 @@ class Scene extends Component {
       loader.load(self.props.modelLocation, function (gltf) {
 
         var box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
+        var point = new THREE.Vector3();
 
-        gltf.scene.children[0].position.x = -1 * box.getCenter().x;
-        gltf.scene.children[0].position.y = -1 * box.getCenter().y;
-        gltf.scene.children[0].position.z = -1 * box.getCenter().z;
+        gltf.scene.children[0].position.x = -1 * box.getCenter(point).x;
+        gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
+        gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
         scene.add(gltf.scene);
-
-        var size = Math.max(box.getSize().x, box.getSize().y, box.getSize().z);
+        
+        var size = Math.max(box.getSize(point).x, box.getSize(point).y, box.getSize(point).z);
         var gridHelper = new THREE.GridHelper(size, size / 5);
         scene.add(gridHelper);
 
@@ -89,7 +90,7 @@ class Scene extends Component {
         gridHelperY.rotation.x = Math.PI / 2;
         scene.add(gridHelperY);
 
-        camera.position.z = box.getSize().z * 1.5;
+        camera.position.z = box.getSize(point).z * 1.5;
       });
 
       projector = new THREE.Projector();
@@ -163,14 +164,13 @@ class Scene extends Component {
       }
 
     }
-    
+
     // #endregion
 
     // #region mouse down event
-    
+
     // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
     function onMouseDown(event) {
-
       mouseVector = new THREE.Vector3(
         (event.clientX / window.innerWidth) * 2 - 1,
         -(event.clientY / window.innerHeight) * 2 + 1,
@@ -179,20 +179,24 @@ class Scene extends Component {
       raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
       var intersects = raycaster.intersectObjects(scene.children, true);
 
-      if (objectSelection === 0) {
-        if (intersects.length > 0) {
+      if (intersects.length > 0) {  
+        self.props.callBack({
+          name: intersects[0].object.name,
+          annotation: 'Direction is not quite right',
+        });
+
+        if (objectSelection === 0) {
           intersects[0].object.material.transparent = true;
           if (intersects[0].object.material.opacity < 1) {
             intersects[0].object.material.opacity = 1;
           } else {
             intersects[0].object.material.opacity = 0.3;
           }
+        } else if (objectSelection === 1) {
+          /* Object is selected, can be used to add notes etc. */
         }
       }
 
-      else if (objectSelection === 1) {
-        /* Object is selected, can be used to add notes etc. */
-      }
     }
 
     // #endregion

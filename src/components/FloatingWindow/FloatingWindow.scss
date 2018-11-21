@@ -26,3 +26,13 @@ $window-content-background: #ffffff;
     height: 75%;
   }
 }
+
+.hidden { 
+  display:none; 
+}
+
+table td:first-child {
+  vertical-align: top;
+  text-align: right;
+  font-weight: bold;
+}
