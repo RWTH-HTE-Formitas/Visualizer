@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Visualizer from './components/visualizer/Visualizer';
+import Visualizer from './components/Visualizer/Visualizer';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<Visualizer />, document.getElementById('root'));
