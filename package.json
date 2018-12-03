@@ -11,7 +11,10 @@
     "react-scripts": "2.1.1",
     "redux": "3.7.2",
     "three": "0.98.0",
-    "three-gltf-loader": "^1.97.0"
+    "three-gltf-loader": "^1.97.0",
+    "three-vreffect-module":"^2.2.0",
+    "three-vrcontrols-module":"^2.2.1",
+    "webvr-ui":"^0.10.0"
   },
   "scripts": {
     "start": "react-scripts start",

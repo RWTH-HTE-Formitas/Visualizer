@@ -20,127 +20,186 @@ class Scene extends Component {
   }
 
   componentDidMount() {
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffcc80);
 
-    // camera
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      2000
-    );
-    camera.position.z = 100;
+    // #region global variables
 
+    var self = this;
+    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster;
+    var objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
 
-    // renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xffffff, 1.0);
-    //renderer.vr.enabled = true;
+    // #endregion
 
-    var vrControls = new VRControls(camera);
-    vrControls.standing = true;
+    // #region main 
 
-    var vrEffect = new VREffect( renderer );
-    vrEffect.setSize( window.innerWidth, window.innerHeight );
-    // controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enabled = true;
-    controls.maxDistance = 1500;
-    controls.minDistance = 0;
+    init();
+    animate();
+    setupWebVR();
 
-    //light
-    let light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    light_p.position.set(1000, 1000, 1000);
-    scene.add(light_p);
+    // #endregion
 
-    light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    light_p.position.set(-1000, 1000, -1000);
-    scene.add(light_p);
+    // #region init
 
-    // model
-    var loader = new GLTFLoader();
-    loader.load(this.props.modelLocation, function (gltf) {
+    // initialize all objects here
+    function init() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffcc80);
 
-      var box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
+      // camera
+      camera = new THREE.PerspectiveCamera(
+        50,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        2000
+      );
+      camera.position.z = 100;
 
-      gltf.scene.children[0].position.x = -1 * box.getCenter().x;
-      gltf.scene.children[0].position.y = -1 * box.getCenter().y;
-      gltf.scene.children[0].position.z = -1 * box.getCenter().z;
-      
-      scene.add(gltf.scene);
+      // renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0xffffff, 1.0);
 
-      var size = Math.max(box.getSize().x, box.getSize().y, box.getSize().z);
-      var gridHelper = new THREE.GridHelper(size, size/5);
-      scene.add(gridHelper);
+      // vr
+      var vrControls = new VRControls(camera);
+      vrControls.standing = true;
+  
+      var vrEffect = new VREffect( renderer );
+      vrEffect.setSize( window.innerWidth, window.innerHeight );
 
-      var gridHelperY = new THREE.GridHelper(size, size / 5);
-      gridHelperY.rotation.x = Math.PI / 2;
-      scene.add(gridHelperY);
+      // controls
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enabled = true;
+      controls.maxDistance = 1500;
+      controls.minDistance = 0;
 
-      camera.position.z = box.getSize().z*1.5;
-    });
+      //light
+      let light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+      light_p.position.set(1000, 1000, 1000);
+      scene.add(light_p);
 
-    var projector = new THREE.Projector();
-    window.addEventListener( 'mousedown', onMouseDown, false );
-    window.addEventListener('keypress', onKeyPress, false);
+      light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+      light_p.position.set(-1000, 1000, -1000);
+      scene.add(light_p);
 
-    // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
-    var objectSelection = 1;
+      // model
+      loader = new GLTFLoader();
+      loader.load(self.props.modelLocation, function (gltf) {
 
-  // Toggle modes via key press
-  function onKeyPress(event){
-    var keyPressed = event.which;
-    var delta = 50; 
-    var theta = 0.01;
-    var zoom = 1.0;
+        var box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
+        var point = new THREE.Vector3();
 
-    switch(keyPressed){
-      case 116:// t: Toggle object transparency
-        if (objectSelection === 1)
-          objectSelection = 0;
-        else
-          objectSelection = 1;
-        break;
-      case 37: //left arrow: move camera
-        camera.position.x = camera.position.x - delta;
-        break;
-      case 38: //up arrow: move camera
-        camera.position.y = camera.position.y + delta;
-        break;
-      case 39: //right arrow: move camera
-        camera.position.x = camera.position.x + delta;
-        break;
-      case 40: //down arrow: move camera
-        camera.position.y = camera.position.y - delta;
-        break;
-      case 120: // x : zoom out
-        camera.position.z = camera.position.z + zoom;
-        break;
-      case 121: // y : zoom in
-        camera.position.z = camera.position.z - zoom;        
-        break;
-      case 115: // s : camera rotates down
-        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
-        break;
-      case 119: // w : camera rotates up
-        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
-        break;
-      case 97: //a: camera rotates to left
-        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta);
-        break;
-      case 100: //d: camera rotates to right
-        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta));
-        break;
+        gltf.scene.children[0].position.x = -1 * box.getCenter(point).x;
+        gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
+        gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
-      default:
-        break;
+        scene.add(gltf.scene);
+        
+        var size = Math.max(box.getSize(point).x, box.getSize(point).y, box.getSize(point).z);
+        var gridHelper = new THREE.GridHelper(size, size / 5);
+        scene.add(gridHelper);
+
+        var gridHelperY = new THREE.GridHelper(size, size / 5);
+        gridHelperY.rotation.x = Math.PI / 2;
+        scene.add(gridHelperY);
+
+        camera.position.z = box.getSize(point).z * 1.5;
+      });
+
+      projector = new THREE.Projector();
+      window.addEventListener('mousedown', onMouseDown, false);
+      window.addEventListener('keypress', onKeyPress, false);
+      self.container.appendChild(renderer.domElement);
+
     }
 
-  }
+    // #endregion
 
+    // #region animate
+
+    // rendering the scene
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    };
+
+    // #endregion
+
+    // #region webvr
+  
+    // Adds button for VR component
+    function setupWebVR() {
+      var options = {
+        color: 'black',
+        textEnterVRTitle: 'START VR MODE',
+        textExitVRTitle: 'STOP VR MODE',
+        textVRNotFoundTitle: 'NO VR HEADSET FOUND'
+      };
+      var enterVR = new webvrui.EnterVRButton(renderer.domElement, options);
+      document.getElementById('vr-button').appendChild(enterVR.domElement);
+    }
+
+    // #endregion
+
+    // #region keyboard exploration
+
+    // Toggle modes via key press
+    function onKeyPress(event) {
+      var keyPressed = event.which;
+      var delta = 50;
+      var theta = 0.01;
+      var zoom = 0.5;
+
+      switch (keyPressed) {
+        case 116:// t: Toggle object transparency
+          if (objectSelection === 1)
+            objectSelection = 0;
+          else
+            objectSelection = 1;
+          break;
+        case 37: //left arrow: move camera
+          camera.position.x = camera.position.x - delta;
+          break;
+        case 38: //up arrow: move camera
+          camera.position.y = camera.position.y + delta;
+          break;
+        case 39: //right arrow: move camera
+          camera.position.x = camera.position.x + delta;
+          break;
+        case 40: //down arrow: move camera
+          camera.position.y = camera.position.y - delta;
+          break;
+        case 120: // x : zoom out
+          camera.position.z = camera.position.z + zoom;
+          break;
+        case 121: // y : zoom in
+          camera.position.z = camera.position.z - zoom;
+          break;
+        case 115: // s : camera rotates down
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
+          break;
+        case 119: // w : camera rotates up
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
+          break;
+        case 97: //a: camera rotates to left
+          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta);
+          break;
+        case 100: //d: camera rotates to right
+          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta));
+          break;
+
+        default:
+          break;
+      }
+
+    }
+
+    // #endregion
+
+    // #region mouse down event
+
+    // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
+    function onMouseDown(event) {
+      mouseVector = new THREE.Vector3(
+        (event.clientX / window.innerWidth) * 2 - 1,
   // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
   function onMouseDown(event){
 
