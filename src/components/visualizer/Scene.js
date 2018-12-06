@@ -6,6 +6,7 @@ import VREffect from "three-vreffect-module";
 import VRControls from "three-vrcontrols-module";
 import * as webvrui from 'webvr-ui';
 
+
 class Scene extends Component {
   render() {
     return (
@@ -24,7 +25,7 @@ class Scene extends Component {
     // #region global variables
 
     var self = this;
-    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster;
+    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster, vrControls, vrEffect;
     var objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
 
     // #endregion
@@ -58,12 +59,13 @@ class Scene extends Component {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0xffffff, 1.0);
 
+      
       // vr
-      var vrControls = new VRControls(camera);
+      vrControls = new VRControls(camera);
       vrControls.standing = true;
-  
-      var vrEffect = new VREffect( renderer );
+      vrEffect = new VREffect( renderer );
       vrEffect.setSize( window.innerWidth, window.innerHeight );
+
 
       // controls
       controls = new OrbitControls(camera, renderer.domElement);
@@ -117,16 +119,18 @@ class Scene extends Component {
 
     // rendering the scene
     function animate() {
+      vrControls.update(); 
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
+      vrEffect.render(scene, camera);  
     };
 
     // #endregion
 
     // #region webvr
-  
-    // Adds button for VR component
-    function setupWebVR() {
+
+    // Sets up button for WebVR support
+    function setupWebVR(){
       var options = {
         color: 'black',
         textEnterVRTitle: 'START VR MODE',
@@ -134,9 +138,8 @@ class Scene extends Component {
         textVRNotFoundTitle: 'NO VR HEADSET FOUND'
       };
       var enterVR = new webvrui.EnterVRButton(renderer.domElement, options);
-      document.getElementById('vr-button').appendChild(enterVR.domElement);
+      document.getElementById('vr-button').appendChild(enterVR.domElement);    
     }
-
     // #endregion
 
     // #region keyboard exploration
@@ -146,7 +149,7 @@ class Scene extends Component {
       var keyPressed = event.which;
       var delta = 50;
       var theta = 0.01;
-      var zoom = 0.5;
+      var zoom = 1.0;
 
       switch (keyPressed) {
         case 116:// t: Toggle object transparency
@@ -200,57 +203,33 @@ class Scene extends Component {
     function onMouseDown(event) {
       mouseVector = new THREE.Vector3(
         (event.clientX / window.innerWidth) * 2 - 1,
-  // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
-  function onMouseDown(event){
+        -(event.clientY / window.innerHeight) * 2 + 1,
+        0.5);
+      projector.unprojectVector(mouseVector, camera);
+      raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
+      var intersects = raycaster.intersectObjects(scene.children, true);
 
-    var mouseVector = new THREE.Vector3(
-      ( event.clientX / window.innerWidth ) * 2 - 1, 
-      -( event.clientY / window.innerHeight ) * 2 + 1, 
-      0.5);
-    projector.unprojectVector(mouseVector, camera);
-    var raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
-    var intersects = raycaster.intersectObjects( scene.children, true );
+      if (intersects.length > 0) {  
+        self.props.callBack({
+          name: intersects[0].object.name,
+          annotation: 'Direction is not quite right',
+        });
 
-    if(objectSelection === 0){    
-      if (intersects.length > 0) {
-        intersects[0].object.material.transparent = true;
-        if (intersects[0].object.material.opacity < 1) {
+        if (objectSelection === 0) {
+          intersects[0].object.material.transparent = true;
+          if (intersects[0].object.material.opacity < 1) {
             intersects[0].object.material.opacity = 1;
-        } else {
+          } else {
             intersects[0].object.material.opacity = 0.3;
+          }
+        } else if (objectSelection === 1) {
+          /* Object is selected, can be used to add notes etc. */
         }
       }
+
     }
 
-    else if(objectSelection === 1){
-      /* Object is selected, can be used to add notes etc. */
-  }
-}
-
-      
- // Adds button for VR component
-  var options = {
-    color: 'black',
-    textEnterVRTitle: 'START VR MODE',
-    textExitVRTitle: 'STOP VR MODE',
-    textVRNotFoundTitle: 'NO VR HEADSET FOUND'
-  };
-  var enterVR = new webvrui.EnterVRButton(renderer.domElement, options);
-  document.getElementById('vr-button').appendChild(enterVR.domElement);
-
-    // animate
-    const animate = () => {
-      vrControls.update();
-      //manager.render(scene, camera);
-      requestAnimationFrame(animate);
-      //renderer.render(scene, camera);
-      vrEffect.render(scene, camera);  
-
-    };
-    this.container.appendChild(renderer.domElement);
-
-    animate();
-
+    // #endregion
   }
 
   shouldComponentUpdate() {
