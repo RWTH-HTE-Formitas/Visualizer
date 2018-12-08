@@ -8,6 +8,9 @@ const styles = {
     overflow: "hidden",
 };
 
+const API = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/';
+const DEFAULT_QUERY = 'sample.json';
+
 class Visualizer extends Component {
 
     constructor(props) {
@@ -17,13 +20,19 @@ class Visualizer extends Component {
 
     modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/public/model.gltf";
 
-    state = {
-        name: '',
-        annotation: ''
-    };
+    state = {};
 
     callBackObject(data) {
         this.setState(data);
+    }
+
+    componentDidMount() {
+        fetch(API + DEFAULT_QUERY)
+        .then(response => response.json())
+        .then(data => {
+            var ss = Object.values(data.Objects)[1];
+            this.setState(ss);
+        });
     }
 
     render() {
