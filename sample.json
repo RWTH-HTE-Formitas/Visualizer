@@ -1,0 +1,316 @@
+{
+    "Objects": {
+        "M3B6Y2tCR0lMNVE5UEZEcU5nRlA3UA==": {
+            "Category": "IfcDoor",
+            "ID": "3pzckBGIL5Q9PFDqNgFP7P",
+            "Name": "Türelement 1-flg - Drehflügel - Glas:Standard:397121",
+            "Notes": {
+                "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2": {
+                    "Email": "na@formitas.de",
+                    "ImageNotes": {
+                        "2018-05-28-00-45-58": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": -5.46673583984375,
+                                "y": 1.5,
+                                "z": 9.662845611572266
+                            },
+                            "CameraRotation": {
+                                "x": -0.7860722541809082,
+                                "y": -0.2526826858520508,
+                                "z": 0.5641293525695801
+                            },
+                            "CameraUp": {
+                                "x": -0.2052886188030243,
+                                "y": 0.967549204826355,
+                                "z": 0.14732658863067627
+                            },
+                            "Date": 1527461158,
+                            "URL": "/Projects/17/0zh3Lg9mHnRhAzMMuYQivnjWZ8u2/ImageNotes/2018-05-28-00-45-58.PNG"
+                        }
+                    }
+                }
+            }
+        },
+        "M3RCcDc3cGIxOTA5S09mckhERnBoRA==": {
+            "Category": "IfcPlate",
+            "ID": "3tBp77pb1909KOfrHDFphD",
+            "Name": "Systemelement:Verglasung:424193",
+            "Notes": {
+                "D3WZL1VVimcxetsuFxCZODU8jXE2": {
+                    "AudioNotes": {
+                        "2018-08-07-14-11-32": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraRotation": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraUp": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "Date": 1533643892,
+                            "URL": "/Projects/17/D3WZL1VVimcxetsuFxCZODU8jXE2/AudioNotes/2018-08-07-14-11-32.wav"
+                        },
+                        "2018-08-08-10-32-04": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraRotation": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraUp": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "Date": 1533717124,
+                            "URL": "/Projects/17/D3WZL1VVimcxetsuFxCZODU8jXE2/AudioNotes/2018-08-08-10-32-04.wav"
+                        }
+                    },
+                    "Email": "cd@formitas.de",
+                    "ImageNotes": {
+                        "2018-08-08-10-31-41": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraRotation": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraUp": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "Date": 1533717101,
+                            "URL": "/Projects/17/D3WZL1VVimcxetsuFxCZODU8jXE2/ImageNotes/2018-08-08-10-31-41.PNG"
+                        }
+                    },
+                    "TextNotes": {
+                        "2018-08-08-10-31-27": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraRotation": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraUp": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "Date": 1533717087,
+                            "URL": "/Projects/17/D3WZL1VVimcxetsuFxCZODU8jXE2/TextNotes/2018-08-08-10-31-27.txt"
+                        }
+                    }
+                }
+            },
+            "Status": {
+                "Approval": 0,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": 10.843563079833984,
+                    "y": 1.3306012153625488,
+                    "z": -6.104589939117432
+                },
+                "CameraRotation": {
+                    "x": 0.3430037796497345,
+                    "y": 0.5544689893722534,
+                    "z": 0.7582299709320068
+                },
+                "CameraUp": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "LastChangeBy": "cd@formitas.de",
+                "LastChangeByUID": "D3WZL1VVimcxetsuFxCZODU8jXE2",
+                "Timestamp": 1.533717043372043E9
+            }
+        },
+        "M3lMcGUwam92MlZ2UHFXN2FGTjFTag==": {
+            "Category": "IfcWallStandardCase",
+            "ID": "3yLpe0jov2VvPqW7aFN1Sj",
+            "Name": "Basiswand:STB 26.5:391504",
+            "Status": {
+                "Approval": 0,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": 2.9989585876464844,
+                    "y": 0.23045389354228973,
+                    "z": 6.340217113494873
+                },
+                "CameraRotation": {
+                    "x": 1.9789916276931763,
+                    "y": 49.97245788574219,
+                    "z": -1.0678539297259704E-7
+                },
+                "CameraUp": {
+                    "x": -0.02848817966878414,
+                    "y": 0.9994035363197327,
+                    "z": -0.01951807551085949
+                },
+                "LastChangeBy": "na@formitas.de",
+                "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
+                "Timestamp": 1.5323637310215E9
+            }
+        },
+        "M3lMcGUwam92MlZ2UHFXN2FGTjJQWg==": {
+            "Category": "IfcColumn",
+            "ID": "3yLpe0jov2VvPqW7aFN2PZ",
+            "Name": "STB Stütze - rund:STB d=40:378910",
+            "Notes": {
+                "D3WZL1VVimcxetsuFxCZODU8jXE2": {
+                    "AudioNotes": {
+                        "2018-08-07-14-11-32": {
+                            "CameraFieldOfView": 60,
+                            "CameraPosition": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraRotation": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "CameraUp": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            },
+                            "Date": 1533643892,
+                            "URL": "/Projects/17/D3WZL1VVimcxetsuFxCZODU8jXE2/AudioNotes/2018-08-07-14-11-32.wav"
+                        }
+                    },
+                    "Email": "cd@formitas.de"
+                }
+            },
+            "Status": {
+                "Approval": 2,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": 11.619542121887207,
+                    "y": 1.3424372673034668,
+                    "z": 1.5253814458847046
+                },
+                "CameraRotation": {
+                    "x": -0.4919196367263794,
+                    "y": 0.753674328327179,
+                    "z": 0.43587857484817505
+                },
+                "CameraUp": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "LastChangeBy": "cd@formitas.de",
+                "LastChangeByUID": "D3WZL1VVimcxetsuFxCZODU8jXE2",
+                "Timestamp": 1.534266160959205E9
+            }
+        },
+        "M3lMcGUwam92MlZ2UHFXN2FGTjJVNw==": {
+            "Category": "IfcWallStandardCase",
+            "ID": "3yLpe0jov2VvPqW7aFN2U7",
+            "Name": "Basiswand:GK 10.0:379386",
+            "Status": {
+                "Approval": 0,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": 2.9989585876464844,
+                    "y": 0.23045389354228973,
+                    "z": 6.340217113494873
+                },
+                "CameraRotation": {
+                    "x": 1.9789916276931763,
+                    "y": 49.97245788574219,
+                    "z": -1.0678539297259704E-7
+                },
+                "CameraUp": {
+                    "x": -0.02848817966878414,
+                    "y": 0.9994035363197327,
+                    "z": -0.01951807551085949
+                },
+                "LastChangeBy": "na@formitas.de",
+                "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
+                "Timestamp": 1.532363731014858E9
+            }
+        },
+        "M3lMcGUwam92MlZ2UHFXN2FGTjJidw==": {
+            "Category": "IfcColumn",
+            "ID": "3yLpe0jov2VvPqW7aFN2bw",
+            "Name": "STB Stütze - rund:STB d=35:378631",
+            "Status": {
+                "Approval": 2,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": -5.768209934234619,
+                    "y": 1.1188514232635498,
+                    "z": 3.9901375770568848
+                },
+                "CameraRotation": {
+                    "x": 0.03538694605231285,
+                    "y": 0.9991249442100525,
+                    "z": 0.022295966744422913
+                },
+                "CameraUp": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "LastChangeBy": "cd@formitas.de",
+                "LastChangeByUID": "D3WZL1VVimcxetsuFxCZODU8jXE2",
+                "Timestamp": 1.533810415628933E9
+            }
+        },
+        "M3lMcGUwam92MlZ2UHFXN2FGTjJvYg==": {
+            "Category": "IfcWallStandardCase",
+            "ID": "3yLpe0jov2VvPqW7aFN2ob",
+            "Name": "Basiswand:GK 15:377560",
+            "Status": {
+                "Approval": 0,
+                "CameraFieldOfview": 60,
+                "CameraPosition": {
+                    "x": 2.9989585876464844,
+                    "y": 0.23045389354228973,
+                    "z": 6.340217113494873
+                },
+                "CameraRotation": {
+                    "x": 1.9789916276931763,
+                    "y": 49.97245788574219,
+                    "z": -1.0678539297259704E-7
+                },
+                "CameraUp": {
+                    "x": -0.02848817966878414,
+                    "y": 0.9994035363197327,
+                    "z": -0.01951807551085949
+                },
+                "LastChangeBy": "na@formitas.de",
+                "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
+                "Timestamp": 1.532363731001628E9
+            }
+        }
+    }
+}
