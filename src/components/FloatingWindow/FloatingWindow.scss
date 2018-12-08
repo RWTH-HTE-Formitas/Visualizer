@@ -31,8 +31,24 @@ $window-content-background: #ffffff;
   display:none; 
 }
 
-table td:first-child {
+.table-info td:first-child {
   vertical-align: top;
   text-align: right;
   font-weight: bold;
+}
+
+.table {
+  td {
+    vertical-align: top;
+  }
+  .text {
+    width: 80%;
+    img {
+      max-height: 50px;
+    }
+  }
+  .date {
+    width: 20%;
+    text-align: right;
+  }
 }
