@@ -1,0 +1,109 @@
+$window-header-background: #424242;
+$window-content-background: #ffffff;
+
+.window {
+  font-size: 1em;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  width: 400px;
+  height: auto;
+  background-color: $window-content-background;
+  z-index: 1;
+
+  .window-header {
+    width: 100%;
+    height: 25%;
+    padding: 4px 0px;
+    vertical-align: middle;
+    background: $window-header-background;
+    .window-title {
+      margin: 8px;
+      color: white;
+    }
+  }
+  .window-content {
+    margin: 4px 4px;
+    height: 75%;
+  }
+}
+
+.hidden { 
+  display:none; 
+}
+
+.table-info td:first-child {
+  vertical-align: top;
+  text-align: right;
+  font-weight: bold;
+}
+
+.table {
+  td {
+    vertical-align: top;
+  }
+  .text {
+    width: 75%;
+    img {
+      max-height: 50px;
+    }
+  }
+  .date {
+    width: 25%;
+    text-align: right;
+  }
+}
+
+.Modal {
+  height: 100%;
+  
+}
+
+.Overlay {
+  position: fixed;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  z-index: 199;
+}
+
+.header {
+  width: 100%;
+  height: 5%;
+  
+  button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+}
+
+.frame {
+  width: 100%;
+  height: 95%;
+  text-align: center;
+
+  .helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+  
+  img {
+    margin:0 auto;
+    vertical-align: middle;
+  }
+
+  audio {
+    width: 600px;
+  }
+  
+  textarea {
+    width: 400px;
+    height: 200px;
+  }
+}
+
