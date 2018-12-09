@@ -20,26 +20,39 @@ class Visualizer extends Component {
 
     modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/public/model.gltf";
 
-    state = {};
+
+    state = {
+        showWindow: false,
+        objectData: {}
+    };
 
     callBackObject(data) {
-        this.setState(data);
+        if (data) {
+            this.fetch_object_data(data);
+        }
     }
 
-    componentDidMount() {
+    fetch_object_data(id){
         fetch(API + DEFAULT_QUERY)
         .then(response => response.json())
         .then(data => {
-            var ss = Object.values(data.Objects)[1];
-            this.setState(ss);
+            
+            var max = Object.values(data.Objects).length -1
+            var i = Math.floor(Math.random() * (max-0) + 0);
+            var ss = Object.values(data.Objects)[i];
+
+            this.setState({
+                showWindow: true,
+                objectData: ss
+            });
         });
     }
 
     render() {
         return (
             <div style={styles}>
-                <Scene modelLocation={this.modelLocation} callBack={this.callBackObject} />
                 <FloatingWindow data={this.state}/>
+                <Scene modelLocation={this.modelLocation} callBack={this.callBackObject} />
             </div>
         );
     }

@@ -181,8 +181,7 @@ class Scene extends Component {
 
       if (intersects.length > 0) {  
         self.props.callBack({
-          name: intersects[0].object.name,
-          annotation: 'Direction is not quite right',
+          id: intersects[0].object.id
         });
 
         if (objectSelection === 0) {
@@ -196,7 +195,6 @@ class Scene extends Component {
           /* Object is selected, can be used to add notes etc. */
         }
       }
-
     }
 
     // #endregion

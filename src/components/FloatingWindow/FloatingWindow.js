@@ -4,14 +4,15 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import Moment from 'react-moment';
 
-class FloatingWindow extends Component {
+class FloatingWindow extends Component {    
     render() {
+        const showWindow = this.props.data.showWindow;
+        const inpData = this.props.data.objectData;
         let textNotes = [];
         let audioNotes = [];
         let imageNotes = [];
-        if (this.props.data.Notes !== undefined){
-            Object.values(this.props.data.Notes).map((k, i) => {
-                const note = k;
+        if (inpData != null && inpData.Notes != null){
+            Object.values(inpData.Notes).map((note, i) => {
                 if (note.TextNotes != null){
                     textNotes = textNotes.concat(Object.values(note.TextNotes));
                 }
@@ -23,8 +24,9 @@ class FloatingWindow extends Component {
                 }
             })
         }
+        
         return (
-            <div className={(this.props.data !== undefined) ? "window" : "window hidden"}>
+            <div className={(showWindow) ? "window" : "window hidden"}>
                 <div className="window-header">
                     <span className="window-title">Object Properties</span>
                 </div>
@@ -40,14 +42,13 @@ class FloatingWindow extends Component {
                             <table className="table-info">
                                 <tbody>
                                     {
-                                        Object.keys(this.props.data).map((k, i) => {
-                                            const data = this.props.data[k]
-                                            if(typeof(data) == 'string'){
-                                                const data = this.props.data[k]
+                                        Object.keys(inpData).map((k, i) => {
+                                            const val = inpData[k]
+                                            if(typeof(val) == 'string'){
                                                 return (
                                                     <tr key={i}>
                                                         <td>{k}: </td>
-                                                        <td>{data}</td>
+                                                        <td>{val}</td>
                                                     </tr>
                                                 );
                                             }
