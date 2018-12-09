@@ -9,6 +9,7 @@
     "orbit-controls-es6": "1.0.10",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-modal": "^3.6.1",
     "react-moment": "^0.8.4",
     "react-redux": "5.0.6",
     "react-scripts": "2.1.1",

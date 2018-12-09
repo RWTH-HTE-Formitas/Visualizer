@@ -3,28 +3,78 @@ import "./FloatingWindow.scss";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import Moment from 'react-moment';
+import ReactModal from 'react-modal';
 
-class FloatingWindow extends Component {    
+class FloatingWindow extends Component {
+    constructor() {
+        super();
+        this.state = {
+            showModal: false
+        };
+
+        this.handleOpenModal = this.handleOpenModal.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
+
+        this.showDetail = this.showDetail.bind(this);
+    }
+
+    detail = null;
+
+    handleOpenModal(type, source) {
+        
+        switch(type) {
+            case 'text':
+                // override
+                source = 'Lorem ipsum jkdsahkdhaj klsdajkdkjaksda kjdshajkdjskadhsakjdsadsa'
+                this.detail = <textarea readOnly={true}>{source}</textarea>
+                break;
+            case 'audio':
+                // override
+                source = 'http://www.music.helsinki.fi/tmt/opetus/uusmedia/esim/a2002011001-e02-ulaw.wav';
+                this.detail = <audio controls><source src={source} type="audio/wav" /></audio>
+                break;
+            case 'image':
+                // override
+                source = 'https://cdn7.dissolve.com/p/D25_120_251/D25_120_251_1200.jpg';
+                this.detail = <img src={source} />
+                break;
+        }
+        console.log(type, source)
+        this.setState({ showModal: true });
+    }
+
+    componentDidMount(){
+    }
+
+    handleCloseModal() {
+        this.setState({ showModal: false });
+    }
+
+    showDetail(type, source) {
+        console.log(type, source)
+        this.handleOpenModal(type, source);
+    }
+
     render() {
         const showWindow = this.props.data.showWindow;
         const inpData = this.props.data.objectData;
         let textNotes = [];
         let audioNotes = [];
         let imageNotes = [];
-        if (inpData != null && inpData.Notes != null){
+        if (inpData != null && inpData.Notes != null) {
             Object.values(inpData.Notes).map((note, i) => {
-                if (note.TextNotes != null){
+                if (note.TextNotes != null) {
                     textNotes = textNotes.concat(Object.values(note.TextNotes));
                 }
-                if (note.AudioNotes != null){
+                if (note.AudioNotes != null) {
                     audioNotes = audioNotes.concat(Object.values(note.AudioNotes));
                 }
-                if (note.ImageNotes != null){
+                if (note.ImageNotes != null) {
                     imageNotes = imageNotes.concat(Object.values(note.ImageNotes));
                 }
             })
         }
-        
+
         return (
             <div className={(showWindow) ? "window" : "window hidden"}>
                 <div className="window-header">
@@ -44,7 +94,7 @@ class FloatingWindow extends Component {
                                     {
                                         Object.keys(inpData).map((k, i) => {
                                             const val = inpData[k]
-                                            if(typeof(val) == 'string'){
+                                            if (typeof (val) == 'string') {
                                                 return (
                                                     <tr key={i}>
                                                         <td>{k}: </td>
@@ -64,11 +114,11 @@ class FloatingWindow extends Component {
                                         textNotes.map((data, i) => {
                                             var item = data.URL.split('/').slice(-1)[0]
                                             var link = data.URL
-                                            var dateRaw = new Date(data.Date*1000)
+                                            var dateRaw = new Date(data.Date * 1000)
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
-                                                        <a href={link}>{item}</a>
+                                                        <a href="#" onClick={e => this.showDetail('text', link)}>{item}</a>
                                                     </td>
                                                     <td className="date">
                                                         <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
@@ -87,12 +137,12 @@ class FloatingWindow extends Component {
                                     {
                                         imageNotes.map((data, i) => {
                                             var link = data.URL
-                                            var dateRaw = new Date(data.Date*1000)
+                                            var dateRaw = new Date(data.Date * 1000)
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
-                                                        <a href={link}>
-                                                            <img src="{link}"/>
+                                                        <a href="#" onClick={e => this.showDetail('image', link)}>
+                                                            <img src="{link}" />
                                                         </a>
                                                     </td>
                                                     <td className="date">
@@ -109,29 +159,47 @@ class FloatingWindow extends Component {
                         <TabPanel>
                             <table className="table table-audio">
                                 <tbody>
-                                {
-                                    audioNotes.map((data, i) => {
-                                        var item = data.URL.split('/').slice(-1)[0]
-                                        var link = data.URL
-                                        var dateRaw = new Date(data.Date*1000)
-                                        return (
-                                            <tr key={i}>
-                                                <td className="text">
-                                                    <a href={link}>{item}</a>
-                                                </td>
-                                                <td className="date">
-                                                    <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
-                                                    <b> <Moment format="HH:mm">{dateRaw}</Moment></b>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                }
+                                    {
+                                        audioNotes.map((data, i) => {
+                                            var item = data.URL.split('/').slice(-1)[0]
+                                            var link = data.URL
+                                            var dateRaw = new Date(data.Date * 1000)
+                                            return (
+                                                <tr key={i}>
+                                                    <td className="text">
+                                                        <a href="#" onClick={e => this.showDetail('audio', link)}>
+                                                            {item}
+                                                        </a>
+                                                    </td>
+                                                    <td className="date">
+                                                        <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
+                                                        <b> <Moment format="HH:mm">{dateRaw}</Moment></b>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </TabPanel>
                     </Tabs>
                 </div>
+                <ReactModal
+                    isOpen={this.state.showModal}
+                    contentLabel="onRequestClose Example"
+                    onRequestClose={this.handleCloseModal}
+                    className="Modal"
+                    overlayClassName="Overlay"
+                >
+                    <div className="header">
+                        <button onClick={this.handleCloseModal}>Close</button>
+                    </div>
+                    <div className="body frame">
+                        <span className="helper"></span>
+                        {this.detail}
+                    </div>
+
+                </ReactModal>
             </div>
         );
     }
