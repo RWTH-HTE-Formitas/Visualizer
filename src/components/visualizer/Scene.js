@@ -68,7 +68,7 @@ class Scene extends Component {
       light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
       light_p.position.set(-1000, 1000, -1000);
       scene.add(light_p);
-
+      
       // model
       loader = new GLTFLoader();
       loader.load(self.props.modelLocation, function (gltf) {
@@ -94,7 +94,7 @@ class Scene extends Component {
       });
 
       projector = new THREE.Projector();
-      window.addEventListener('mousedown', onMouseDown, false);
+      window.addEventListener('click', onMouseDown, false);
       window.addEventListener('keypress', onKeyPress, false);
       self.container.appendChild(renderer.domElement);
 
@@ -183,7 +183,7 @@ class Scene extends Component {
         self.props.callBack({
           id: intersects[0].object.id
         });
-
+   
         if (objectSelection === 0) {
           intersects[0].object.material.transparent = true;
           if (intersects[0].object.material.opacity < 1) {

@@ -19,7 +19,7 @@ class Visualizer extends Component {
         this.callBackObject = this.callBackObject.bind(this);
     }
 
-    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/public/model.gltf";
+    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.glb";
 
 
     state = {
@@ -38,9 +38,9 @@ class Visualizer extends Component {
         var objectsRef = db.ref("Projects/17/Objects");
         objectsRef.orderByKey().on("value", function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
-            if(childSnapshot.hasChild('Notes')){
-                jsonResults.push(childSnapshot.val());
-            }
+                if(childSnapshot.hasChild('Notes')){
+                    jsonResults.push(childSnapshot.val());
+                }
             });
         });
         return jsonResults;
@@ -56,10 +56,9 @@ class Visualizer extends Component {
     fetch_object_data(id){
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
         var jsonResults = this.getAnnotatedObjects();
-        /*for(let i = 0; i < jsonResults.length; i++){
-            var t = jsonResults[i];
-            console.log(t['ID']);
-        }*/
+        if (!jsonResults.length) {
+            return;
+        }
         
         var max = jsonResults.length;
         var i = Math.floor(Math.random() * (max-0) + 0);
@@ -70,22 +69,6 @@ class Visualizer extends Component {
             objectData: oData
         });
 
-        /*fetch(API + DEFAULT_QUERY)
-        .then(response => response)
-        .then(data => {
-            
-            // choosing which object to show randomly. 
-            // TODO: choose the right object to show
-            var max = Object.values(data.Objects).length -1
-            var i = Math.floor(Math.random() * (max-0) + 0);
-            
-            var ss = Object.values(data.Objects)[i];
-
-            this.setState({
-                showWindow: true,
-                objectData: ss
-            });
-        });*/
     }
 
     render() {

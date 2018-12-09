@@ -25,22 +25,28 @@ class FloatingWindow extends Component {
         switch(type) {
             case 'text':
                 // override
-                source = 'Lorem ipsum jkdsahkdhaj klsdajkdkjaksda kjdshajkdjskadhsakjdsadsa'
-                this.detail = <textarea readOnly={true}>{source}</textarea>
+                source = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.txt';
+                const request = async () => {
+                    const response = await fetch(source);
+                    const json = await response.text();
+                    this.detail = <textarea readOnly={true}>{json}</textarea>
+                    this.setState({ showModal: true });
+                }
+                request();
                 break;
             case 'audio':
                 // override
-                source = 'http://www.music.helsinki.fi/tmt/opetus/uusmedia/esim/a2002011001-e02-ulaw.wav';
-                this.detail = <audio controls><source src={source} type="audio/wav" /></audio>
+                source = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.mp3';
+                this.detail = <audio controls><source src={source} type="audio/mp3" /></audio>
+                this.setState({ showModal: true });
                 break;
             case 'image':
                 // override
-                source = 'https://cdn7.dissolve.com/p/D25_120_251/D25_120_251_1200.jpg';
+                source = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
                 this.detail = <img src={source} />
+                this.setState({ showModal: true });
                 break;
         }
-        console.log(type, source)
-        this.setState({ showModal: true });
     }
 
     componentDidMount(){
@@ -51,7 +57,6 @@ class FloatingWindow extends Component {
     }
 
     showDetail(type, source) {
-        console.log(type, source)
         this.handleOpenModal(type, source);
     }
 
@@ -76,7 +81,7 @@ class FloatingWindow extends Component {
         }
 
         return (
-            <div className={(showWindow) ? "window" : "window hidden"}>
+            <div ref={99} className={(showWindow) ? "window" : "window hidden"}>
                 <div className="window-header">
                     <span className="window-title">Object Properties</span>
                 </div>
@@ -138,11 +143,13 @@ class FloatingWindow extends Component {
                                         imageNotes.map((data, i) => {
                                             var link = data.URL
                                             var dateRaw = new Date(data.Date * 1000)
+                                            // override
+                                            link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
                                                         <a href="#" onClick={e => this.showDetail('image', link)}>
-                                                            <img src="{link}" />
+                                                            <img src={link} />
                                                         </a>
                                                     </td>
                                                     <td className="date">
