@@ -37,8 +37,11 @@ class Visualizer extends Component {
         .then(response => response.json())
         .then(data => {
             
+            // choosing which object to show randomly. 
+            // TODO: choose the right object to show
             var max = Object.values(data.Objects).length -1
             var i = Math.floor(Math.random() * (max-0) + 0);
+            
             var ss = Object.values(data.Objects)[i];
 
             this.setState({
