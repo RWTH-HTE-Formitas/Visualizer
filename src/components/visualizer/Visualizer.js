@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
+import firebase from '../Firebase/Firebase.js';
 
 const styles = {
     width: "100vw",
@@ -9,7 +10,7 @@ const styles = {
 };
 
 const API = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/';
-const DEFAULT_QUERY = 'sample.json';
+var DEFAULT_QUERY;
 
 class Visualizer extends Component {
 
@@ -26,6 +27,26 @@ class Visualizer extends Component {
         objectData: {}
     };
 
+
+    /* Queries all objects that have notes attached to them from Firebase
+        returns: an array containing the fetched JSON objects 
+    */
+    getAnnotatedObjects(){
+        var db = firebase.database();
+        var jsonResults = [];
+        // get all objects that have a note attached
+        var objectsRef = db.ref("Projects/17/Objects");
+        objectsRef.orderByKey().on("value", function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+            if(childSnapshot.hasChild('Notes')){
+                jsonResults.push(childSnapshot.val());
+            }
+            });
+        });
+        return jsonResults;
+    }
+
+
     callBackObject(data) {
         if (data) {
             this.fetch_object_data(data);
@@ -33,8 +54,24 @@ class Visualizer extends Component {
     }
 
     fetch_object_data(id){
-        fetch(API + DEFAULT_QUERY)
-        .then(response => response.json())
+        // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
+        var jsonResults = this.getAnnotatedObjects();
+        /*for(let i = 0; i < jsonResults.length; i++){
+            var t = jsonResults[i];
+            console.log(t['ID']);
+        }*/
+        
+        var max = jsonResults.length;
+        var i = Math.floor(Math.random() * (max-0) + 0);
+        var oData = jsonResults[i];
+
+        this.setState({
+            showWindow: true,
+            objectData: oData
+        });
+
+        /*fetch(API + DEFAULT_QUERY)
+        .then(response => response)
         .then(data => {
             
             // choosing which object to show randomly. 
@@ -48,7 +85,7 @@ class Visualizer extends Component {
                 showWindow: true,
                 objectData: ss
             });
-        });
+        });*/
     }
 
     render() {

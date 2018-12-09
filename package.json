@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "firebase": "^5.7.0",
+    "firebase-admin": "^6.3.0",
     "mapbox-gl": "0.45.0",
     "moment": "^2.22.2",
     "node-sass": "^4.10.0",
