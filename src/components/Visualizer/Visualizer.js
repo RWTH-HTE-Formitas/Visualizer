@@ -3,12 +3,6 @@ import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
 import firebase from '../Firebase/Firebase.js';
 
-const styles = {
-    width: "100vw",
-    height: "100vh",
-    overflow: "hidden",
-};
-
 class Visualizer extends Component {
 
     constructor(props) {
@@ -70,7 +64,7 @@ class Visualizer extends Component {
 
     render() {
         return (
-            <div style={styles}>
+            <div>
                 <FloatingWindow data={this.state}/>
                 <Scene modelLocation={this.modelLocation} callBack={this.callBackObject} />
             </div>

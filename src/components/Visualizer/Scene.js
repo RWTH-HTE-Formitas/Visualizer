@@ -6,13 +6,7 @@ import GLTFLoader from 'three-gltf-loader';
 class Scene extends Component {
   render() {
     return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh"
-        }}
-        ref={el => (this.container = el)}
-      />
+      <div ref={el => (this.container = el)} className="border" />
     );
   }
 
@@ -37,13 +31,17 @@ class Scene extends Component {
 
     // initialize all objects here
     function init() {
+
+      let width = 1000;
+      let height = 400;
+
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xffcc80);
+      scene.background = new THREE.Color(0xffffff);
 
       // camera
       camera = new THREE.PerspectiveCamera(
         50,
-        window.innerWidth / window.innerHeight,
+        width/height,
         0.1,
         2000
       );
@@ -51,7 +49,7 @@ class Scene extends Component {
 
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(width, height);
       renderer.setClearColor(0xffffff, 1.0);
 
       // controls
@@ -108,7 +106,7 @@ class Scene extends Component {
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
-    };
+    }
 
     // #endregion
 
