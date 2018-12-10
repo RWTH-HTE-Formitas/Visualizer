@@ -18,7 +18,7 @@ class Scene extends Component {
     // #region global variables
 
     var self = this;
-    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster;
+    var scene, camera, renderer, controls, loader;
     var objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
 
     // #endregion
@@ -83,8 +83,6 @@ class Scene extends Component {
 
         camera.position.z = box.getSize(point).z * 1.5;
       });
-
-      projector = new THREE.Projector();
 
       self.container.appendChild(renderer.domElement);
 
@@ -162,12 +160,12 @@ class Scene extends Component {
 
     // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
     function onMouseDown(event) {
-      mouseVector = new THREE.Vector3(
+      var mouseVector = new THREE.Vector3(
         (event.offsetX / width) * 2 - 1,
         -(event.offsetY / height) * 2 + 1,
         0.5);
       mouseVector.unproject(camera);
-      raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
+      var raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
       var intersects = raycaster.intersectObjects(scene.children, true);
 
       if (intersects.length > 0) {  
