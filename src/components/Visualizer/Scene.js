@@ -3,6 +3,9 @@ import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
 import GLTFLoader from 'three-gltf-loader';
 
+const width = 1000;
+const height = 400;
+
 class Scene extends Component {
   render() {
     return (
@@ -31,9 +34,6 @@ class Scene extends Component {
 
     // initialize all objects here
     function init() {
-
-      let width = 1000;
-      let height = 400;
 
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0xffffff);
@@ -172,8 +172,8 @@ class Scene extends Component {
     // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
     function onMouseDown(event) {
       mouseVector = new THREE.Vector3(
-        (event.clientX / window.innerWidth) * 2 - 1,
-        -(event.clientY / window.innerHeight) * 2 + 1,
+        (event.offsetX / width) * 2 - 1,
+        -(event.offsetY / height) * 2 + 1,
         0.5);
       mouseVector.unproject(camera);
       raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
