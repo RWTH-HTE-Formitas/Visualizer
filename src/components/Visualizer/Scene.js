@@ -174,7 +174,7 @@ class Scene extends Component {
         (event.clientX / window.innerWidth) * 2 - 1,
         -(event.clientY / window.innerHeight) * 2 + 1,
         0.5);
-      projector.unprojectVector(mouseVector, camera);
+      mouseVector.unproject(camera);
       raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
       var intersects = raycaster.intersectObjects(scene.children, true);
 
