@@ -6,11 +6,22 @@ class App extends Component {
   render() {
 
     return (
-      <div style={{width: '1000px', margin: '0 auto'}}>
+      <div style={{width: '1000px', margin: '1em auto'}}>
         <div className="container">
           <div className="row">
+            <div className="col-xs-12" style={{width:'100%'}}>
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item"><a href="#">Formitas</a></li>
+                  <li className="breadcrumb-item"><a href="#">Project ABC</a></li>
+                  <li className="breadcrumb-item active" aria-current="page">Defect Notes</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+          <div className="row">
             <div className="col-xs-12">
-              <h1 style={{margin: "2em 0 1em 0"}}>Defect Notes</h1>
+              <h1 style={{margin: "1em 0 1em 0"}}>Project ABC - Defect Notes</h1>
             </div>
           </div>
           <div className="row">
