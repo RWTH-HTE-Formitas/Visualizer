@@ -3,6 +3,8 @@ import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
 import firebase from '../Firebase/Firebase.js';
 
+let x = 0;
+
 class Visualizer extends Component {
 
     constructor(props) {
@@ -56,7 +58,7 @@ class Visualizer extends Component {
         }
         
         var max = jsonResults.length;
-        var i = Math.floor(Math.random() * (max-0) + 0);
+        var i = x++ % max;
         var oData = jsonResults[i];
 
         this.setState({
