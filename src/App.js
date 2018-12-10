@@ -26,7 +26,7 @@ class App extends Component {
           </div>
           <div className="row">
             <div className="col-xs-12">
-              <Visualizer/>
+              <Visualizer ref={(element) => { this._visualizer = element; }} />
             </div>
           </div>
           <div className="row" style={{margin: "2em 0"}}>
@@ -42,17 +42,17 @@ class App extends Component {
                 <tr>
                   <td>3j5F884vL4FwalfxCgxQmY</td>
                   <td>Table Conference 8 Seater(2):Table Conference 8 Seater(2):436926</td>
-                  <td className="text-right"><a href="#">Show</a></td>
+                  <td className="text-right"><a href="#" onClick={() => { this._visualizer.fetch_object_data(); return false; }}>Show</a></td>
                 </tr>
                 <tr>
                     <td>3pzckBGIL5Q9PFDqNgFP7P</td>
                     <td>Türelement 1-flg - Drehflügel - Glas:Standard:397121</td>
-                    <td className="text-right"><a href="#" className="pull-right">Show</a></td>
+                    <td className="text-right"><a href="#" className="pull-right" onClick={() => { this._visualizer.fetch_object_data(); return false; }}>Show</a></td>
                 </tr>
                 <tr>
                     <td>3tBp77pb1909KOfrHDFphD</td>
                     <td>Systemelement:Verglasung:424193</td>
-                    <td className="text-right"><a href="#" className="pull-right">Show</a></td>
+                    <td className="text-right"><a href="#" className="pull-right" onClick={() => { this._visualizer.fetch_object_data(); return false; }}>Show</a></td>
                 </tr>
               </tbody>
               <tfoot>
