@@ -51,6 +51,8 @@ class Scene extends Component {
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(width, height);
       renderer.setClearColor(0xffffff, 1.0);
+      renderer.domElement.addEventListener('click', onMouseDown, false);
+      window.addEventListener('keypress', onKeyPress, false);
 
       // controls
       controls = new OrbitControls(camera, renderer.domElement);
@@ -92,8 +94,7 @@ class Scene extends Component {
       });
 
       projector = new THREE.Projector();
-      window.addEventListener('click', onMouseDown, false);
-      window.addEventListener('keypress', onKeyPress, false);
+
       self.container.appendChild(renderer.domElement);
 
     }
