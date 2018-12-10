@@ -41,6 +41,10 @@ class Visualizer extends Component {
     callBackObject(data) {
         if (data) {
             this.fetch_object_data(data);
+        } else {
+            this.setState({
+                showWindow: false
+            });
         }
     }
 

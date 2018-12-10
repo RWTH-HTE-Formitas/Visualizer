@@ -183,6 +183,8 @@ class Scene extends Component {
         } else if (objectSelection === 1) {
           /* Object is selected, can be used to add notes etc. */
         }
+      } else {
+          self.props.callBack();
       }
     }
 
