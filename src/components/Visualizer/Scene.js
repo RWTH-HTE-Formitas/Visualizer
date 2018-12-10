@@ -81,14 +81,6 @@ class Scene extends Component {
         gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
         scene.add(gltf.scene);
-        
-        var size = Math.max(box.getSize(point).x, box.getSize(point).y, box.getSize(point).z);
-        var gridHelper = new THREE.GridHelper(size, size / 5);
-        scene.add(gridHelper);
-
-        var gridHelperY = new THREE.GridHelper(size, size / 5);
-        gridHelperY.rotation.x = Math.PI / 2;
-        scene.add(gridHelperY);
 
         camera.position.z = box.getSize(point).z * 1.5;
       });
