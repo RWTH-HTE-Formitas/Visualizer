@@ -121,41 +121,42 @@ class Scene extends Component {
       var zoom = 1.0;
 
       switch (keyPressed) {
-        case 116:// t: Toggle object transparency
+        case 116:// t
+          // Toggle object transparency
           if (objectSelection === 1)
             objectSelection = 0;
           else
             objectSelection = 1;
           break;
-        case 37: //left arrow: move camera
-          camera.position.x = camera.position.x - delta;
+        case 37: //left arrow
+          camera.position.x = camera.position.x - delta; // move camera
           break;
-        case 38: //up arrow: move camera
-          camera.position.y = camera.position.y + delta;
+        case 38: //up arrow
+          camera.position.y = camera.position.y + delta; // move camera
           break;
-        case 39: //right arrow: move camera
-          camera.position.x = camera.position.x + delta;
+        case 39: //right arrow
+          camera.position.x = camera.position.x + delta; // move camera
           break;
-        case 40: //down arrow: move camera
-          camera.position.y = camera.position.y - delta;
+        case 40: //down arrow
+          camera.position.y = camera.position.y - delta; // move camera
           break;
-        case 120: // x : zoom out
-          camera.position.z = camera.position.z + zoom;
+        case 120: // x
+          camera.position.z = camera.position.z + zoom; // move forward
           break;
-        case 121: // y : zoom in
-          camera.position.z = camera.position.z - zoom;
+        case 121: // y
+          camera.position.z = camera.position.z - zoom; // move backward
           break;
-        case 115: // s : camera rotates down
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
+        case 115: // s
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); // camera rotates down
           break;
-        case 119: // w : camera rotates up
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
+        case 119: // w
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); // camera rotates up
           break;
-        case 97: //a: camera rotates to left
-          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta);
+        case 97: // a
+          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); // camera rotates to left
           break;
-        case 100: //d: camera rotates to right
-          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta));
+        case 100: // d
+          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); // camera rotates to right
           break;
 
         default:
