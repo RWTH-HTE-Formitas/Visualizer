@@ -9,9 +9,6 @@ const styles = {
     overflow: "hidden",
 };
 
-const API = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/';
-var DEFAULT_QUERY;
-
 class Visualizer extends Component {
 
     constructor(props) {
