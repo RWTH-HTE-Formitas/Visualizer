@@ -45,7 +45,6 @@ class Scene extends Component {
         0.1,
         2000
       );
-      camera.position.z = 100;
 
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
