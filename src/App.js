@@ -71,7 +71,7 @@ class App extends Component {
                       <tr key={i}>
                         <td>{data.ID}</td>
                         <td>{data.Name}</td>
-                        <td className="text-right"><a href="#" className="pull-right" onClick={() => { this._visualizer.fetch_object_data(); return false; }}>Show</a></td>
+                        <td className="text-right"><a href="#" className="pull-right" onClick={() => { this._visualizer.fetch_object_data({name: data.ID}); return false; }}>Show</a></td>
                       </tr>
                     );
                   })
