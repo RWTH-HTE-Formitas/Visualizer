@@ -21,7 +21,7 @@ class Scene extends Component {
     // #region global variables
 
     var self = this;
-    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster;
+    var scene, camera, renderer, controls, loader, projector, mouseVector, raycaster, modelRef, cameraRef;
     var objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
 
     // #endregion
@@ -42,12 +42,13 @@ class Scene extends Component {
 
       // camera
       camera = new THREE.PerspectiveCamera(
-        50,
+        30,
         window.innerWidth / window.innerHeight,
         0.1,
         2000
       );
       camera.position.z = 100;
+      cameraRef = camera;
 
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -59,6 +60,7 @@ class Scene extends Component {
       controls.enabled = true;
       controls.maxDistance = 1500;
       controls.minDistance = 0;
+      controls.keys = {LEFT: 97, UP: 119, RIGHT: 100, BOTTOM: 115};
 
       //light
       let light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
@@ -80,6 +82,7 @@ class Scene extends Component {
         gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
         gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
+        modelRef = gltf.scene;
         scene.add(gltf.scene);
         
         var size = Math.max(box.getSize(point).x, box.getSize(point).y, box.getSize(point).z);
@@ -114,55 +117,60 @@ class Scene extends Component {
 
     // #region keyboard exploration
 
-    // Toggle modes via key press
+    // Manages keyboard events
     function onKeyPress(event) {
       var keyPressed = event.which;
-      var delta = 50;
-      var theta = 0.01;
-      var zoom = 1.0;
+      var delta = 5; 
+      var theta = 0.01; // angle
+
+      // euclidean distance from camera to object
+      var cameraDistance = Math.sqrt((modelRef.position.x - camera.position.x) * (modelRef.position.x - camera.position.x) + 
+        (modelRef.position.y - camera.position.y) * (modelRef.position.y - camera.position.y) + 
+        (modelRef.position.z - camera.position.z) * (modelRef.position.z - camera.position.z)) + 
+        1.0;
 
       switch (keyPressed) {
-        case 116:// t: Toggle object transparency
+        case 116:// t: Toggle between object transparency and simple selection
           if (objectSelection === 1)
             objectSelection = 0;
           else
             objectSelection = 1;
           break;
-        case 37: //left arrow: move camera
-          camera.position.x = camera.position.x - delta;
+        // move camera according to its distance to the model
+        case 119: // w: move camera on y axis
+          camera.position.y += (cameraDistance / 100) * delta;
           break;
-        case 38: //up arrow: move camera
-          camera.position.y = camera.position.y + delta;
+        case 97: // a: move camera on x axis 
+          camera.position.x -= (cameraDistance / 100) * delta;
           break;
-        case 39: //right arrow: move camera
-          camera.position.x = camera.position.x + delta;
+        case 115: // s: move camera on y axis
+          camera.position.y -= (cameraDistance / 100) * delta;
           break;
-        case 40: //down arrow: move camera
-          camera.position.y = camera.position.y - delta;
+        case 100: // d: move camera on x axis
+          camera.position.x += (cameraDistance / 100) * delta;
           break;
-        case 120: // x : zoom out
-          camera.position.z = camera.position.z + zoom;
+        case 121: // y: move camera on z axis
+          camera.position.z -= (cameraDistance / 100) * delta;
           break;
-        case 121: // y : zoom in
-          camera.position.z = camera.position.z - zoom;
+        case 120: // x: move camera on z axis
+          camera.position.z += (cameraDistance / 100) * delta;
           break;
-        case 115: // s : camera rotates down
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
-          break;
-        case 119: // w : camera rotates up
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
-          break;
-        case 97: //a: camera rotates to left
+        // rotate camera around axes
+        case 106: // j: rotate camera to left
           camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta);
           break;
-        case 100: //d: camera rotates to right
+        case 108: // l: rotate camera to right
           camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta));
           break;
-
+        case 105: // i: rotate camera up
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta);
+          break;
+        case 107: // k: rotate camera down
+          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta));
+          break;
         default:
           break;
       }
-
     }
 
     // #endregion
