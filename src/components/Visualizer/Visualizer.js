@@ -69,6 +69,13 @@ class Visualizer extends Component {
 
     }
 
+    markDefects(data) {
+        console.log(data)
+        this.setState({
+            defects: data
+        })
+    }
+
     fetch_object_data(data){
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
         var jsonResults = this.getAnnotatedObjects();
@@ -103,7 +110,7 @@ class Visualizer extends Component {
         return (
             <div>
                 <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} camera={this.state.camera} callBack={this.callBackObject} />
+                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} callBack={this.callBackObject} />
             </div>
         );
     }

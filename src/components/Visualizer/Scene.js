@@ -276,6 +276,19 @@ class Scene extends Component {
         this.clickedObjectId = obj.id;
       }
     }
+    if (this.props.defects !== nextProps.defects) {
+      nextProps.defects.forEach(element => {
+        const obj = this.scene.getObjectByName(element.ID);
+
+        if (this.clickedObjectId != obj.id) {
+          obj.currentHex = obj.material.emissive.getHex();
+
+          obj.material.emissive.setHex(0xff0000);
+        }
+        
+      });
+    }
+
   }
 
   changeCamera(pX, pY, pZ, rX, rY, rZ) {

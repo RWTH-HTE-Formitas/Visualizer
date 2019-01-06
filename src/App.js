@@ -22,6 +22,7 @@ class App extends Component {
         self.setState({
           objects: jsonResults
         })
+        this._visualizer.markDefects(jsonResults);
       }
     });
   }
