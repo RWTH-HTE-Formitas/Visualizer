@@ -29,9 +29,7 @@ class Visualizer extends Component {
         var objectsRef = db.ref("Projects/17/Objects");
         objectsRef.orderByKey().on("value", function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
-                if(childSnapshot.hasChild('Notes')){
-                    jsonResults.push(childSnapshot.val());
-                }
+                jsonResults.push(childSnapshot.val());
             });
         });
         return jsonResults;
@@ -48,20 +46,32 @@ class Visualizer extends Component {
         }
     }
 
-    fetch_object_data(id){
+    fetch_object_data(data){
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
         var jsonResults = this.getAnnotatedObjects();
         if (!jsonResults.length) {
             return;
         }
-        
-        var max = jsonResults.length;
-        var i = Math.floor(Math.random() * (max-0) + 0);
-        var oData = jsonResults[i];
 
-        this.setState({
+        var oData = jsonResults.find(x=> x.ID == data.name);
+        if (!oData) {
+            this.setState({
+                showWindow: false
+            });
+            return;
+        }
+
+         this.setState({
             showWindow: true,
-            objectData: oData
+            objectData: oData,
+            camera: {
+                pX: oData.Status.CameraPosition.x,
+                pY: oData.Status.CameraPosition.y,
+                pZ: oData.Status.CameraPosition.z,
+                rX: oData.Status.CameraRotation.x,
+                rY: oData.Status.CameraRotation.y,
+                rZ: oData.Status.CameraRotation.z,
+            }
         });
 
     }
@@ -70,7 +80,7 @@ class Visualizer extends Component {
         return (
             <div>
                 <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} callBack={this.callBackObject} />
+                <Scene modelLocation={this.modelLocation} camera={this.state.camera} callBack={this.callBackObject} />
             </div>
         );
     }
