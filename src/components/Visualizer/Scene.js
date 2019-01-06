@@ -13,6 +13,10 @@ class Scene extends Component {
     );
   }
 
+  clickedObjectId = null;
+  scene = null;
+  camera = null;
+
   componentDidMount() {
 
     // #region global variables
@@ -45,6 +49,10 @@ class Scene extends Component {
         0.1,
         2000
       );
+
+      // linking to global variable
+      self.scene = scene;
+      self.camera = camera;
 
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -79,7 +87,7 @@ class Scene extends Component {
         gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
         gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
-        scene.add(gltf.scene);
+        scene.add(gltf.scene.children[0]);
 
         camera.position.z = box.getSize(point).z * 1.5;
       });
@@ -170,9 +178,49 @@ class Scene extends Component {
 
       if (intersects.length > 0) {  
         self.props.callBack({
-          id: intersects[0].object.id
+          id: intersects[0].object.id,
+          name: intersects[0].object.name
         });
-   
+
+        // highlighting
+        const obj = scene.getObjectById(intersects[0].object.id, true);
+        if (self.clickedObjectId != obj.id) {
+          obj.currentHex = obj.material.emissive.getHex();
+          obj.material.emissive.setHex(0xffff00);
+
+          // consoling
+          console.log(`
+          "${obj.id}": {
+            "Category": "Lorem Ipsum",
+            "ID": "${obj.id}",
+            "Name": "${obj.name}",
+            "Status": {
+              "Approval": 0,
+              "CameraFieldOfview": ${camera.fov},
+              "CameraPosition": { 
+                "x": ${camera.position.x},
+                "y": ${camera.position.y},
+                "z": ${camera.position.z}
+              }, 
+              "CameraRotation": {
+                "x": ${camera.rotation.x},
+                "y": ${camera.rotation.y},
+                "z": ${camera.rotation.z}
+              },
+              "LastChangeBy": "na@formitas.de",
+              "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
+              "Timestamp": 1.532363644143873E9
+            }
+          },
+          `);
+          
+          // reset previous
+          if (self.clickedObjectId != null) {
+            const exist = scene.getObjectById(self.clickedObjectId, true);
+            exist.material.emissive.setHex(exist.currentHex);
+          }
+          self.clickedObjectId = obj.id;
+        }
         if (objectSelection === 0) {
           intersects[0].object.material.transparent = true;
           if (intersects[0].object.material.opacity < 1) {
@@ -184,7 +232,14 @@ class Scene extends Component {
           /* Object is selected, can be used to add notes etc. */
         }
       } else {
-          self.props.callBack();
+        self.props.callBack();
+        
+        // reset previous
+        if (self.clickedObjectId != null) {
+          const exist = scene.getObjectById(self.clickedObjectId, true);
+          exist.material.emissive.setHex(exist.currentHex);
+        }
+        self.clickedObjectId = null;
       }
     }
 
@@ -199,6 +254,52 @@ class Scene extends Component {
     if (this.props.color !== nextProps.color) {
       this.globe.material.color.setHex(nextProps.color);
     }
+    if (this.props.camera !== nextProps.camera) {
+      const camSet = nextProps.camera;
+      this.changeCamera(
+        camSet.pX, camSet.pY, camSet.pZ, 
+        camSet.rX, camSet.rY, camSet.rZ
+      ); 
+    }
+    if (this.props.newObject !== nextProps.newObject) {
+      const obj = this.scene.getObjectByName(nextProps.newObject.ID);
+
+      if (this.clickedObjectId != obj.id) {
+        obj.currentHex = obj.material.emissive.getHex();
+        obj.material.emissive.setHex(0xffff00);
+        
+        // reset previous
+        if (this.clickedObjectId != null) {
+          const exist = this.scene.getObjectById(this.clickedObjectId, true);
+          exist.material.emissive.setHex(exist.currentHex);
+        }
+        this.clickedObjectId = obj.id;
+      }
+    }
+    if (this.props.defects !== nextProps.defects) {
+      nextProps.defects.forEach(element => {
+        const obj = this.scene.getObjectByName(element.ID);
+
+        if (this.clickedObjectId != obj.id) {
+          obj.currentHex = obj.material.emissive.getHex();
+
+          obj.material.emissive.setHex(0xff0000);
+        }
+        
+      });
+    }
+
+  }
+
+  changeCamera(pX, pY, pZ, rX, rY, rZ) {
+    console.log(pX, pY, pZ, rX, rY, rZ);
+    this.camera.position.x = pX;
+    this.camera.position.y = pY;
+    this.camera.position.z = pZ;
+
+    this.camera.rotation.x = rX;
+    this.camera.rotation.y = rY;
+    this.camera.rotation.z = rZ;
   }
 }
 
