@@ -184,7 +184,7 @@ class Scene extends Component {
 
         // highlighting
         const obj = scene.getObjectById(intersects[0].object.id, true);
-        if (this.clickedObjectId != obj.id) {
+        if (self.clickedObjectId != obj.id) {
           obj.currentHex = obj.material.emissive.getHex();
           obj.material.emissive.setHex(0xffff00);
 
@@ -215,11 +215,11 @@ class Scene extends Component {
           `);
           
           // reset previous
-          if (this.clickedObjectId != null) {
-            const exist = scene.getObjectById(this.clickedObjectId, true);
+          if (self.clickedObjectId != null) {
+            const exist = scene.getObjectById(self.clickedObjectId, true);
             exist.material.emissive.setHex(exist.currentHex);
           }
-          this.clickedObjectId = obj.id;
+          self.clickedObjectId = obj.id;
         }
         if (objectSelection === 0) {
           intersects[0].object.material.transparent = true;
@@ -235,11 +235,11 @@ class Scene extends Component {
         self.props.callBack();
         
         // reset previous
-        if (this.clickedObjectId != null) {
-          const exist = scene.getObjectById(this.clickedObjectId, true);
+        if (self.clickedObjectId != null) {
+          const exist = scene.getObjectById(self.clickedObjectId, true);
           exist.material.emissive.setHex(exist.currentHex);
         }
-        this.clickedObjectId = null;
+        self.clickedObjectId = null;
       }
     }
 
@@ -260,6 +260,21 @@ class Scene extends Component {
         camSet.pX, camSet.pY, camSet.pZ, 
         camSet.rX, camSet.rY, camSet.rZ
       ); 
+    }
+    if (this.props.newObject !== nextProps.newObject) {
+      const obj = this.scene.getObjectByName(nextProps.newObject.ID);
+
+      if (this.clickedObjectId != obj.id) {
+        obj.currentHex = obj.material.emissive.getHex();
+        obj.material.emissive.setHex(0xffff00);
+        
+        // reset previous
+        if (this.clickedObjectId != null) {
+          const exist = this.scene.getObjectById(this.clickedObjectId, true);
+          exist.material.emissive.setHex(exist.currentHex);
+        }
+        this.clickedObjectId = obj.id;
+      }
     }
   }
 

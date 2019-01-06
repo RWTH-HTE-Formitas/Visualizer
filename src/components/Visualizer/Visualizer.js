@@ -46,6 +46,29 @@ class Visualizer extends Component {
         }
     }
 
+    highlightObject(oData) {
+        if (!oData || !oData.Status) {
+            this.setState({
+                showWindow: false
+            });
+            return;
+        }
+        this.setState({
+            showWindow: true,
+            objectData: oData,
+            camera: {
+                pX: oData.Status.CameraPosition.x,
+                pY: oData.Status.CameraPosition.y,
+                pZ: oData.Status.CameraPosition.z,
+                rX: oData.Status.CameraRotation.x,
+                rY: oData.Status.CameraRotation.y,
+                rZ: oData.Status.CameraRotation.z,
+            },
+            newObject: oData
+        });
+
+    }
+
     fetch_object_data(data){
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
         var jsonResults = this.getAnnotatedObjects();
@@ -54,14 +77,14 @@ class Visualizer extends Component {
         }
 
         var oData = jsonResults.find(x=> x.ID == data.name);
-        if (!oData) {
+        if (!oData || !oData.Status) {
             this.setState({
                 showWindow: false
             });
             return;
         }
 
-         this.setState({
+        this.setState({
             showWindow: true,
             objectData: oData,
             camera: {
@@ -80,7 +103,7 @@ class Visualizer extends Component {
         return (
             <div>
                 <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} camera={this.state.camera} callBack={this.callBackObject} />
+                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} camera={this.state.camera} callBack={this.callBackObject} />
             </div>
         );
     }
