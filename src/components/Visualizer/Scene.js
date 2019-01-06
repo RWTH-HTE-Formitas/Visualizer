@@ -13,6 +13,8 @@ class Scene extends Component {
     );
   }
 
+  clickedObjectId = null;
+
   componentDidMount() {
 
     // #region global variables
@@ -79,7 +81,7 @@ class Scene extends Component {
         gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
         gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
 
-        scene.add(gltf.scene);
+        scene.add(gltf.scene.children[0]);
 
         camera.position.z = box.getSize(point).z * 1.5;
       });
@@ -172,7 +174,20 @@ class Scene extends Component {
         self.props.callBack({
           id: intersects[0].object.id
         });
-   
+
+        // highlighting
+        const obj = scene.getObjectById(intersects[0].object.id, true);
+        if (this.clickedObjectId != obj.id) {
+          obj.currentHex = obj.material.emissive.getHex();
+          obj.material.emissive.setHex(0xffff00);
+
+          // reset previous
+          if (this.clickedObjectId != null) {
+            const exist = scene.getObjectById(this.clickedObjectId, true);
+            exist.material.emissive.setHex(exist.currentHex);
+          }
+          this.clickedObjectId = obj.id;
+        }
         if (objectSelection === 0) {
           intersects[0].object.material.transparent = true;
           if (intersects[0].object.material.opacity < 1) {
@@ -184,7 +199,14 @@ class Scene extends Component {
           /* Object is selected, can be used to add notes etc. */
         }
       } else {
-          self.props.callBack();
+        self.props.callBack();
+        
+        // reset previous
+        if (this.clickedObjectId != null) {
+          const exist = scene.getObjectById(this.clickedObjectId, true);
+          exist.material.emissive.setHex(exist.currentHex);
+        }
+        this.clickedObjectId = null;
       }
     }
 
