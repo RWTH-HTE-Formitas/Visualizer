@@ -14,6 +14,8 @@ class Scene extends Component {
   }
 
   clickedObjectId = null;
+  scene = null;
+  camera = null;
 
   componentDidMount() {
 
@@ -47,6 +49,10 @@ class Scene extends Component {
         0.1,
         2000
       );
+
+      // linking to global variable
+      self.scene = scene;
+      self.camera = camera;
 
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -172,7 +178,8 @@ class Scene extends Component {
 
       if (intersects.length > 0) {  
         self.props.callBack({
-          id: intersects[0].object.id
+          id: intersects[0].object.id,
+          name: intersects[0].object.name
         });
 
         // highlighting
@@ -247,6 +254,24 @@ class Scene extends Component {
     if (this.props.color !== nextProps.color) {
       this.globe.material.color.setHex(nextProps.color);
     }
+    if (this.props.camera !== nextProps.camera) {
+      const camSet = nextProps.camera;
+      this.changeCamera(
+        camSet.pX, camSet.pY, camSet.pZ, 
+        camSet.rX, camSet.rY, camSet.rZ
+      ); 
+    }
+  }
+
+  changeCamera(pX, pY, pZ, rX, rY, rZ) {
+    console.log(pX, pY, pZ, rX, rY, rZ);
+    this.camera.position.x = pX;
+    this.camera.position.y = pY;
+    this.camera.position.z = pZ;
+
+    this.camera.rotation.x = rX;
+    this.camera.rotation.y = rY;
+    this.camera.rotation.z = rZ;
   }
 }
 
