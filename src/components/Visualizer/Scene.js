@@ -181,6 +181,32 @@ class Scene extends Component {
           obj.currentHex = obj.material.emissive.getHex();
           obj.material.emissive.setHex(0xffff00);
 
+          // consoling
+          console.log(`
+          "${obj.id}": {
+            "Category": "Lorem Ipsum",
+            "ID": "${obj.id}",
+            "Name": "${obj.name}",
+            "Status": {
+              "Approval": 0,
+              "CameraFieldOfview": ${camera.fov},
+              "CameraPosition": { 
+                "x": ${camera.position.x},
+                "y": ${camera.position.y},
+                "z": ${camera.position.z}
+              }, 
+              "CameraRotation": {
+                "x": ${camera.rotation.x},
+                "y": ${camera.rotation.y},
+                "z": ${camera.rotation.z}
+              },
+              "LastChangeBy": "na@formitas.de",
+              "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
+              "Timestamp": 1.532363644143873E9
+            }
+          },
+          `);
+          
           // reset previous
           if (this.clickedObjectId != null) {
             const exist = scene.getObjectById(this.clickedObjectId, true);
