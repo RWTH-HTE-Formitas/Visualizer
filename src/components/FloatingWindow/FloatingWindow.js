@@ -80,8 +80,14 @@ class FloatingWindow extends Component {
             })
         }
 
+        let classes = ["border", "window"];
+        if (!showWindow)
+        {
+            classes.push("hidden");
+        }
+
         return (
-            <div ref={99} className={(showWindow) ? "window" : "window hidden"}>
+            <div ref={99} className={classes.join(" ")}>
                 <div className="window-header">
                     <span className="window-title">Object Properties</span>
                 </div>
