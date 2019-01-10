@@ -10,7 +10,7 @@ class Visualizer extends Component {
         this.callBackObject = this.callBackObject.bind(this);
     }
 
-    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.glb";
+    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
 
 
     state = {
