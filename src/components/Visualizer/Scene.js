@@ -184,7 +184,7 @@ class Scene extends Component {
 
         // highlighting
         const obj = scene.getObjectById(intersects[0].object.id, true);
-        if (self.clickedObjectId != obj.id) {
+        if (self.clickedObjectId !== obj.id) {
           obj.currentHex = obj.material.emissive.getHex();
           obj.material.emissive.setHex(0xffff00);
 
@@ -264,7 +264,7 @@ class Scene extends Component {
     if (this.props.newObject !== nextProps.newObject) {
       const obj = this.scene.getObjectByName(nextProps.newObject.ID);
 
-      if (this.clickedObjectId != obj.id) {
+      if (this.clickedObjectId !== obj.id) {
         obj.currentHex = obj.material.emissive.getHex();
         obj.material.emissive.setHex(0xffff00);
         
@@ -280,7 +280,7 @@ class Scene extends Component {
       nextProps.defects.forEach(element => {
         const obj = this.scene.getObjectByName(element.ID);
 
-        if (this.clickedObjectId != obj.id) {
+        if (obj && this.clickedObjectId !== obj.id) {
           obj.currentHex = obj.material.emissive.getHex();
 
           obj.material.emissive.setHex(0xff0000);

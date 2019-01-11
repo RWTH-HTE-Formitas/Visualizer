@@ -29,23 +29,24 @@ class FloatingWindow extends Component {
                 const request = async () => {
                     const response = await fetch(source);
                     const json = await response.text();
-                    this.detail = <textarea readOnly={true}>{json}</textarea>
+                    this.detail = <textarea readOnly={true}>{json}</textarea>;
                     this.setState({ showModal: true });
-                }
+                };
                 request();
                 break;
             case 'audio':
                 // override
                 source = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.mp3';
-                this.detail = <audio controls><source src={source} type="audio/mp3" /></audio>
+                this.detail = <audio controls><source src={source} type="audio/mp3" /></audio>;
                 this.setState({ showModal: true });
                 break;
             case 'image':
                 // override
                 source = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
-                this.detail = <img src={source} />
+                this.detail = <img src={source} alt="Sample" />;
                 this.setState({ showModal: true });
                 break;
+            default: break;
         }
     }
 
@@ -77,6 +78,7 @@ class FloatingWindow extends Component {
                 if (note.ImageNotes != null) {
                     imageNotes = imageNotes.concat(Object.values(note.ImageNotes));
                 }
+                return null;
             })
         }
 
@@ -104,14 +106,16 @@ class FloatingWindow extends Component {
                                 <tbody>
                                     {
                                         Object.keys(inpData).map((k, i) => {
-                                            const val = inpData[k]
-                                            if (typeof (val) == 'string') {
+                                            const val = inpData[k];
+                                            if (typeof (val) === 'string') {
                                                 return (
                                                     <tr key={i}>
                                                         <td>{k}: </td>
                                                         <td>{val}</td>
                                                     </tr>
                                                 );
+                                            } else {
+                                                return null;
                                             }
                                         })
                                     }
@@ -123,9 +127,9 @@ class FloatingWindow extends Component {
                                 <tbody>
                                     {
                                         textNotes.map((data, i) => {
-                                            var item = data.URL.split('/').slice(-1)[0]
-                                            var link = data.URL
-                                            var dateRaw = new Date(data.Date * 1000)
+                                            var item = data.URL.split('/').slice(-1)[0];
+                                            var link = data.URL;
+                                            var dateRaw = new Date(data.Date * 1000);
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
@@ -147,15 +151,15 @@ class FloatingWindow extends Component {
                                 <tbody>
                                     {
                                         imageNotes.map((data, i) => {
-                                            var link = data.URL
-                                            var dateRaw = new Date(data.Date * 1000)
+                                            var link = data.URL;
+                                            var dateRaw = new Date(data.Date * 1000);
                                             // override
                                             link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
                                                         <a href="#" onClick={e => this.showDetail('image', link)}>
-                                                            <img src={link} />
+                                                            <img src={link} alt="" />
                                                         </a>
                                                     </td>
                                                     <td className="date">
@@ -174,9 +178,9 @@ class FloatingWindow extends Component {
                                 <tbody>
                                     {
                                         audioNotes.map((data, i) => {
-                                            var item = data.URL.split('/').slice(-1)[0]
-                                            var link = data.URL
-                                            var dateRaw = new Date(data.Date * 1000)
+                                            var item = data.URL.split('/').slice(-1)[0];
+                                            var link = data.URL;
+                                            var dateRaw = new Date(data.Date * 1000);
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">

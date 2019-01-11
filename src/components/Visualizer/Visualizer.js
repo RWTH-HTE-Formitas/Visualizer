@@ -70,7 +70,7 @@ class Visualizer extends Component {
     }
 
     markDefects(data) {
-        console.log(data)
+        console.log(data);
         this.setState({
             defects: data
         })
@@ -83,7 +83,7 @@ class Visualizer extends Component {
             return;
         }
 
-        var oData = jsonResults.find(x=> x.ID == data.name);
+        var oData = jsonResults.find(x=> x.ID === data.name);
         if (!oData || !oData.Status) {
             this.setState({
                 showWindow: false
