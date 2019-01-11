@@ -62,10 +62,11 @@ class Scene extends Component {
       window.addEventListener('keypress', onKeyPress, false);
 
       // controls
+      // the distance is fixed to one as we do not want to zoom on anything but only move the camera around the scene
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enabled = true;
-      controls.maxDistance = 1500;
-      controls.minDistance = 0;
+      controls.maxDistance = 1;
+      controls.minDistance = 1;
 
       //light
       let light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
