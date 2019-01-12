@@ -86,8 +86,8 @@ class Scene extends Component {
       
       return function(event) {
 
-        const truckSpeed = 1;
-        const rotationSpeed = 1;
+        const truckSpeed = 0.5;
+        const rotationSpeed = 0.5;
 
         switch (event.key) {
 
@@ -116,7 +116,7 @@ class Scene extends Component {
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
     this.controls.dollySpeed = 0; // disable dollying/zooming
-    this.controls.truckSpeed = 100;
+    this.controls.truckSpeed = 1000;
 
 
     const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
@@ -259,7 +259,7 @@ class Scene extends Component {
   setCamera(position, direction) {
 
     // normalize direction vector to keep navigation consistent
-    direction.divideScalar(direction.length());
+    direction.divideScalar(direction.length() * 10);
 
     this.controls.setLookAt(
       position.x, position.y, position.z,
