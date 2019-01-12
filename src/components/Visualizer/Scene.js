@@ -125,11 +125,11 @@ class Scene extends Component {
     };
 
 
-    let lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+    const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
     lightA.position.set(1000, 1000, 1000);
     this.scene.add(lightA);
 
-    let lightB = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+    const lightB = new THREE.HemisphereLight(0xbbbbff, 0x444422);
     lightB.position.set(-1000, 1000, -1000);
     this.scene.add(lightB);
 
@@ -139,8 +139,8 @@ class Scene extends Component {
 
       return function (gltf) {
 
-        var box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
-        var point = new THREE.Vector3();
+        const box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
+        const point = new THREE.Vector3();
 
         gltf.scene.children[0].position.x = -1 * box.getCenter(point).x;
         gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
