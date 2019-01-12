@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 import * as THREE from "three";
-import OrbitControls from "orbit-controls-es6";
+import Controls from "camera-controls";
 import GLTFLoader from 'three-gltf-loader';
 
 const width = 1000;
@@ -13,6 +13,7 @@ class Scene extends Component {
 
     super(props);
 
+    this.clock = null;
     this.renderer = null;
     this.scene = null;
     this.camera = null;
@@ -85,9 +86,8 @@ class Scene extends Component {
       
       return function(event) {
 
-        const delta = 50;
-        const theta = 0.01;
-        const zoom = 1.0;
+        const truckSpeed = 1;
+        const rotationSpeed = 1;
 
         switch (event.key) {
 
@@ -98,16 +98,12 @@ class Scene extends Component {
 
             break;
 
-          case "ArrowLeft": self.camera.position.x = self.camera.position.x - delta; break;
-          case "ArrowUp": self.camera.position.y = self.camera.position.y + delta; break;
-          case "ArrowRight": self.camera.position.x = self.camera.position.x + delta; break;
-          case "ArrowDown": self.camera.position.y = self.camera.position.y - delta; break;
-          case "x": self.camera.position.z = self.camera.position.z + zoom; break;
-          case "y": self.camera.position.z = self.camera.position.z - zoom; break;
-          case "s": self.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); break;
-          case "w": self.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); break;
-          case "a": self.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); break;
-          case "d": self.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); break;
+          case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
+          case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
+          case "s": case "ArrowDown": self.controls.forward(-truckSpeed, true); break;
+          case "w": case "ArrowUp": self.controls.forward(truckSpeed, true); break;
+          case "a": self.controls.truck(-truckSpeed, 0, true); break;
+          case "d": self.controls.truck(truckSpeed, 0, true); break;
 
           default: break;
         }
@@ -117,12 +113,10 @@ class Scene extends Component {
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
     this.renderer.domElement.addEventListener("click", function(event) { event.target.focus(); });
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.mouseButtons = {
-      ORBIT: THREE.MOUSE.RIGHT,
-      ZOOM: THREE.MOUSE.MIDDLE,
-      PAN: THREE.MOUSE.LEFT
-    };
+    Controls.install({THREE: THREE});
+    this.controls = new Controls(this.camera, this.renderer.domElement);
+    this.controls.dollySpeed = 0; // disable dollying/zooming
+    this.controls.truckSpeed = 100;
 
 
     const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
@@ -139,36 +133,45 @@ class Scene extends Component {
 
       return function (gltf) {
 
-        const box = new THREE.Box3().setFromObject(gltf.scene.children[0]);
-        const point = new THREE.Vector3();
+        const rootObject = gltf.scene.children[0];
+        const box = new THREE.Box3().setFromObject(rootObject);
+        const boxCenter = box.getCenter(new THREE.Vector3());
+        const boxSize = box.getSize(new THREE.Vector3());
 
-        gltf.scene.children[0].position.x = -1 * box.getCenter(point).x;
-        gltf.scene.children[0].position.y = -1 * box.getCenter(point).y;
-        gltf.scene.children[0].position.z = -1 * box.getCenter(point).z;
+        // move model to world center
+        rootObject.position.x = -1 * boxCenter.x;
+        rootObject.position.y = -1 * boxCenter.y;
+        rootObject.position.z = -1 * boxCenter.z;
 
-        self.scene.add(gltf.scene.children[0]);
+        self.scene.add(rootObject);
 
-        self.camera.position.z = box.getSize(point).z * 1.5;
+        self.setCamera(boxSize, boxCenter.sub(boxSize));
       };
 
     }(this));
 
     this.container.appendChild(this.renderer.domElement);
 
+    this.clock = new THREE.Clock();
 
     const animate = function(self) {
 
-      return function() {
+      return function(forceRendering = false) {
+
+        const delta = self.clock.getDelta();
+        const updated = self.controls.update(delta);
 
         requestAnimationFrame(animate);
 
-        self.controls.update();
-        self.renderer.render(self.scene, self.camera);
+        if (forceRendering || updated) {
+
+          self.renderer.render(self.scene, self.camera);
+        }
       };
 
     }(this);
 
-    animate();
+    animate(true);
   }
 
   shouldComponentUpdate() {
@@ -184,13 +187,10 @@ class Scene extends Component {
 
       const camSet = nextProps.camera;
 
-      this.camera.position.x = camSet.pX;
-      this.camera.position.y = camSet.pY;
-      this.camera.position.z = camSet.pZ;
-
-      this.camera.rotation.x = camSet.rX;
-      this.camera.rotation.y = camSet.rY;
-      this.camera.rotation.z = camSet.rZ;
+      this.controls.setLookAt(
+        camSet.pX, camSet.pY, camSet.pZ,
+        camSet.rX, camSet.rY, camSet.rZ
+      );
     }
 
     // un-/highlight object
@@ -254,6 +254,22 @@ class Scene extends Component {
 
       this.selectedObjectId = null;
     }
+  }
+
+  setCamera(position, direction) {
+
+    // normalize direction vector to keep navigation consistent
+    direction.divideScalar(direction.length());
+
+    this.controls.setLookAt(
+      position.x, position.y, position.z,
+      position.x + direction.x, position.y + direction.y, position.z + direction.z
+    );
+  }
+
+  getCameraDirection() {
+
+    return this.controls.getPosition().sub(this.controls.getTarget());
   }
 }
 
