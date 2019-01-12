@@ -86,6 +86,7 @@ class Scene extends Component {
       
       return function(event) {
 
+        const moveSpeed = 5;
         const truckSpeed = 0.5;
         const rotationSpeed = 0.5;
 
@@ -100,8 +101,8 @@ class Scene extends Component {
 
           case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
           case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
-          case "s": case "ArrowDown": self.controls.forward(-truckSpeed, true); break;
-          case "w": case "ArrowUp": self.controls.forward(truckSpeed, true); break;
+          case "s": case "ArrowDown": self.moveForward(-moveSpeed); break;
+          case "w": case "ArrowUp": self.moveForward(moveSpeed); break;
           case "a": self.controls.truck(-truckSpeed, 0, true); break;
           case "d": self.controls.truck(truckSpeed, 0, true); break;
 
@@ -256,20 +257,30 @@ class Scene extends Component {
     }
   }
 
-  setCamera(position, direction) {
+  setCamera(position, direction, transition) {
 
     // normalize direction vector to keep navigation consistent
     direction.divideScalar(direction.length() * 10);
 
     this.controls.setLookAt(
       position.x, position.y, position.z,
-      position.x + direction.x, position.y + direction.y, position.z + direction.z
+      position.x + direction.x, position.y + direction.y, position.z + direction.z,
+      transition
     );
   }
 
   getCameraDirection() {
 
-    return this.controls.getPosition().sub(this.controls.getTarget());
+    return this.controls.getTarget().sub(this.controls.getPosition());
+  }
+
+  moveForward(distance) {
+
+    const target = this.controls.getPosition().add(
+      this.getCameraDirection().multiplyScalar(distance)
+    );
+
+    this.setCamera(target, this.getCameraDirection(), true);
   }
 }
 
