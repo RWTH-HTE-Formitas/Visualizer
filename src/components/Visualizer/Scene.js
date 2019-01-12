@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
@@ -7,7 +8,9 @@ const width = 1000;
 const height = 400;
 
 class Scene extends Component {
+
   render() {
+
     return (
       <div ref={el => (this.container = el)} className="border" />
     );
@@ -19,30 +22,18 @@ class Scene extends Component {
 
   componentDidMount() {
 
-    // #region global variables
-
     var self = this;
     var scene, camera, renderer, controls, loader;
     var objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
 
-    // #endregion
-
-    // #region main 
-
     init();
     animate();
 
-    // #endregion
-
-    // #region init
-
-    // initialize all objects here
     function init() {
 
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0xffffff);
 
-      // camera
       camera = new THREE.PerspectiveCamera(
         50,
         width/height,
@@ -50,34 +41,34 @@ class Scene extends Component {
         2000
       );
 
-      // linking to global variable
       self.scene = scene;
       self.camera = camera;
 
-      // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(width, height);
       renderer.setClearColor(0xffffff, 1.0);
-      renderer.domElement.addEventListener('click', onMouseDown, false);
-      window.addEventListener('keypress', onKeyPress, false);
+      renderer.domElement.addEventListener('click', onClick, false);
+      renderer.domElement.addEventListener("keydown", onKeyDown);
+      renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
+      renderer.domElement.addEventListener("click", function(event) { event.target.focus(); });
 
-      // controls
-      // the distance is fixed to one as we do not want to zoom on anything but only move the camera around the scene
       controls = new OrbitControls(camera, renderer.domElement);
-      controls.enabled = true;
-      controls.maxDistance = 1;
-      controls.minDistance = 1;
+      controls.mouseButtons = {
+          ORBIT: THREE.MOUSE.RIGHT,
+          ZOOM: THREE.MOUSE.MIDDLE,
+          PAN: THREE.MOUSE.LEFT
+      };
 
-      //light
-      let light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-      light_p.position.set(1000, 1000, 1000);
-      scene.add(light_p);
 
-      light_p = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-      light_p.position.set(-1000, 1000, -1000);
-      scene.add(light_p);
+      let lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+      lightA.position.set(1000, 1000, 1000);
+      scene.add(lightA);
+
+      let lightB = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+      lightB.position.set(-1000, 1000, -1000);
+      scene.add(lightB);
       
-      // model
+
       loader = new GLTFLoader();
       loader.load(self.props.modelLocation, function (gltf) {
 
@@ -94,90 +85,60 @@ class Scene extends Component {
       });
 
       self.container.appendChild(renderer.domElement);
-
     }
 
-    // #endregion
-
-    // #region animate
-
-    // rendering the scene
     function animate() {
+
       requestAnimationFrame(animate);
+
       renderer.render(scene, camera);
     }
 
-    // #endregion
+    function onKeyDown(event) {console.log(event);
 
-    // #region keyboard exploration
-
-    // Toggle modes via key press
-    function onKeyPress(event) {
-      var keyPressed = event.which;
       var delta = 50;
       var theta = 0.01;
       var zoom = 1.0;
 
-      switch (keyPressed) {
-        case 116:// t
+      switch (event.key) {
+
+        case "t":
+
           // Toggle object transparency
-          if (objectSelection === 1)
-            objectSelection = 0;
-          else
-            objectSelection = 1;
-          break;
-        case 37: //left arrow
-          camera.position.x = camera.position.x - delta; // move camera
-          break;
-        case 38: //up arrow
-          camera.position.y = camera.position.y + delta; // move camera
-          break;
-        case 39: //right arrow
-          camera.position.x = camera.position.x + delta; // move camera
-          break;
-        case 40: //down arrow
-          camera.position.y = camera.position.y - delta; // move camera
-          break;
-        case 120: // x
-          camera.position.z = camera.position.z + zoom; // move forward
-          break;
-        case 121: // y
-          camera.position.z = camera.position.z - zoom; // move backward
-          break;
-        case 115: // s
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); // camera rotates down
-          break;
-        case 119: // w
-          camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); // camera rotates up
-          break;
-        case 97: // a
-          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); // camera rotates to left
-          break;
-        case 100: // d
-          camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); // camera rotates to right
+          objectSelection = (objectSelection === 1) ? 0 : 1;
+
           break;
 
-        default:
-          break;
+        case "ArrowLeft": camera.position.x = camera.position.x - delta; break;
+        case "ArrowUp": camera.position.y = camera.position.y + delta; break;
+        case "ArrowRight": camera.position.x = camera.position.x + delta; break;
+        case "ArrowDown": camera.position.y = camera.position.y - delta; break;
+        case "x": camera.position.z = camera.position.z + zoom; break;
+        case "y": camera.position.z = camera.position.z - zoom; break;
+        case "s": camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); break;
+        case "w": camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); break;
+        case "a": camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); break;
+        case "d": camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); break;
+
+        default: break;
       }
-
     }
 
-    // #endregion
-
-    // #region mouse down event
-
     // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
-    function onMouseDown(event) {
+    function onClick(event) {
+
       var mouseVector = new THREE.Vector3(
         (event.offsetX / width) * 2 - 1,
         -(event.offsetY / height) * 2 + 1,
-        0.5);
+        0.5
+      );
       mouseVector.unproject(camera);
+
       var raycaster = new THREE.Raycaster(camera.position, mouseVector.sub(camera.position).normalize());
       var intersects = raycaster.intersectObjects(scene.children, true);
 
-      if (intersects.length > 0) {  
+      if (intersects.length > 0) {
+
         self.props.callBack({
           id: intersects[0].object.id,
           name: intersects[0].object.name
@@ -185,122 +146,119 @@ class Scene extends Component {
 
         // highlighting
         const obj = scene.getObjectById(intersects[0].object.id, true);
+
         if (self.clickedObjectId !== obj.id) {
+
           obj.currentHex = obj.material.emissive.getHex();
           obj.material.emissive.setHex(0xffff00);
-
-          // consoling
-          console.log(`
-          "${obj.id}": {
-            "Category": "Lorem Ipsum",
-            "ID": "${obj.id}",
-            "Name": "${obj.name}",
-            "Status": {
-              "Approval": 0,
-              "CameraFieldOfview": ${camera.fov},
-              "CameraPosition": { 
-                "x": ${camera.position.x},
-                "y": ${camera.position.y},
-                "z": ${camera.position.z}
-              }, 
-              "CameraRotation": {
-                "x": ${camera.rotation.x},
-                "y": ${camera.rotation.y},
-                "z": ${camera.rotation.z}
-              },
-              "LastChangeBy": "na@formitas.de",
-              "LastChangeByUID": "0zh3Lg9mHnRhAzMMuYQivnjWZ8u2",
-              "Timestamp": 1.532363644143873E9
-            }
-          },
-          `);
           
           // reset previous
           if (self.clickedObjectId != null) {
+
             const exist = scene.getObjectById(self.clickedObjectId, true);
+
             exist.material.emissive.setHex(exist.currentHex);
           }
+
           self.clickedObjectId = obj.id;
         }
+
         if (objectSelection === 0) {
+
           intersects[0].object.material.transparent = true;
           if (intersects[0].object.material.opacity < 1) {
+
             intersects[0].object.material.opacity = 1;
-          } else {
+          }
+          else {
+
             intersects[0].object.material.opacity = 0.3;
           }
-        } else if (objectSelection === 1) {
+        }
+        else if (objectSelection === 1) {
+
           /* Object is selected, can be used to add notes etc. */
         }
-      } else {
+      }
+      else {
+
         self.props.callBack();
         
         // reset previous
         if (self.clickedObjectId != null) {
+
           const exist = scene.getObjectById(self.clickedObjectId, true);
+
           exist.material.emissive.setHex(exist.currentHex);
         }
+
         self.clickedObjectId = null;
       }
     }
-
-    // #endregion
   }
 
   shouldComponentUpdate() {
+
+    // the canvas has internal state and thus must not be updated
     return false;
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (this.props.color !== nextProps.color) {
+
       this.globe.material.color.setHex(nextProps.color);
     }
+
+    // update camera position & orientation
     if (this.props.camera !== nextProps.camera) {
+
       const camSet = nextProps.camera;
-      this.changeCamera(
-        camSet.pX, camSet.pY, camSet.pZ, 
-        camSet.rX, camSet.rY, camSet.rZ
-      ); 
+
+      this.camera.position.x = camSet.pX;
+      this.camera.position.y = camSet.pY;
+      this.camera.position.z = camSet.pZ;
+
+      this.camera.rotation.x = camSet.rX;
+      this.camera.rotation.y = camSet.rY;
+      this.camera.rotation.z = camSet.rZ;
     }
+
     if (this.props.newObject !== nextProps.newObject) {
+
       const obj = this.scene.getObjectByName(nextProps.newObject.ID);
 
       if (this.clickedObjectId !== obj.id) {
+
         obj.currentHex = obj.material.emissive.getHex();
         obj.material.emissive.setHex(0xffff00);
         
         // reset previous
         if (this.clickedObjectId != null) {
+
           const exist = this.scene.getObjectById(this.clickedObjectId, true);
+
           exist.material.emissive.setHex(exist.currentHex);
         }
+
         this.clickedObjectId = obj.id;
       }
     }
+
     if (this.props.defects !== nextProps.defects) {
+
       nextProps.defects.forEach(element => {
+
         const obj = this.scene.getObjectByName(element.ID);
 
         if (obj && this.clickedObjectId !== obj.id) {
+
           obj.currentHex = obj.material.emissive.getHex();
 
           obj.material.emissive.setHex(0xff0000);
         }
-        
       });
     }
-
-  }
-
-  changeCamera(pX, pY, pZ, rX, rY, rZ) {
-    console.log(pX, pY, pZ, rX, rY, rZ);
-    this.camera.position.x = pX;
-    this.camera.position.y = pY;
-    this.camera.position.z = pZ;
-
-    this.camera.rotation.x = rX;
-    this.camera.rotation.y = rY;
-    this.camera.rotation.z = rZ;
   }
 }
 
