@@ -20,7 +20,7 @@ class Scene extends Component {
     this.loader = null;
 
     this.objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
-    this.clickedObjectId = null;
+    this.selectedObjectId = null;
   }
 
   render() {
@@ -59,64 +59,25 @@ class Scene extends Component {
 
         const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
         const intersects = raycaster.intersectObjects(self.scene.children, true);
+        const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
 
-        if (intersects.length > 0) {
+        // reset currently selected object
+        self.clearObjectHighlight();
 
-          self.props.callBack({
-            id: intersects[0].object.id,
-            name: intersects[0].object.name
-          });
-
-          // highlighting
-          const obj = self.scene.getObjectById(intersects[0].object.id, true);
-
-          if (self.clickedObjectId !== obj.id) {
-
-            obj.currentHex = obj.material.emissive.getHex();
-            obj.material.emissive.setHex(0xffff00);
-
-            // reset previous
-            if (self.clickedObjectId != null) {
-
-              const exist = self.scene.getObjectById(self.clickedObjectId, true);
-
-              exist.material.emissive.setHex(exist.currentHex);
-            }
-
-            self.clickedObjectId = obj.id;
-          }
-
-          if (self.objectSelection === 0) {
-
-            intersects[0].object.material.transparent = true;
-            if (intersects[0].object.material.opacity < 1) {
-
-              intersects[0].object.material.opacity = 1;
-            }
-            else {
-
-              intersects[0].object.material.opacity = 0.3;
-            }
-          }
-          else if (self.objectSelection === 1) {
-
-            /* Object is selected, can be used to add notes etc. */
-          }
-        }
-        else {
+        // nothing hit
+        if (clickedObject === null) {
 
           self.props.callBack();
 
-          // reset previous
-          if (self.clickedObjectId != null) {
-
-            const exist = self.scene.getObjectById(self.clickedObjectId, true);
-
-            exist.material.emissive.setHex(exist.currentHex);
-          }
-
-          self.clickedObjectId = null;
+          return;
         }
+
+        self.highlightObject(clickedObject);
+
+        self.props.callBack({
+          id: clickedObject.id,
+          name: clickedObject.name
+        });
       };
       
     }(this), false);
@@ -218,11 +179,6 @@ class Scene extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    if (this.props.color !== nextProps.color) {
-
-      this.globe.material.color.setHex(nextProps.color);
-    }
-
     // update camera position & orientation
     if (this.props.camera !== nextProps.camera) {
 
@@ -237,40 +193,66 @@ class Scene extends Component {
       this.camera.rotation.z = camSet.rZ;
     }
 
+    // un-/highlight object
     if (this.props.newObject !== nextProps.newObject) {
 
-      const obj = this.scene.getObjectByName(nextProps.newObject.ID);
+      this.clearObjectHighlight();
 
-      if (this.clickedObjectId !== obj.id) {
+      const object = this.scene.getObjectByName(nextProps.newObject.ID);
 
-        obj.currentHex = obj.material.emissive.getHex();
-        obj.material.emissive.setHex(0xffff00);
-        
-        // reset previous
-        if (this.clickedObjectId != null) {
+      if (object !== null) {
 
-          const exist = this.scene.getObjectById(this.clickedObjectId, true);
-
-          exist.material.emissive.setHex(exist.currentHex);
-        }
-
-        this.clickedObjectId = obj.id;
+        this.highlightObject(object);
       }
     }
 
+    // defects loaded/changed
     if (this.props.defects !== nextProps.defects) {
 
       nextProps.defects.forEach(element => {
 
-        const obj = this.scene.getObjectByName(element.ID);
+        const object = this.scene.getObjectByName(element.ID);
 
-        if (obj && this.clickedObjectId !== obj.id) {
+        if (object !== null) {
 
-          obj.currentHex = obj.material.emissive.getHex();
-
-          obj.material.emissive.setHex(0xff0000);
+          this.markDefectObject(object);
         }
       });
+    }
+  }
+
+  markDefectObject(object) {
+
+    object.currentHex = object.material.emissive.getHex();
+    object.material.emissive.setHex(0xff0000);
+  }
+
+  highlightObject(object) {
+
+    this.clearObjectHighlight();
+
+    object.currentHex = object.material.emissive.getHex();
+    object.material.emissive.setHex(0xffff00);
+
+    // toggle opacity
+    if (this.objectSelection === 0) {
+
+      object.material.transparent = true;
+      object.material.opacity = (object.material.opacity < 1) ? 1.0 : 0.3;
+    }
+
+    this.selectedObjectId = object.id;
+  }
+
+  clearObjectHighlight() {
+
+    if (this.selectedObjectId !== null) {
+
+      const selectedObject = this.scene.getObjectById(this.selectedObjectId, true);
+
+      selectedObject.material.emissive.setHex(selectedObject.currentHex);
+
+      this.selectedObjectId = null;
     }
   }
 }
