@@ -45,8 +45,114 @@ class Scene extends Component {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.setClearColor(0xffffff, 1.0);
-    this.renderer.domElement.addEventListener("click", this.onClick, false);
-    this.renderer.domElement.addEventListener("keydown", this.onKeyDown);
+    this.renderer.domElement.addEventListener("click", function(self) {
+
+      // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
+      return function(event) {
+
+        const mouseVector = new THREE.Vector3(
+          (event.offsetX / width) * 2 - 1,
+          -(event.offsetY / height) * 2 + 1,
+          0.5
+        );
+        mouseVector.unproject(self.camera);
+
+        const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
+        const intersects = raycaster.intersectObjects(self.scene.children, true);
+
+        if (intersects.length > 0) {
+
+          self.props.callBack({
+            id: intersects[0].object.id,
+            name: intersects[0].object.name
+          });
+
+          // highlighting
+          const obj = self.scene.getObjectById(intersects[0].object.id, true);
+
+          if (self.clickedObjectId !== obj.id) {
+
+            obj.currentHex = obj.material.emissive.getHex();
+            obj.material.emissive.setHex(0xffff00);
+
+            // reset previous
+            if (self.clickedObjectId != null) {
+
+              const exist = self.scene.getObjectById(self.clickedObjectId, true);
+
+              exist.material.emissive.setHex(exist.currentHex);
+            }
+
+            self.clickedObjectId = obj.id;
+          }
+
+          if (self.objectSelection === 0) {
+
+            intersects[0].object.material.transparent = true;
+            if (intersects[0].object.material.opacity < 1) {
+
+              intersects[0].object.material.opacity = 1;
+            }
+            else {
+
+              intersects[0].object.material.opacity = 0.3;
+            }
+          }
+          else if (self.objectSelection === 1) {
+
+            /* Object is selected, can be used to add notes etc. */
+          }
+        }
+        else {
+
+          self.props.callBack();
+
+          // reset previous
+          if (self.clickedObjectId != null) {
+
+            const exist = self.scene.getObjectById(self.clickedObjectId, true);
+
+            exist.material.emissive.setHex(exist.currentHex);
+          }
+
+          self.clickedObjectId = null;
+        }
+      };
+      
+    }(this), false);
+    this.renderer.domElement.addEventListener("keydown", function(self) {
+      
+      return function(event) {
+
+        const delta = 50;
+        const theta = 0.01;
+        const zoom = 1.0;
+
+        switch (event.key) {
+
+          case "t":
+
+            // Toggle object transparency
+            self.objectSelection = (self.objectSelection === 1) ? 0 : 1;
+
+            break;
+
+          case "ArrowLeft": self.camera.position.x = self.camera.position.x - delta; break;
+          case "ArrowUp": self.camera.position.y = self.camera.position.y + delta; break;
+          case "ArrowRight": self.camera.position.x = self.camera.position.x + delta; break;
+          case "ArrowDown": self.camera.position.y = self.camera.position.y - delta; break;
+          case "x": self.camera.position.z = self.camera.position.z + zoom; break;
+          case "y": self.camera.position.z = self.camera.position.z - zoom; break;
+          case "s": self.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); break;
+          case "w": self.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); break;
+          case "a": self.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); break;
+          case "d": self.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); break;
+
+          default: break;
+        }
+      };
+      
+    }(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
     this.renderer.domElement.addEventListener("click", function(event) { event.target.focus(); });
 
@@ -102,108 +208,6 @@ class Scene extends Component {
     }(this);
 
     animate();
-  }
-
-  onKeyDown(event) {
-
-    const delta = 50;
-    const theta = 0.01;
-    const zoom = 1.0;
-
-    switch (event.key) {
-
-      case "t":
-
-        // Toggle object transparency
-        this.objectSelection = (this.objectSelection === 1) ? 0 : 1;
-
-        break;
-
-      case "ArrowLeft": this.camera.position.x = this.camera.position.x - delta; break;
-      case "ArrowUp": this.camera.position.y = this.camera.position.y + delta; break;
-      case "ArrowRight": this.camera.position.x = this.camera.position.x + delta; break;
-      case "ArrowDown": this.camera.position.y = this.camera.position.y - delta; break;
-      case "x": this.camera.position.z = this.camera.position.z + zoom; break;
-      case "y": this.camera.position.z = this.camera.position.z - zoom; break;
-      case "s": this.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), (-theta)); break;
-      case "w": this.camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), theta); break;
-      case "a": this.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), theta); break;
-      case "d": this.camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), (-theta)); break;
-
-      default: break;
-    }
-  }
-
-  // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
-  onclick(event) {
-
-    const mouseVector = new THREE.Vector3(
-      (event.offsetX / width) * 2 - 1,
-      -(event.offsetY / height) * 2 + 1,
-      0.5
-    );
-    mouseVector.unproject(this.camera);
-
-    const raycaster = new THREE.Raycaster(this.camera.position, mouseVector.sub(this.camera.position).normalize());
-    const intersects = raycaster.intersectObjects(this.scene.children, true);
-
-    if (intersects.length > 0) {
-
-      this.props.callBack({
-        id: intersects[0].object.id,
-        name: intersects[0].object.name
-      });
-
-      // highlighting
-      const obj = this.scene.getObjectById(intersects[0].object.id, true);
-
-      if (this.clickedObjectId !== obj.id) {
-
-        obj.currentHex = obj.material.emissive.getHex();
-        obj.material.emissive.setHex(0xffff00);
-
-        // reset previous
-        if (this.clickedObjectId != null) {
-
-          const exist = this.scene.getObjectById(this.clickedObjectId, true);
-
-          exist.material.emissive.setHex(exist.currentHex);
-        }
-
-        this.clickedObjectId = obj.id;
-      }
-
-      if (this.objectSelection === 0) {
-
-        intersects[0].object.material.transparent = true;
-        if (intersects[0].object.material.opacity < 1) {
-
-          intersects[0].object.material.opacity = 1;
-        }
-        else {
-
-          intersects[0].object.material.opacity = 0.3;
-        }
-      }
-      else if (this.objectSelection === 1) {
-
-        /* Object is selected, can be used to add notes etc. */
-      }
-    }
-    else {
-
-      this.props.callBack();
-
-      // reset previous
-      if (this.clickedObjectId != null) {
-
-        const exist = this.scene.getObjectById(this.clickedObjectId, true);
-
-        exist.material.emissive.setHex(exist.currentHex);
-      }
-
-      this.clickedObjectId = null;
-    }
   }
 
   shouldComponentUpdate() {
