@@ -10,7 +10,7 @@ script:
   - yarn test
 after_success:
   - yarn run build
-  - firebase deploy -m "Travis deploy" --non-interactive --token $FIREBASE_TOKEN
+  - firebase deploy -m "Travis deploy" --non-interactive --token "1/bxM5zVElqlWm1DX0tmuKe0hz9yV_OlcaZmtOpeidYho"
 branches:
   only:
     - develop
