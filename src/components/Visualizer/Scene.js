@@ -188,10 +188,10 @@ class Scene extends Component {
 
       const camSet = nextProps.camera;
 
-      this.controls.setLookAt(
-        camSet.pX, camSet.pY, camSet.pZ,
-        camSet.rX, camSet.rY, camSet.rZ
-      );
+      const position = new THREE.Vector3(camSet.pX, camSet.pY, camSet.pZ);
+      const direction = new THREE.Vector3(camSet.rX - camSet.pX, camSet.rY - camSet.pY, camSet.rZ - camSet.pZ);
+
+      this.setCamera(position, direction, true);
     }
 
     // un-/highlight object
