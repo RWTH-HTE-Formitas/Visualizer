@@ -150,6 +150,8 @@ class Scene extends Component {
       const selectedObject = this.scene.getObjectById(this.selectedObjectId, true);
 
       selectedObject.material.emissive.setHex(selectedObject.currentHex);
+      selectedObject.material.transparent = false;
+      selectedObject.material.opacity = 1.0;
 
       this.selectedObjectId = null;
     }
