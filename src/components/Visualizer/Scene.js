@@ -136,7 +136,7 @@ class Scene extends Component {
     // toggle opacity
     if (this.objectSelection === 0) {
 
-      object.material.transparent = true;
+      object.material.transparent = !object.material.transparent;
       object.material.opacity = (object.material.opacity < 1) ? 1.0 : 0.3;
     }
 
