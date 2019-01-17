@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.8.3",
     "firebase": "^5.7.0",
     "firebase-admin": "^6.3.0",
     "mapbox-gl": "0.45.0",
@@ -15,6 +16,7 @@
     "react-moment": "^0.8.4",
     "react-redux": "5.0.6",
     "react-scripts": "2.1.1",
+    "react-swipeable-views": "^0.13.0",
     "react-tabs": "^2.3.0",
     "redux": "3.7.2",
     "three": "0.98.0",
