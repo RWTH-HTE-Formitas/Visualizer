@@ -13,7 +13,6 @@ class Scene extends Component {
 
     super(props);
 
-    this.clock = null;
     this.renderer = null;
     this.scene = null;
     this.camera = null;
@@ -46,73 +45,10 @@ class Scene extends Component {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.setClearColor(0xffffff, 1.0);
-    this.renderer.domElement.addEventListener("click", function(self) {
-
-      // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
-      return function(event) {
-
-        const mouseVector = new THREE.Vector3(
-          (event.offsetX / width) * 2 - 1,
-          -(event.offsetY / height) * 2 + 1,
-          0.5
-        );
-        mouseVector.unproject(self.camera);
-
-        const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
-        const intersects = raycaster.intersectObjects(self.scene.children, true);
-        const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
-
-        // reset currently selected object
-        self.clearObjectHighlight();
-
-        // nothing hit
-        if (clickedObject === null) {
-
-          self.props.callBack();
-
-          return;
-        }
-
-        self.highlightObject(clickedObject);
-
-        self.props.callBack({
-          id: clickedObject.id,
-          name: clickedObject.name
-        });
-      };
-      
-    }(this), false);
-    this.renderer.domElement.addEventListener("keydown", function(self) {
-      
-      return function(event) {
-
-        const moveSpeed = 5;
-        const truckSpeed = 0.5;
-        const rotationSpeed = 0.5;
-
-        switch (event.key) {
-
-          case "t":
-
-            // Toggle object transparency
-            self.objectSelection = (self.objectSelection === 1) ? 0 : 1;
-
-            break;
-
-          case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
-          case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
-          case "s": case "ArrowDown": self.moveForward(-moveSpeed); break;
-          case "w": case "ArrowUp": self.moveForward(moveSpeed); break;
-          case "a": self.controls.truck(-truckSpeed, 0, true); break;
-          case "d": self.controls.truck(truckSpeed, 0, true); break;
-
-          default: break;
-        }
-      };
-      
-    }(this), false);
+    this.renderer.domElement.addEventListener("click", this._onClick(this), false);
+    this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
-    this.renderer.domElement.addEventListener("click", function(event) { event.target.focus(); });
+    this.renderer.domElement.addEventListener("click", (event) => { event.target.focus(); });
 
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
@@ -130,49 +66,11 @@ class Scene extends Component {
 
 
     this.loader = new GLTFLoader();
-    this.loader.load(this.props.modelLocation, function(self) {
-
-      return function (gltf) {
-
-        const rootObject = gltf.scene.children[0];
-        const box = new THREE.Box3().setFromObject(rootObject);
-        const boxCenter = box.getCenter(new THREE.Vector3());
-        const boxSize = box.getSize(new THREE.Vector3());
-
-        // move model to world center
-        rootObject.position.x = -1 * boxCenter.x;
-        rootObject.position.y = -1 * boxCenter.y;
-        rootObject.position.z = -1 * boxCenter.z;
-
-        self.scene.add(rootObject);
-
-        self.setCamera(boxSize, boxCenter.sub(boxSize));
-      };
-
-    }(this));
+    this.loader.load(this.props.modelLocation, this._onModelLoad(this));
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.clock = new THREE.Clock();
-
-    const animate = function(self) {
-
-      return function(forceRendering = false) {
-
-        const delta = self.clock.getDelta();
-        const updated = self.controls.update(delta);
-
-        requestAnimationFrame(animate);
-
-        if (forceRendering || updated) {
-
-          self.renderer.render(self.scene, self.camera);
-        }
-      };
-
-    }(this);
-
-    animate(true);
+    this._animate(this)(true);
   }
 
   shouldComponentUpdate() {
@@ -281,6 +179,111 @@ class Scene extends Component {
     );
 
     this.setCamera(target, this.getCameraDirection(), true);
+  }
+
+  _onModelLoad(self) {
+
+    return (gltf) => {
+
+      const rootObject = gltf.scene.children[0];
+      const box = new THREE.Box3().setFromObject(rootObject);
+      const boxCenter = box.getCenter(new THREE.Vector3());
+      const boxSize = box.getSize(new THREE.Vector3());
+
+      // move model to world center
+      rootObject.position.x = -1 * boxCenter.x;
+      rootObject.position.y = -1 * boxCenter.y;
+      rootObject.position.z = -1 * boxCenter.z;
+
+      self.scene.add(rootObject);
+
+      self.setCamera(boxSize, boxCenter.sub(boxSize));
+    };
+  }
+
+  _animate(self) {
+
+    const clock = new THREE.Clock();
+
+    const animate = (forceRendering = false) => {
+
+      const delta = clock.getDelta();
+      const updated = self.controls.update(delta);
+
+      requestAnimationFrame(animate);
+
+      if (forceRendering || updated) {
+
+        self.renderer.render(self.scene, self.camera);
+      }
+    };
+
+    return animate;
+  }
+
+  _onClick(self) {
+
+    // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
+    return (event) => {
+
+      const mouseVector = new THREE.Vector3(
+        (event.offsetX / width) * 2 - 1,
+        -(event.offsetY / height) * 2 + 1,
+        0.5
+      );
+      mouseVector.unproject(self.camera);
+
+      const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
+      const intersects = raycaster.intersectObjects(self.scene.children, true);
+      const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
+
+      // reset currently selected object
+      self.clearObjectHighlight();
+
+      // nothing hit
+      if (clickedObject === null) {
+
+        self.props.callBack();
+
+        return;
+      }
+
+      self.highlightObject(clickedObject);
+
+      self.props.callBack({
+        id: clickedObject.id,
+        name: clickedObject.name
+      });
+    };
+  }
+
+  _onKeyDown(self) {
+
+    return (event) => {
+
+      const moveSpeed = 5;
+      const truckSpeed = 0.5;
+      const rotationSpeed = 0.5;
+
+      switch (event.key) {
+
+        case "t":
+
+          // Toggle object transparency
+          self.objectSelection = (self.objectSelection === 1) ? 0 : 1;
+
+          break;
+
+        case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
+        case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
+        case "s": case "ArrowDown": self.moveForward(-moveSpeed); break;
+        case "w": case "ArrowUp": self.moveForward(moveSpeed); break;
+        case "a": self.controls.truck(-truckSpeed, 0, true); break;
+        case "d": self.controls.truck(truckSpeed, 0, true); break;
+
+        default: break;
+      }
+    };
   }
 }
 
