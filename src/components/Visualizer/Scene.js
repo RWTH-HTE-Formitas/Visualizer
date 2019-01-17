@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
 import GLTFLoader from 'three-gltf-loader';
+import InfoContent from "../InfoWindow/InfoContent";
 
 const width = 1000;
 const height = 400;
@@ -9,7 +10,10 @@ const height = 400;
 class Scene extends Component {
   render() {
     return (
-      <div ref={el => (this.container = el)} className="border" />
+      <React.Fragment>
+      <div ref={el => (this.container = el)} className="border">
+      </div>
+      </React.Fragment>
     );
   }
 

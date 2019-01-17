@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
+import InfoWindow from "../InfoWindow/InfoWindow";
 import firebase from '../Firebase/Firebase.js';
+import { withStyles } from '@material-ui/core/styles';
 
 class Visualizer extends Component {
 
@@ -106,11 +108,19 @@ class Visualizer extends Component {
 
     }
 
+    
+
     render() {
+    
         return (
-            <div>
-                <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} callBack={this.callBackObject} />
+            <div>            
+                    <FloatingWindow data={this.state}/>
+                    <InfoWindow data={this.state} />
+                    <Scene  modelLocation={this.modelLocation} 
+                            newObject={this.state.newObject} 
+                            defects={this.state.defects} 
+                            camera={this.state.camera} 
+                            callBack={this.callBackObject} />
             </div>
         );
     }
