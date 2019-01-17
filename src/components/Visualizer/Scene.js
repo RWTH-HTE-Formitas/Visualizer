@@ -19,8 +19,8 @@ class Scene extends Component {
     this.controls = null;
     this.loader = null;
 
-    this.objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
-    this.selectedObjectId = null;
+    this.toggleTransparency = false;
+    this.highlightedObjectId = null;
   }
 
   render() {
@@ -56,6 +56,7 @@ class Scene extends Component {
     this.controls.truckSpeed = 1000;
 
 
+    // add lighting
     const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
     lightA.position.set(1000, 1000, 1000);
     this.scene.add(lightA);
@@ -64,12 +65,13 @@ class Scene extends Component {
     lightB.position.set(-1000, 1000, -1000);
     this.scene.add(lightB);
 
-
+    // load model
     this.loader = new GLTFLoader();
     this.loader.load(this.props.modelLocation, this._onModelLoad(this));
 
     this.container.appendChild(this.renderer.domElement);
 
+    // start animation cycle
     this._animate(this)(true);
   }
 
@@ -89,7 +91,7 @@ class Scene extends Component {
       const position = new THREE.Vector3(camSet.pX, camSet.pY, camSet.pZ);
       const direction = new THREE.Vector3(camSet.rX - camSet.pX, camSet.rY - camSet.pY, camSet.rZ - camSet.pZ);
 
-      this.setCamera(position, direction, true);
+      this.navigateCameraTo(position, direction, true);
     }
 
     // un-/highlight object
@@ -120,12 +122,22 @@ class Scene extends Component {
     }
   }
 
+  /**
+   * Marks an object in the scene as having a defect note.
+   *
+   * @param object
+   */
   markDefectObject(object) {
 
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xff0000);
   }
 
+  /**
+   * Highlights an object in the scene as being currently selected.
+   *
+   * @param object
+   */
   highlightObject(object) {
 
     this.clearObjectHighlight();
@@ -133,31 +145,42 @@ class Scene extends Component {
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xffff00);
 
-    // toggle opacity
-    if (this.objectSelection === 0) {
+    // toggle transparency/opacity
+    if (this.toggleTransparency === true) {
 
       object.material.transparent = !object.material.transparent;
       object.material.opacity = (object.material.opacity < 1) ? 1.0 : 0.3;
     }
 
-    this.selectedObjectId = object.id;
+    this.highlightedObjectId = object.id;
   }
 
+  /**
+   * Clears current highlighting if any object is highlighted.
+   */
   clearObjectHighlight() {
 
-    if (this.selectedObjectId !== null) {
+    if (this.highlightedObjectId !== null) {
 
-      const selectedObject = this.scene.getObjectById(this.selectedObjectId, true);
+      const selectedObject = this.scene.getObjectById(this.highlightedObjectId, true);
 
       selectedObject.material.emissive.setHex(selectedObject.currentHex);
       selectedObject.material.transparent = false;
       selectedObject.material.opacity = 1.0;
 
-      this.selectedObjectId = null;
+      this.highlightedObjectId = null;
     }
   }
 
-  setCamera(position, direction, transition) {
+  /**
+   * Moves the camera to the given position and viewing direction.
+   * If the parameter transition is truthy, the change will be animated.
+   *
+   * @param position Target position
+   * @param direction Viewing direction from position
+   * @param transition
+   */
+  navigateCameraTo(position, direction, transition) {
 
     // normalize direction vector to keep navigation consistent
     direction.divideScalar(direction.length() * 10);
@@ -169,18 +192,24 @@ class Scene extends Component {
     );
   }
 
-  getCameraDirection() {
-
-    return this.controls.getTarget().sub(this.controls.getPosition());
-  }
-
+  /**
+   * Moves the camera forward/backward w.r.t. the current viewing direction.
+   * Positive values move the camera forward, negative values move the camera backward.
+   *
+   * @param distance
+   */
   moveForward(distance) {
 
     const target = this.controls.getPosition().add(
-      this.getCameraDirection().multiplyScalar(distance)
+      this._getCurrentCameraDirection().multiplyScalar(distance)
     );
 
-    this.setCamera(target, this.getCameraDirection(), true);
+    this.navigateCameraTo(target, this._getCurrentCameraDirection(), true);
+  }
+
+  _getCurrentCameraDirection() {
+
+    return this.controls.getTarget().sub(this.controls.getPosition());
   }
 
   _onModelLoad(self) {
@@ -199,7 +228,7 @@ class Scene extends Component {
 
       self.scene.add(rootObject);
 
-      self.setCamera(boxSize, boxCenter.sub(boxSize));
+      self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
     };
   }
 
@@ -272,7 +301,7 @@ class Scene extends Component {
         case "t":
 
           // Toggle object transparency
-          self.objectSelection = (self.objectSelection === 1) ? 0 : 1;
+          self.toggleTransparency = !self.toggleTransparency;
 
           break;
 
