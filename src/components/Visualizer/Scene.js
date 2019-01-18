@@ -191,6 +191,9 @@ class Scene extends Component {
    */
   navigateCameraTo(position, direction, transition) {
 
+    position = this._objectToVector(position);
+    direction = this._objectToVector(direction);
+
     // normalize direction vector to keep navigation consistent
     direction.divideScalar(direction.length() * 10);
 
@@ -321,6 +324,11 @@ class Scene extends Component {
         default: break;
       }
     };
+  }
+
+  _objectToVector(object) {
+
+    return (object instanceof THREE.Vector3) ? object : new THREE.Vector3(object.x, object.y, object.z);
   }
 }
 
