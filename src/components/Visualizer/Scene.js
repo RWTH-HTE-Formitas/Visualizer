@@ -97,13 +97,13 @@ class Scene extends Component {
     // un-/highlight object
     if (this.props.newObject !== nextProps.newObject) {
 
-      this.clearObjectHighlight();
+      this.unSelectObject();
 
       const object = this.scene.getObjectByName(nextProps.newObject.ID);
 
       if (object !== null) {
 
-        this.highlightObject(object);
+        this.selectObject(object.id);
       }
     }
 
@@ -116,7 +116,7 @@ class Scene extends Component {
 
         if (object !== null) {
 
-          this.markDefectObject(object);
+          this.markDefectObject(object.id);
         }
       });
     }
@@ -125,9 +125,11 @@ class Scene extends Component {
   /**
    * Marks an object in the scene as having a defect note.
    *
-   * @param object
+   * @param objectId
    */
-  markDefectObject(object) {
+  markDefectObject(objectId) {
+
+    const object = this.scene.getObjectById(objectId);
 
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xff0000);
@@ -136,11 +138,13 @@ class Scene extends Component {
   /**
    * Highlights an object in the scene as being currently selected.
    *
-   * @param object
+   * @param objectId
    */
-  highlightObject(object) {
+  selectObject(objectId) {
 
-    this.clearObjectHighlight();
+    this.unSelectObject();
+
+    const object = this.scene.getObjectById(objectId);
 
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xffff00);
@@ -158,7 +162,7 @@ class Scene extends Component {
   /**
    * Clears current highlighting if any object is highlighted.
    */
-  clearObjectHighlight() {
+  unSelectObject() {
 
     if (this.highlightedObjectId !== null) {
 
@@ -269,7 +273,7 @@ class Scene extends Component {
       const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
 
       // reset currently selected object
-      self.clearObjectHighlight();
+      self.unSelectObject();
 
       // nothing hit
       if (clickedObject === null) {
@@ -279,7 +283,7 @@ class Scene extends Component {
         return;
       }
 
-      self.highlightObject(clickedObject);
+      self.selectObject(clickedObject.id);
 
       self.props.callBack({
         id: clickedObject.id,
