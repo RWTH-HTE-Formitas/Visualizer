@@ -7,6 +7,11 @@ import GLTFLoader from 'three-gltf-loader';
 const width = 1000;
 const height = 400;
 
+/**
+ * Properties:
+ *
+ * onSelectObject - Hook is called when an object has been selected.
+ */
 class Scene extends Component {
 
   constructor(props) {
@@ -275,20 +280,17 @@ class Scene extends Component {
       // reset currently selected object
       self.unSelectObject();
 
-      // nothing hit
-      if (clickedObject === null) {
+      // mark clicked-on object as selected
+      if (clickedObject) {
 
-        self.props.callBack();
-
-        return;
+        self.selectObject(clickedObject.name);
       }
 
-      self.selectObject(clickedObject.name);
+      // call hook
+      if (self.props.onSelectObject instanceof Function) {
 
-      self.props.callBack({
-        id: clickedObject.id,
-        name: clickedObject.name
-      });
+        self.props.onSelectObject(clickedObject ? clickedObject.name : null);
+      }
     };
   }
 

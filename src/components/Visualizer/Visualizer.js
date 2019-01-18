@@ -36,9 +36,9 @@ class Visualizer extends Component {
     }
 
 
-    callBackObject(data) {
-        if (data) {
-            this.fetch_object_data(data);
+    callBackObject(objectName) {
+        if (objectName) {
+            this.fetch_object_data(objectName);
         } else {
             this.setState({
                 showWindow: false
@@ -76,14 +76,14 @@ class Visualizer extends Component {
         })
     }
 
-    fetch_object_data(data){
+    fetch_object_data(objectName){
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
         var jsonResults = this.getAnnotatedObjects();
         if (!jsonResults.length) {
             return;
         }
 
-        var oData = jsonResults.find(x=> x.ID === data.name);
+        var oData = jsonResults.find(x=> x.ID === objectName);
         if (!oData || !oData.Status) {
             this.setState({
                 showWindow: false
@@ -110,7 +110,7 @@ class Visualizer extends Component {
         return (
             <div>
                 <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} callBack={this.callBackObject} />
+                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} onSelectObject={this.callBackObject} />
             </div>
         );
     }
