@@ -103,7 +103,7 @@ class Scene extends Component {
 
       if (object !== null) {
 
-        this.selectObject(object.id);
+        this.selectObject(object.name);
       }
     }
 
@@ -116,7 +116,7 @@ class Scene extends Component {
 
         if (object !== null) {
 
-          this.markDefectObject(object.id);
+          this.markDefectObject(object.name);
         }
       });
     }
@@ -125,11 +125,11 @@ class Scene extends Component {
   /**
    * Marks an object in the scene as having a defect note.
    *
-   * @param objectId
+   * @param objectName
    */
-  markDefectObject(objectId) {
+  markDefectObject(objectName) {
 
-    const object = this.scene.getObjectById(objectId);
+    const object = this.scene.getObjectByName(objectName);
 
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xff0000);
@@ -138,13 +138,13 @@ class Scene extends Component {
   /**
    * Highlights an object in the scene as being currently selected.
    *
-   * @param objectId
+   * @param objectName
    */
-  selectObject(objectId) {
+  selectObject(objectName) {
 
     this.unSelectObject();
 
-    const object = this.scene.getObjectById(objectId);
+    const object = this.scene.getObjectByName(objectName);
 
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xffff00);
@@ -283,7 +283,7 @@ class Scene extends Component {
         return;
       }
 
-      self.selectObject(clickedObject.id);
+      self.selectObject(clickedObject.name);
 
       self.props.callBack({
         id: clickedObject.id,
