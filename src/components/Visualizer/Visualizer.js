@@ -22,7 +22,7 @@ class Visualizer extends Component {
 
 
     /* Queries all objects that have notes attached to them from Firebase
-        returns: an array containing the fetched JSON objects 
+        returns: an array containing the fetched JSON objects
     */
     getAnnotatedObjects(){
         var db = firebase.database();
@@ -108,18 +108,17 @@ class Visualizer extends Component {
 
     }
 
-    
+
 
     render() {
-    
+
         return (
             <div>            
-                    <FloatingWindow data={this.state}/>
                     <InfoWindow data={this.state} />
-                    <Scene  modelLocation={this.modelLocation} 
-                            newObject={this.state.newObject} 
-                            defects={this.state.defects} 
-                            camera={this.state.camera} 
+                    <Scene  modelLocation={this.modelLocation}
+                            newObject={this.state.newObject}
+                            defects={this.state.defects}
+                            camera={this.state.camera}
                             callBack={this.callBackObject} />
             </div>
         );
