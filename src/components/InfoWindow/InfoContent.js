@@ -10,7 +10,7 @@ import Moment from 'react-moment';
 
 function TabContainer({ children, dir }) {
   return (
-    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+    <Typography component="div" dir={dir} style={{ padding: 3 * 3 }}>
       {children}
     </Typography>
   );
@@ -51,12 +51,34 @@ class InfoContent extends React.Component {
 
     const showWindow = this.props.data.showWindow;
     const inpData = this.props.data.objectData;
+
     let textNotes = [];
+    let text0 = "";
+    let text1 = "";
+    //this.setState({rawtexts: rawtexts})
+
+
+
     let audioNotes = [];
     let imageNotes = [];
+
+
+
     if (inpData != null && inpData.Notes != null) {
       Object.values(inpData.Notes).map((note, i) => {
         if (note.TextNotes != null) {
+
+
+            var link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.txt';
+            fetch(link).then(response => {response.text().then(text => {
+                if(i == 0)
+                  this.setState({text0: text})
+                if(i == 1)
+                  this.setState({text1: text})
+            })});
+
+
+
           textNotes = textNotes.concat(Object.values(note.TextNotes));
         }
         if (note.AudioNotes != null) {
@@ -67,6 +89,8 @@ class InfoContent extends React.Component {
         }
       })
     }
+
+
 
     return (
       <div className={classes.root}>
@@ -114,19 +138,23 @@ class InfoContent extends React.Component {
                 textNotes.map((data, i) => {
                   var item = data.URL.split('/').slice(-1)[0]
                   var link = data.URL;
-                  var storedText;
+                  /*
                   link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.txt';
                   fetch(link).then(response => {response.text().then(text => {
-                    storedText = text;
-                    console.log(text)
+                    this.setState({rawtexts: rawtexts})
+                    console.log(this.state.test)
                   })
                   })
+                  */
 
                   var dateRaw = new Date(data.Date * 1000);
                   return (
                     <tr key={i}>
                       <td className="text">
-                        {storedText}
+                      {
+                        this.state.text0
+                      }
+
                       </td>
                       <td className="date">
                         <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
