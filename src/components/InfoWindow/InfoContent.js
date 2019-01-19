@@ -55,13 +55,13 @@ class InfoContent extends React.Component {
     let textNotes = [];
     let text0 = "";
     let text1 = "";
+
     //this.setState({rawtexts: rawtexts})
 
 
 
     let audioNotes = [];
     let imageNotes = [];
-
 
 
     if (inpData != null && inpData.Notes != null) {
@@ -83,6 +83,16 @@ class InfoContent extends React.Component {
         }
         if (note.AudioNotes != null) {
           audioNotes = audioNotes.concat(Object.values(note.AudioNotes));
+
+          /*
+          let link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.mp3';
+          fetch(link).then(response => {response.text().then(text => {
+              if(i == 0)
+                this.setState({text0: text})
+              if(i == 1)
+                this.setState({text1: text})
+          })});
+          */
         }
         if (note.ImageNotes != null) {
           imageNotes = imageNotes.concat(Object.values(note.ImageNotes));
@@ -203,9 +213,10 @@ class InfoContent extends React.Component {
                   return (
                     <tr key={i}>
                       <td className="text">
-                        <a href="#" onClick={e => this.showDetail('audio', link)}>
-                          {item}
-                        </a>
+                      <audio controls>
+                          <source src="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.mp3" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                      </audio>
                       </td>
                       <td className="date">
                         <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
