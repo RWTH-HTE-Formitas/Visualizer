@@ -10,7 +10,7 @@ import Moment from 'react-moment';
 
 function TabContainer({ children, dir }) {
   return (
-    <Typography component="div" dir={dir} style={{ padding: 3 * 3 }}>
+    <Typography component="div" dir={dir} style={{ padding: 3 * 2 }}>
       {children}
     </Typography>
   );
@@ -124,7 +124,7 @@ class InfoContent extends React.Component {
           onChangeIndex={this.handleChangeIndex}
         >
           <TabContainer dir={theme.direction}>
-            <table className="table-info">
+            <table className="table table-text">
               <tbody>
                 {
                   Object.keys(inpData).map((k, i) => {
