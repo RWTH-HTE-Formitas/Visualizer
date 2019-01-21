@@ -70,7 +70,7 @@ class Scene extends Component {
 
     // load model
     this.loader = new GLTFLoader();
-    this.loader.load(this.props.modelLocation, this._onModelLoad(this));
+    this.loader.load(this.props.url, this._onModelLoad(this));
 
     this.container.appendChild(this.renderer.domElement);
 
