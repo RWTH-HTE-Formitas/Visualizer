@@ -184,6 +184,8 @@ class Scene extends Component {
    * Moves the camera forward/backward w.r.t. the current viewing direction.
    * Positive values move the camera forward, negative values move the camera backward.
    *
+   * todo: generalize to any direction using vector argument
+   *
    * @param distance
    */
   moveForward(distance) {
