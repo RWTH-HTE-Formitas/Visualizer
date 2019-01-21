@@ -2,7 +2,6 @@
 import React, {Component} from "react";
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
-import firebase from "../Firebase/Firebase.js";
 
 class Visualizer extends Component {
 
@@ -125,9 +124,7 @@ class Visualizer extends Component {
    */
   _getAnnotatedObjects() {
 
-    const db = firebase.database();
-
-    return db.ref("Projects/17/Objects")
+    return this.props.database.ref("Projects/17/Objects")
       .once("value")
       .then(snapshot => {
 

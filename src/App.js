@@ -64,9 +64,7 @@ class App extends Component {
           </div>
           <div className="row">
             <div className="col-xs-12">
-              <Visualizer ref={(element) => {
-                this._visualizer = element;
-              }}/>
+              <Visualizer ref={element => { this._visualizer = element; }} database={firebase.database()} />
             </div>
           </div>
           <div className="row" style={{margin: "2em 0"}}>
