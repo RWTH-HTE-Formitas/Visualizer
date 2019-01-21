@@ -86,6 +86,7 @@ class Visualizer extends Component {
       // show details
       this.setState({
         showWindow: true,
+        selectedObjectName: objectName,
         objectData: object
       });
     });
