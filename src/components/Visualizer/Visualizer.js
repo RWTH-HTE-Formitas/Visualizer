@@ -30,7 +30,7 @@ class Visualizer extends Component {
         var jsonResults = [];
         var objectsRef = db.ref("Projects/17/Objects");
 
-        objectsRef.orderByKey().on("value", snapshot => {
+        objectsRef.on("value", snapshot => {
 
             snapshot.forEach(childSnapshot => {
 
