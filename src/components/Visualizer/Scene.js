@@ -8,6 +8,9 @@ const width = 1000;
 const height = 400;
 
 /**
+ * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
+ * through the scene.
+ *
  * Properties:
  *
  * - onClickObject : Hook is called when an object has been clicked.
