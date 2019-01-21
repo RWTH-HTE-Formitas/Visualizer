@@ -114,8 +114,6 @@ class Visualizer extends Component {
 
     markDefects(data) {
 
-        console.log(data);
-
         this.setState({
             defects: data
         });
