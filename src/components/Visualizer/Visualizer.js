@@ -116,8 +116,6 @@ class Visualizer extends Component {
     );
   }
 
-
-
   /**
    * Queries all objects that have notes attached to them from Firebase.
    *
