@@ -14,30 +14,18 @@ class App extends Component {
     };
 
     this._visualizer = null;
-
-    this.getObjects();
   }
 
-  getObjects() {
+  componentDidMount() {
 
-    const db = firebase.database();
-    const jsonResults = [];
     const self = this;
 
-    db.ref("Projects/17/Objects").once("value").then(snapshot => {
+    // use private method to populate mock table
+    this._visualizer._getAnnotatedObjects().then(objects => {
 
-      snapshot.forEach(childSnapshot => {
-        jsonResults.push(childSnapshot.val());
+      this.setState({
+        objects: objects
       });
-
-      if (jsonResults.length > 0) {
-
-        self.setState({
-          objects: jsonResults
-        });
-
-        this._visualizer.markDefects(jsonResults);
-      }
     });
   }
 

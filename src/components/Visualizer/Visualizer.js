@@ -91,13 +91,17 @@ class Visualizer extends Component {
     }
   }
 
-  markDefects(data) {
+  componentDidMount() {
 
-    data.forEach(element => {
+    // mark objects having defect note
+    this._getAnnotatedObjects().then(objects => {
 
-      this._scene.updateObjectAppearance(element.ID, {
-        emissive: 0xff0000
-      }, true);
+      objects.forEach(object => {
+
+        this._scene.updateObjectAppearance(object.ID, {
+          emissive: 0xff0000
+        }, true);
+      });
     });
   }
 
