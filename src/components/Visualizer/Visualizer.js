@@ -81,12 +81,12 @@ class Visualizer extends Component {
       z: rotation.z - position.z
     };
 
+    this._scene.selectObject(object.ID);
     this._scene.navigateCameraTo(position,direction, true);
 
     this.setState({
       showWindow: true,
-      objectData: object,
-      newObject: object
+      objectData: object
     });
 
   }
@@ -103,7 +103,7 @@ class Visualizer extends Component {
     return (
       <div>
         <FloatingWindow data={this.state}/>
-        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects}
+        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation} defects={this.state.defects}
                onSelectObject={this.onSelectObject}/>
       </div>
     );

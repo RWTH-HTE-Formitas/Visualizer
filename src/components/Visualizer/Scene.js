@@ -88,19 +88,6 @@ class Scene extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    // un-/highlight object
-    if (this.props.newObject !== nextProps.newObject) {
-
-      this.unSelectObject();
-
-      const object = this.scene.getObjectByName(nextProps.newObject.ID);
-
-      if (object !== null) {
-
-        this.selectObject(object.name);
-      }
-    }
-
     // defects loaded/changed
     if (this.props.defects !== nextProps.defects) {
 
