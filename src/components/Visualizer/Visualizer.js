@@ -9,8 +9,6 @@ class Visualizer extends Component {
 
     super(props);
 
-    this.modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
-
     this.state = {
       showWindow: false,
       objectData: {},
@@ -125,7 +123,7 @@ class Visualizer extends Component {
       <div>
         <FloatingWindow data={this.state}/>
         <Scene ref={element => { this._scene = element; }}
-          url={this.modelLocation}
+          url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
           height="400"
           onClickObject={objectName => { this.onClickObject(objectName); }}
