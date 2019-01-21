@@ -7,9 +7,9 @@ import ReactModal from "react-modal";
 
 class FloatingWindow extends Component {
 
-  constructor() {
+  constructor(props) {
 
-    super();
+    super(props);
 
     this.state = {
       showModal: false
