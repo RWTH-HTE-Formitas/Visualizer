@@ -18,8 +18,6 @@ class App extends Component {
 
   componentDidMount() {
 
-    const self = this;
-
     // use private method to populate mock table
     this._visualizer._getAnnotatedObjects().then(objects => {
 
