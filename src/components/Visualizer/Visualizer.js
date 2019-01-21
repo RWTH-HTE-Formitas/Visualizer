@@ -23,8 +23,6 @@ class Visualizer extends Component {
   /**
    * Queries all objects that have notes attached to them from Firebase.
    *
-   * todo: method name suggests that only objects are returned having at least one annotation
-   *
    * @returns Promise for an array containing the fetched JSON objects
    */
   getAnnotatedObjects() {
@@ -60,32 +58,41 @@ class Visualizer extends Component {
 
     this.unSelectObject();
 
+    // highlight object as being selected
+    const originalAppearance = this._scene.updateObjectAppearance(objectName, {
+      emissive: 0xffff00,
+      // opacity: 0.3 // todo: make configurable
+    });
+    this._originalObjectAppearances[objectName] = originalAppearance;
+    this.setState({
+      selectedObjectName: objectName
+    });
+
+    // fetch and display annotations
     this.getAnnotatedObjects().then(objects => {
 
-      const object = objects.find(obj => obj.ID === objectName);
+      const annotatedObject = objects.find(obj => obj.ID === objectName);
 
-      // highlight object
-      const originalAppearance = this._scene.updateObjectAppearance(objectName, {
-        emissive: 0xffff00,
-        // opacity: 0.3 // todo: make configurable
-      });
-      this._originalObjectAppearances[objectName] = originalAppearance;
+      // object does not have annotations to show
+      if (!annotatedObject) {
+
+        return;
+      }
 
       // move camera to object
-      const position = object.Status.CameraPosition;
-      const rotation = object.Status.CameraRotation;
+      const position = annotatedObject.Status.CameraPosition;
+      const rotation = annotatedObject.Status.CameraRotation;
       const direction = {
         x: rotation.x - position.x,
         y: rotation.y - position.y,
         z: rotation.z - position.z
       };
-      this._scene.navigateCameraTo(position,direction, true);
+      this._scene.navigateCameraTo(position, direction, true);
 
       // show details
       this.setState({
         showWindow: true,
-        selectedObjectName: objectName,
-        objectData: object
+        objectData: annotatedObject
       });
     });
   }
