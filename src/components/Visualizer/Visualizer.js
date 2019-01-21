@@ -3,6 +3,9 @@ import React, {Component} from "react";
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
 
+/**
+ * This is a managing component coordinating the communication with the data-source and the visualization components.
+ */
 class Visualizer extends Component {
 
   constructor(props) {
@@ -18,23 +21,11 @@ class Visualizer extends Component {
     this._scene = null;
   }
 
-  onClickObject(objectName) {
-
-    this.setState({
-      showWindow: false
-    });
-
-    if (objectName) {
-
-      this.selectObject(objectName);
-    }
-
-    else {
-
-      this.unSelectObject();
-    }
-  }
-
+  /**
+   * Selects the object with the given name.
+   *
+   * @param objectName
+   */
   selectObject(objectName) {
 
     this.unSelectObject();
@@ -77,17 +68,42 @@ class Visualizer extends Component {
     });
   }
 
+  /**
+   * Un-selects any currently selected object.
+   */
   unSelectObject() {
 
     if (this.state.selectedObjectName) {
 
-      // remove highlighting
+      // remove visual highlighting
       this._scene.resetObjectAppearance(this.state.selectedObjectName);
 
       this.setState({
         selectedObjectName: null,
         showWindow: false
       });
+    }
+  }
+
+  /**
+   * Callback for Scene component that gets called when the user clicks on anything in the scene.
+   *
+   * @param objectName
+   */
+  onClickObject(objectName) {
+
+    this.setState({
+      showWindow: false
+    });
+
+    if (objectName) {
+
+      this.selectObject(objectName);
+    }
+
+    else {
+
+      this.unSelectObject();
     }
   }
 
