@@ -5,6 +5,10 @@ import FloatingWindow from "../FloatingWindow/FloatingWindow";
 
 /**
  * This is a managing component coordinating the communication with the data-source and the visualization components.
+ *
+ * Properties:
+ *
+ * - database : Firebase database that the annotation data is loaded from
  */
 class Visualizer extends Component {
 
