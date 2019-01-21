@@ -2,6 +2,7 @@ import React from 'react';
 import Enzyme, {shallow} from 'enzyme' ;
 import Visualizer from './Visualizer';
 import Adapter from 'enzyme-adapter-react-16';
+import firebase from '../Firebase/Firebase';
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -10,7 +11,7 @@ describe("Visualizer component rendering", () => {
   // Tests whether Visualizer is rendered without problems
   test("Renders correctly", () => {
 
-    const wrapper = shallow(<Visualizer/>);
+    const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
     expect(wrapper.exists()).toBe(true);
   });
@@ -32,7 +33,7 @@ describe("Visualizer markDefects(data)", () => {
   // Tests whether defects are added correctly to the state
   test("State with empty data correct", () => {
 
-    const wrapper = shallow(<Visualizer/>);
+    const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
     wrapper.instance().markDefects(mockDataEmpty);
     wrapper.update();
@@ -42,7 +43,7 @@ describe("Visualizer markDefects(data)", () => {
 
   test("State with filled data correct", () => {
 
-    const wrapper = shallow(<Visualizer/>);
+    const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
     wrapper.instance().markDefects(mockDataFull);
     wrapper.update();
@@ -59,7 +60,7 @@ describe("Visualizer selectObject(oData)", () => {
   // tests that state 'showWindow' is set to false when element does not have a defect note
   test("Element without oData handled correctly", () => {
 
-    const wrapper = shallow(<Visualizer/>);
+    const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
     wrapper.instance().selectObject(mockODataEmpty);
 
@@ -68,7 +69,7 @@ describe("Visualizer selectObject(oData)", () => {
 
   // tests that state is set correctly when element has a defect note
   /* test("Element with oData handled correctly", () => {
-       const wrapper = shallow(<Visualizer />);
+       const wrapper = shallow(<Visualizer database={firebase.database()} />);
        wrapper.instance().selectObject(mockODataFull);
        wrapper.update();
        expect(wrapper.state('showWindow')).toBe(true);
@@ -83,7 +84,7 @@ describe("Visualizer selectObject(oData)", () => {
     // Expects function to successfully fetch non-empty JSON objects
     test("Non-empty objects", () => {
 
-        const wrapper = shallow(<Visualizer />);
+        const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
         expect(wrapper.instance().getAnnotatedObjects()).toEqual(
             expect.not.objectContaining([])
@@ -92,7 +93,7 @@ describe("Visualizer selectObject(oData)", () => {
 
     test("Correctly reads sample Firebase", () => {
 
-        const wrapper = shallow(<Visualizer />);
+        const wrapper = shallow(<Visualizer database={firebase.database()} />);
 
         expect(wrapper.instance().getAnnotatedObjects()).toEqual(
             expect.not.arrayContaining([])
