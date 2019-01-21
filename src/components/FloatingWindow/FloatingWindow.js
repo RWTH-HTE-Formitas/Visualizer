@@ -78,16 +78,14 @@ class FloatingWindow extends Component {
 
   render() {
 
-    const showWindow = this.props.data.showWindow;
-    const inpData = this.props.data.objectData;
-
     let textNotes = [];
     let audioNotes = [];
     let imageNotes = [];
 
-    if (inpData != null && inpData.Notes != null) {
+    const obj = this.props.selectedAnnotatedObject;
+    if (obj && obj.Notes) {
 
-      Object.values(inpData.Notes).map((note, i) => {
+      Object.values(obj.Notes).map((note, i) => {
 
         if (note.TextNotes != null) {
           textNotes = textNotes.concat(Object.values(note.TextNotes));
@@ -105,7 +103,7 @@ class FloatingWindow extends Component {
     }
 
     const classes = ["border", "window"];
-    if (!showWindow) {
+    if (!this.props.visible) {
 
       classes.push("hidden");
     }
@@ -127,8 +125,10 @@ class FloatingWindow extends Component {
               <table className="table-info">
                 <tbody>
                 {
-                  Object.keys(inpData).map((k, i) => {
-                    const val = inpData[k];
+                  Object.keys(this.props.selectedAnnotatedObject ? this.props.selectedAnnotatedObject : {}).map((k, i) => {
+
+                    const val = this.props.selectedAnnotatedObject[k];
+
                     if (typeof (val) === 'string') {
                       return (
                         <tr key={i}>
@@ -136,8 +136,6 @@ class FloatingWindow extends Component {
                           <td>{val}</td>
                         </tr>
                       );
-                    } else {
-                      return null;
                     }
                   })
                 }

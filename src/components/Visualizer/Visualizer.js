@@ -14,8 +14,8 @@ class Visualizer extends Component {
 
     this.state = {
       showWindow: false,
-      objectData: {},
-      selectedObjectName: null
+      selectedObjectName: null,
+      selectedAnnotatedObject: null
     };
 
     this._scene = null;
@@ -36,7 +36,8 @@ class Visualizer extends Component {
       // opacity: 0.3 // todo: make configurable
     });
     this.setState({
-      selectedObjectName: objectName
+      selectedObjectName: objectName,
+      selectedAnnotatedObject: null
     });
 
     // fetch and display annotations
@@ -63,7 +64,7 @@ class Visualizer extends Component {
       // show details
       this.setState({
         showWindow: true,
-        objectData: annotatedObject
+        selectedAnnotatedObject: annotatedObject
       });
     });
   }
@@ -80,6 +81,7 @@ class Visualizer extends Component {
 
       this.setState({
         selectedObjectName: null,
+        selectedAnnotatedObject: null,
         showWindow: false
       });
     }
@@ -125,7 +127,7 @@ class Visualizer extends Component {
 
     return (
       <div>
-        <FloatingWindow data={this.state}/>
+        <FloatingWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} />
         <Scene ref={element => { this._scene = element; }}
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
