@@ -98,15 +98,16 @@ class Scene extends Component {
    *
    * @param objectName
    * @param settings
+   * @param permanent
    * @returns {{color: *, emissive: *, opacity: *}}
    */
-  updateObjectAppearance(objectName, settings) {
+  updateObjectAppearance(objectName, settings, permanent) {
 
     const oldSettings = this.getObjectAppearance(objectName);
     const newSettings = {};
 
     // save original values
-    if (!(objectName in this.originalAppearances)) {
+    if (!permanent && !(objectName in this.originalAppearances)) {
 
       this.originalAppearances[objectName] = this.getObjectAppearance(objectName);
     }

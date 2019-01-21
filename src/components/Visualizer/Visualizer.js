@@ -112,12 +112,9 @@ class Visualizer extends Component {
 
     data.forEach(element => {
 
-      const objectName = element.ID;
-
-      this._scene.updateObjectAppearance(objectName, {
+      this._scene.updateObjectAppearance(element.ID, {
         emissive: 0xff0000
-      });
-      this._scene.markCurrentAppearanceAsOriginal(objectName);
+      }, true);
     });
   }
 
