@@ -123,8 +123,12 @@ class Visualizer extends Component {
     return (
       <div>
         <FloatingWindow data={this.state}/>
-        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation}
-               onClickObject={objectName => { this.onClickObject(objectName); }}/>
+        <Scene ref={element => { this._scene = element; }}
+               modelLocation={this.modelLocation}
+               width="1000"
+               height="400"
+               onClickObject={objectName => { this.onClickObject(objectName); }}
+        />
       </div>
     );
   }

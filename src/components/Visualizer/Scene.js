@@ -4,15 +4,13 @@ import * as THREE from "three";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
 
-const width = 1000;
-const height = 400;
-
 /**
  * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
  * through the scene.
  *
  * Properties:
- *
+ * - url : Location of model file
+ * - width/height : In pixels
  * - onClickObject : Hook is called when an object has been clicked.
  */
 class Scene extends Component {
@@ -42,13 +40,13 @@ class Scene extends Component {
 
     this.camera = new THREE.PerspectiveCamera(
       50,
-      width/height,
+      this.props.width/this.props.height,
       0.1,
       2000
     );
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(this.props.width, this.props.height);
     this.renderer.setClearColor(0xffffff, 1.0);
     this.renderer.domElement.addEventListener("click", this._onClick(this), false);
     this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
@@ -235,8 +233,8 @@ class Scene extends Component {
     return (event) => {
 
       const mouseVector = new THREE.Vector3(
-        (event.offsetX / width) * 2 - 1,
-        -(event.offsetY / height) * 2 + 1,
+        (event.offsetX / this.props.width) * 2 - 1,
+        -(event.offsetY / this.props.height) * 2 + 1,
         0.5
       );
       mouseVector.unproject(self.camera);
