@@ -14,11 +14,6 @@ class FloatingWindow extends Component {
     this.state = {
       showModal: false
     };
-
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-
-    this.showDetail = this.showDetail.bind(this);
   }
 
   detail = null;
