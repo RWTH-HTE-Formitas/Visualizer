@@ -18,23 +18,6 @@ class Visualizer extends Component {
     this._scene = null;
   }
 
-  /**
-   * Queries all objects that have notes attached to them from Firebase.
-   *
-   * @returns Promise for an array containing the fetched JSON objects
-   */
-  getAnnotatedObjects() {
-
-    const db = firebase.database();
-
-    return db.ref("Projects/17/Objects")
-      .once("value")
-      .then(snapshot => {
-
-        return Object.values(snapshot.exportVal());
-      });
-  }
-
   onClickObject(objectName) {
 
     this.setState({
@@ -66,7 +49,7 @@ class Visualizer extends Component {
     });
 
     // fetch and display annotations
-    this.getAnnotatedObjects().then(objects => {
+    this._getAnnotatedObjects().then(objects => {
 
       const annotatedObject = objects.find(obj => obj.ID === objectName);
 
@@ -131,6 +114,26 @@ class Visualizer extends Component {
         />
       </div>
     );
+  }
+
+
+
+  /**
+   * Queries all objects that have notes attached to them from Firebase.
+   *
+   * @private
+   * @returns Promise for an array containing the fetched JSON objects
+   */
+  _getAnnotatedObjects() {
+
+    const db = firebase.database();
+
+    return db.ref("Projects/17/Objects")
+      .once("value")
+      .then(snapshot => {
+
+        return Object.values(snapshot.exportVal());
+      });
   }
 }
 
