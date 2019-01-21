@@ -88,17 +88,6 @@ class Scene extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    // update camera position & orientation
-    if (this.props.camera !== nextProps.camera) {
-
-      const camSet = nextProps.camera;
-
-      const position = new THREE.Vector3(camSet.pX, camSet.pY, camSet.pZ);
-      const direction = new THREE.Vector3(camSet.rX - camSet.pX, camSet.rY - camSet.pY, camSet.rZ - camSet.pZ);
-
-      this.navigateCameraTo(position, direction, true);
-    }
-
     // un-/highlight object
     if (this.props.newObject !== nextProps.newObject) {
 

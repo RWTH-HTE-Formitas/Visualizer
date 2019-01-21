@@ -16,6 +16,8 @@ class Visualizer extends Component {
       showWindow: false,
       objectData: {}
     };
+
+    this._scene = null;
   }
 
 
@@ -50,30 +52,19 @@ class Visualizer extends Component {
 
         const object = objects.find(obj => obj.ID === objectName);
 
-        if (object === null || !object.Status) {
+        if (!object || !object.Status) {
 
           return;
         }
 
-        this.setState({
-          showWindow: true,
-          objectData: object,
-          camera: {
-            pX: object.Status.CameraPosition.x,
-            pY: object.Status.CameraPosition.y,
-            pZ: object.Status.CameraPosition.z,
-            rX: object.Status.CameraRotation.x,
-            rY: object.Status.CameraRotation.y,
-            rZ: object.Status.CameraRotation.z,
-          }
-        });
+        this.highlightObject(object);
       });
     }
   }
 
-  highlightObject(oData) {
+  highlightObject(object) {
 
-    if (!oData || !oData.Status) {
+    if (!object || !object.Status) {
 
       this.setState({
         showWindow: false
@@ -82,18 +73,20 @@ class Visualizer extends Component {
       return;
     }
 
+    const position = object.Status.CameraPosition;
+    const rotation = object.Status.CameraRotation;
+    const direction = {
+      x: rotation.x - position.x,
+      y: rotation.y - position.y,
+      z: rotation.z - position.z
+    };
+
+    this._scene.navigateCameraTo(position,direction, true);
+
     this.setState({
       showWindow: true,
-      objectData: oData,
-      camera: {
-        pX: oData.Status.CameraPosition.x,
-        pY: oData.Status.CameraPosition.y,
-        pZ: oData.Status.CameraPosition.z,
-        rX: oData.Status.CameraRotation.x,
-        rY: oData.Status.CameraRotation.y,
-        rZ: oData.Status.CameraRotation.z,
-      },
-      newObject: oData
+      objectData: object,
+      newObject: object
     });
 
   }
@@ -110,8 +103,8 @@ class Visualizer extends Component {
     return (
       <div>
         <FloatingWindow data={this.state}/>
-        <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects}
-               camera={this.state.camera} onSelectObject={this.onSelectObject}/>
+        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects}
+               onSelectObject={this.onSelectObject}/>
       </div>
     );
   }
