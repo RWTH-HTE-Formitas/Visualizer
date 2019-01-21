@@ -7,7 +7,7 @@ class Visualizer extends Component {
 
     constructor(props) {
         super(props);
-        this.callBackObject = this.callBackObject.bind(this);
+        this.onSelectObject = this.onSelectObject.bind(this);
     }
 
     modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
@@ -36,7 +36,7 @@ class Visualizer extends Component {
     }
 
 
-    callBackObject(objectName) {
+    onSelectObject(objectName) {
         if (objectName) {
             this.fetch_object_data(objectName);
         } else {
@@ -110,7 +110,7 @@ class Visualizer extends Component {
         return (
             <div>
                 <FloatingWindow data={this.state}/>
-                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} onSelectObject={this.callBackObject} />
+                <Scene modelLocation={this.modelLocation} newObject={this.state.newObject} defects={this.state.defects} camera={this.state.camera} onSelectObject={this.onSelectObject} />
             </div>
         );
     }
