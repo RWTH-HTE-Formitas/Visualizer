@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import * as THREE from "three";
 import Controls from "camera-controls";
-import GLTFLoader from 'three-gltf-loader';
+import GLTFLoader from "three-gltf-loader";
 
 const width = 1000;
 const height = 400;
