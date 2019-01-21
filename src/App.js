@@ -13,6 +13,8 @@ class App extends Component {
       objects: []
     };
 
+    this._visualizer = null;
+
     this.getObjects();
   }
 
