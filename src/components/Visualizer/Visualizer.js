@@ -92,8 +92,11 @@ class Visualizer extends Component {
 
   markDefects(data) {
 
-    this.setState({
-      defects: data
+    data.forEach(element => {
+
+      this._scene.updateObjectAppearance(element.ID, {
+        emissive: 0xff0000
+      });
     });
   }
 
@@ -102,7 +105,7 @@ class Visualizer extends Component {
     return (
       <div>
         <FloatingWindow data={this.state}/>
-        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation} defects={this.state.defects}
+        <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation}
                onClickObject={objectName => { this.onClickObject(objectName); }}/>
       </div>
     );

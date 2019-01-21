@@ -86,36 +86,6 @@ class Scene extends Component {
     return false;
   }
 
-  componentWillReceiveProps(nextProps) {
-
-    // defects loaded/changed
-    if (this.props.defects !== nextProps.defects) {
-
-      nextProps.defects.forEach(element => {
-
-        const object = this.scene.getObjectByName(element.ID);
-
-        if (object !== null) {
-
-          this.markDefectObject(object.name);
-        }
-      });
-    }
-  }
-
-  /**
-   * Marks an object in the scene as having a defect note.
-   *
-   * @param objectName
-   */
-  markDefectObject(objectName) {
-
-    const object = this.scene.getObjectByName(objectName);
-
-    object.currentHex = object.material.emissive.getHex();
-    object.material.emissive.setHex(0xff0000);
-  }
-
   /**
    * Highlights an object in the scene as being currently selected.
    *
@@ -155,6 +125,64 @@ class Scene extends Component {
 
       this.highlightedObjectId = null;
     }
+  }
+
+  /**
+   * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
+   * The following settings are available:
+   *
+   * - color : as hex-code
+   * - emissive : as hex-code
+   * - opacity : as number e [0, 1]
+   *
+   * Returns the previous appearance settings.
+   *
+   * @param objectName
+   * @param settings
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  updateObjectAppearance(objectName, settings) {
+
+    const original = this.getObjectAppearance(objectName);
+    const newSettings = {};
+
+    Object.assign(newSettings, original);
+    Object.assign(newSettings, settings);
+
+    const material = this.scene.getObjectByName(objectName).material;
+    material.color.setHex(newSettings.color);
+    material.emissive.setHex(newSettings.emissive);
+    material.opacity = newSettings.opacity;
+    material.transparent = newSettings.opacity < 1.0;
+
+    return original;
+  }
+
+  /**
+   * Returns the current object appearance settings for the object with the given name.
+   *
+   * @see updateObjectAppearance
+   * @param objectName
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  getObjectAppearance(objectName) {
+
+    const object = this.scene.getObjectByName(objectName);
+
+    if (!object) {
+
+      console.error("Invalid object name given: " + objectName);
+
+      return;
+    }
+
+    const material = object.material;
+
+    return {
+      color: material.color.getHex(),
+      emissive: material.emissive.getHex(),
+      opacity: material.opacity
+    };
   }
 
   /**
