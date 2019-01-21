@@ -22,65 +22,51 @@ class Visualizer extends Component {
     /**
      * Queries all objects that have notes attached to them from Firebase.
      *
-     * @returns an array containing the fetched JSON objects
+     * todo: method name suggests that only objects are returned having at least one annotation
+     *
+     * @returns Promise for an array containing the fetched JSON objects
      */
     getAnnotatedObjects() {
 
-        var db = firebase.database();
-        var jsonResults = [];
-        var objectsRef = db.ref("Projects/17/Objects");
+        const db = firebase.database();
 
-        objectsRef.on("value", snapshot => {
+        return db.ref("Projects/17/Objects")
+          .once('value')
+          .then(snapshot => {
 
-            snapshot.forEach(childSnapshot => {
-
-                jsonResults.push(childSnapshot.val());
-            });
-        });
-
-        return jsonResults;
+              return Object.values(snapshot.exportVal());
+          });
     }
-
 
     onSelectObject(objectName) {
 
+        this.setState({
+            showWindow: false
+        });
+
         if (objectName) {
 
-            // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
-            const jsonResults = this.getAnnotatedObjects();
-            if (!jsonResults.length) {
+            this.getAnnotatedObjects().then(objects => {
 
-                return;
-            }
+                const object = objects.find(obj => obj.ID === objectName);
 
-            const oData = jsonResults.find(x=> x.ID === objectName);
-            if (!oData || !oData.Status) {
+                if (object === null|| !object.Status) {
+
+                    return;
+                }
 
                 this.setState({
-                showWindow: false
+                    showWindow: true,
+                    objectData: object,
+                    camera: {
+                        pX: object.Status.CameraPosition.x,
+                        pY: object.Status.CameraPosition.y,
+                        pZ: object.Status.CameraPosition.z,
+                        rX: object.Status.CameraRotation.x,
+                        rY: object.Status.CameraRotation.y,
+                        rZ: object.Status.CameraRotation.z,
+                    }
                 });
-
-                return;
-            }
-
-            this.setState({
-                showWindow: true,
-                objectData: oData,
-                camera: {
-                    pX: oData.Status.CameraPosition.x,
-                    pY: oData.Status.CameraPosition.y,
-                    pZ: oData.Status.CameraPosition.z,
-                    rX: oData.Status.CameraRotation.x,
-                    rY: oData.Status.CameraRotation.y,
-                    rZ: oData.Status.CameraRotation.z,
-                }
-            });
-        }
-
-        else {
-
-            this.setState({
-                showWindow: false
             });
         }
     }
