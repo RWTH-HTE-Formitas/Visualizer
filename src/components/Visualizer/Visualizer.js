@@ -6,40 +6,51 @@ import firebase from '../Firebase/Firebase.js';
 class Visualizer extends Component {
 
     constructor(props) {
+
         super(props);
+
+        this.modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
         this.onSelectObject = this.onSelectObject.bind(this);
+
+        this.state = {
+          showWindow: false,
+          objectData: {}
+        };
     }
 
-    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
 
+    /**
+     * Queries all objects that have notes attached to them from Firebase.
+     *
+     * @returns an array containing the fetched JSON objects
+     */
+    getAnnotatedObjects() {
 
-    state = {
-        showWindow: false,
-        objectData: {}
-    };
-
-
-    /* Queries all objects that have notes attached to them from Firebase
-        returns: an array containing the fetched JSON objects 
-    */
-    getAnnotatedObjects(){
         var db = firebase.database();
         var jsonResults = [];
-        // get all objects that have a note attached
         var objectsRef = db.ref("Projects/17/Objects");
-        objectsRef.orderByKey().on("value", function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
+
+        objectsRef.orderByKey().on("value", snapshot => {
+
+            snapshot.forEach(childSnapshot => {
+
                 jsonResults.push(childSnapshot.val());
             });
         });
+
         return jsonResults;
     }
 
 
     onSelectObject(objectName) {
+
         if (objectName) {
+
             this.fetch_object_data(objectName);
-        } else {
+        }
+
+        else {
+
             this.setState({
                 showWindow: false
             });
@@ -47,12 +58,16 @@ class Visualizer extends Component {
     }
 
     highlightObject(oData) {
+
         if (!oData || !oData.Status) {
+
             this.setState({
                 showWindow: false
             });
+
             return;
         }
+
         this.setState({
             showWindow: true,
             objectData: oData,
@@ -70,24 +85,30 @@ class Visualizer extends Component {
     }
 
     markDefects(data) {
+
         console.log(data);
+
         this.setState({
             defects: data
-        })
+        });
     }
 
-    fetch_object_data(objectName){
+    fetch_object_data(objectName) {
+
         // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
-        var jsonResults = this.getAnnotatedObjects();
+        const jsonResults = this.getAnnotatedObjects();
         if (!jsonResults.length) {
+
             return;
         }
 
-        var oData = jsonResults.find(x=> x.ID === objectName);
+        const oData = jsonResults.find(x=> x.ID === objectName);
         if (!oData || !oData.Status) {
+
             this.setState({
                 showWindow: false
             });
+
             return;
         }
 
@@ -107,6 +128,7 @@ class Visualizer extends Component {
     }
 
     render() {
+
         return (
             <div>
                 <FloatingWindow data={this.state}/>
