@@ -23,9 +23,6 @@ class Scene extends Component {
     this.camera = null;
     this.controls = null;
     this.loader = null;
-
-    this.toggleTransparency = false;
-    this.highlightedObjectId = null;
   }
 
   render() {
@@ -84,47 +81,6 @@ class Scene extends Component {
 
     // the canvas has internal state and thus must not be updated
     return false;
-  }
-
-  /**
-   * Highlights an object in the scene as being currently selected.
-   *
-   * @param objectName
-   */
-  selectObject(objectName) {
-
-    this.unSelectObject();
-
-    const object = this.scene.getObjectByName(objectName);
-
-    object.currentHex = object.material.emissive.getHex();
-    object.material.emissive.setHex(0xffff00);
-
-    // toggle transparency/opacity
-    if (this.toggleTransparency === true) {
-
-      object.material.transparent = !object.material.transparent;
-      object.material.opacity = (object.material.opacity < 1) ? 1.0 : 0.3;
-    }
-
-    this.highlightedObjectId = object.id;
-  }
-
-  /**
-   * Clears current highlighting if any object is highlighted.
-   */
-  unSelectObject() {
-
-    if (this.highlightedObjectId !== null) {
-
-      const selectedObject = this.scene.getObjectById(this.highlightedObjectId, true);
-
-      selectedObject.material.emissive.setHex(selectedObject.currentHex);
-      selectedObject.material.transparent = false;
-      selectedObject.material.opacity = 1.0;
-
-      this.highlightedObjectId = null;
-    }
   }
 
   /**
@@ -286,15 +242,6 @@ class Scene extends Component {
       const intersects = raycaster.intersectObjects(self.scene.children, true);
       const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
 
-      // reset currently selected object
-      self.unSelectObject();
-
-      // mark clicked-on object as selected
-      if (clickedObject) {
-
-        self.selectObject(clickedObject.name);
-      }
-
       // call hook
       if (self.props.onClickObject instanceof Function) {
 
@@ -312,13 +259,6 @@ class Scene extends Component {
       const rotationSpeed = 0.5;
 
       switch (event.key) {
-
-        case "t":
-
-          // Toggle object transparency
-          self.toggleTransparency = !self.toggleTransparency;
-
-          break;
 
         case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
         case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;

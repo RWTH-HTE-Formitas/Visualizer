@@ -13,12 +13,14 @@ class Visualizer extends Component {
 
     this.state = {
       showWindow: false,
-      objectData: {}
+      objectData: {},
+      selectedObjectName: null
     };
 
     this._scene = null;
-  }
 
+    this._originalObjectAppearances = {};
+  }
 
   /**
    * Queries all objects that have notes attached to them from Firebase.
@@ -47,47 +49,63 @@ class Visualizer extends Component {
 
     if (objectName) {
 
-      this.getAnnotatedObjects().then(objects => {
+      this.selectObject(objectName);
+    }
 
-        const object = objects.find(obj => obj.ID === objectName);
+    else {
 
-        if (!object || !object.Status) {
-
-          return;
-        }
-
-        this.highlightObject(object);
-      });
+      this.unSelectObject();
     }
   }
 
-  highlightObject(object) {
+  selectObject(objectName) {
 
-    if (!object || !object.Status) {
+    this.unSelectObject();
+
+    this.getAnnotatedObjects().then(objects => {
+
+      const object = objects.find(obj => obj.ID === objectName);
+
+      // highlight object
+      const originalAppearance = this._scene.updateObjectAppearance(objectName, {
+        emissive: 0xffff00,
+        // opacity: 0.3 // todo: make configurable
+      });
+      this._originalObjectAppearances[objectName] = originalAppearance;
+
+      // move camera to object
+      const position = object.Status.CameraPosition;
+      const rotation = object.Status.CameraRotation;
+      const direction = {
+        x: rotation.x - position.x,
+        y: rotation.y - position.y,
+        z: rotation.z - position.z
+      };
+      this._scene.navigateCameraTo(position,direction, true);
+
+      // show details
+      this.setState({
+        showWindow: true,
+        objectData: object
+      });
+    });
+  }
+
+  unSelectObject() {
+
+    if (this.state.selectedObjectName) {
+
+      // remove highlighting
+      this._scene.updateObjectAppearance(
+        this.state.selectedObjectName,
+        this._originalObjectAppearances[this.state.selectedObjectName]
+      );
 
       this.setState({
+        selectedObjectName: null,
         showWindow: false
       });
-
-      return;
     }
-
-    const position = object.Status.CameraPosition;
-    const rotation = object.Status.CameraRotation;
-    const direction = {
-      x: rotation.x - position.x,
-      y: rotation.y - position.y,
-      z: rotation.z - position.z
-    };
-
-    this._scene.selectObject(object.ID);
-    this._scene.navigateCameraTo(position,direction, true);
-
-    this.setState({
-      showWindow: true,
-      objectData: object
-    });
-
   }
 
   markDefects(data) {

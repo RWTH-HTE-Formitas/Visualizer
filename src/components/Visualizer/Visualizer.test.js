@@ -42,7 +42,7 @@ describe("Visualizer markDefects(data)", () => {
 });
 
 
-describe("Visualizer highlightObject(oData)", () =>{
+describe("Visualizer selectObject(oData)", () =>{
     const mockODataEmpty = null;
     const mockODataFull = {
         showWindow: true,
@@ -57,14 +57,14 @@ describe("Visualizer highlightObject(oData)", () =>{
     // tests that state 'showWindow' is set to false when element does not have a defect note
     test("Element without oData handled correctly", () => {
         const wrapper = shallow(<Visualizer />);
-        wrapper.instance().highlightObject(mockODataEmpty);
+        wrapper.instance().selectObject(mockODataEmpty);
         expect(wrapper.state('showWindow')).toBe(false);
     });
 
     // tests that state is set correctly when element has a defect note
    /* test("Element with oData handled correctly", () => {
         const wrapper = shallow(<Visualizer />);
-        wrapper.instance().highlightObject(mockODataFull);
+        wrapper.instance().selectObject(mockODataFull);
         wrapper.update();
         expect(wrapper.state('showWindow')).toBe(true);
         expect(wrapper.state('objectData')).toEqual(mockODataFull);
