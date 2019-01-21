@@ -10,7 +10,6 @@ class Visualizer extends Component {
     super(props);
 
     this.modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
-    this.onSelectObject = this.onSelectObject.bind(this);
 
     this.state = {
       showWindow: false,
@@ -40,7 +39,7 @@ class Visualizer extends Component {
       });
   }
 
-  onSelectObject(objectName) {
+  onClickObject(objectName) {
 
     this.setState({
       showWindow: false
@@ -104,7 +103,7 @@ class Visualizer extends Component {
       <div>
         <FloatingWindow data={this.state}/>
         <Scene ref={element => { this._scene = element; }} modelLocation={this.modelLocation} defects={this.state.defects}
-               onSelectObject={this.onSelectObject}/>
+               onClickObject={objectName => { this.onClickObject(objectName); }}/>
       </div>
     );
   }

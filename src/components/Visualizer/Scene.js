@@ -10,7 +10,7 @@ const height = 400;
 /**
  * Properties:
  *
- * onSelectObject - Hook is called when an object has been selected.
+ * - onClickObject : Hook is called when an object has been clicked.
  */
 class Scene extends Component {
 
@@ -268,9 +268,9 @@ class Scene extends Component {
       }
 
       // call hook
-      if (self.props.onSelectObject instanceof Function) {
+      if (self.props.onClickObject instanceof Function) {
 
-        self.props.onSelectObject(clickedObject ? clickedObject.name : null);
+        self.props.onClickObject(clickedObject ? clickedObject.name : null);
       }
     };
   }
