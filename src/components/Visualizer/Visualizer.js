@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {Component} from "react";
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
-import firebase from '../Firebase/Firebase.js';
+import firebase from "../Firebase/Firebase.js";
 
 class Visualizer extends Component {
 
@@ -33,7 +33,7 @@ class Visualizer extends Component {
     const db = firebase.database();
 
     return db.ref("Projects/17/Objects")
-      .once('value')
+      .once("value")
       .then(snapshot => {
 
         return Object.values(snapshot.exportVal());
