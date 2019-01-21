@@ -24,6 +24,8 @@ class Scene extends Component {
     this.camera = null;
     this.controls = null;
     this.loader = null;
+
+    this.originalAppearances = {};
   }
 
   render() {
@@ -100,10 +102,16 @@ class Scene extends Component {
    */
   updateObjectAppearance(objectName, settings) {
 
-    const original = this.getObjectAppearance(objectName);
+    const oldSettings = this.getObjectAppearance(objectName);
     const newSettings = {};
 
-    Object.assign(newSettings, original);
+    // save original values
+    if (!(objectName in this.originalAppearances)) {
+
+      this.originalAppearances[objectName] = this.getObjectAppearance(objectName);
+    }
+
+    Object.assign(newSettings, oldSettings);
     Object.assign(newSettings, settings);
 
     const material = this.scene.getObjectByName(objectName).material;
@@ -112,7 +120,22 @@ class Scene extends Component {
     material.opacity = newSettings.opacity;
     material.transparent = newSettings.opacity < 1.0;
 
-    return original;
+    return oldSettings;
+  }
+
+  /**
+   * Resets the appearance of the object with the given name to its original settings.
+   *
+   * @param objectName
+   */
+  resetObjectAppearance(objectName) {
+
+    if (objectName in this.originalAppearances) {
+
+      this.updateObjectAppearance(objectName, this.originalAppearances[objectName]);
+
+      delete this.originalAppearances[objectName];
+    }
   }
 
   /**
@@ -140,6 +163,30 @@ class Scene extends Component {
       emissive: material.emissive.getHex(),
       opacity: material.opacity
     };
+  }
+
+  /**
+   * Returns the original object appearance as it has been when it has been loaded.
+   *
+   * @param objectName
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  getOriginalObjectAppearance(objectName) {
+
+    return this.originalAppearances[objectName] ? this.originalAppearances[objectName] : this.getObjectAppearance(objectName);
+  }
+
+  /**
+   * Accepts the current appearance as the original one.
+   *
+   * @param objectName
+   */
+  markCurrentAppearanceAsOriginal(objectName) {
+
+    if (objectName in this.originalAppearances) {
+
+      delete this.originalAppearances[objectName];
+    }
   }
 
   /**

@@ -16,8 +16,6 @@ class Visualizer extends Component {
     };
 
     this._scene = null;
-
-    this._originalObjectAppearances = {};
   }
 
   /**
@@ -59,11 +57,10 @@ class Visualizer extends Component {
     this.unSelectObject();
 
     // highlight object as being selected
-    const originalAppearance = this._scene.updateObjectAppearance(objectName, {
+    this._scene.updateObjectAppearance(objectName, {
       emissive: 0xffff00,
       // opacity: 0.3 // todo: make configurable
     });
-    this._originalObjectAppearances[objectName] = originalAppearance;
     this.setState({
       selectedObjectName: objectName
     });
@@ -102,10 +99,7 @@ class Visualizer extends Component {
     if (this.state.selectedObjectName) {
 
       // remove highlighting
-      this._scene.updateObjectAppearance(
-        this.state.selectedObjectName,
-        this._originalObjectAppearances[this.state.selectedObjectName]
-      );
+      this._scene.resetObjectAppearance(this.state.selectedObjectName);
 
       this.setState({
         selectedObjectName: null,
@@ -118,9 +112,12 @@ class Visualizer extends Component {
 
     data.forEach(element => {
 
-      this._scene.updateObjectAppearance(element.ID, {
+      const objectName = element.ID;
+
+      this._scene.updateObjectAppearance(objectName, {
         emissive: 0xff0000
       });
+      this._scene.markCurrentAppearanceAsOriginal(objectName);
     });
   }
 
