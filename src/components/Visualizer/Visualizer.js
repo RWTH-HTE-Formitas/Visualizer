@@ -8,11 +8,9 @@ class Visualizer extends Component {
     constructor(props) {
         super(props);
         this.callBackObject = this.callBackObject.bind(this);
+        this.offline();
     }
-
-    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
-
-
+    modelLocation = null;
     state = {
         showWindow: false,
         objectData: {}
@@ -104,6 +102,46 @@ class Visualizer extends Component {
             }
         });
 
+    }
+
+    offline() {
+        window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+        var self = this;
+        function onInitFs(fs) {
+            console.log('Opened file system: ' + fs.name);
+            fs.root.getFile('sample.gltf', {create: true}, function(fileEntry) {
+                fileEntry.createWriter(function(fileWriter) {
+                    fileWriter.onwriteend = function(e) {
+                        console.log('Write completed.');
+                    };
+
+                    fileWriter.onerror = function(e) {
+                        console.log('Write failed: ' + e.toString())
+                    }
+                    
+
+                    fetch('https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf')
+                        .then(function(response) {
+                            return response.text();
+                        })
+                        .then(function(myJson) {
+                            var blob = new Blob([myJson], {type: 'text/plain'})
+                            fileWriter.write(blob)
+                        });
+
+                    self.modelLocation = fileEntry.toURL();
+                }, errorHandler)
+            }, errorHandler)    
+        }
+
+        function errorHandler(e) {
+            var msg = '';
+            console.log('Error: ' + '');
+        }
+
+        
+
+       window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, onInitFs, errorHandler);
     }
 
     render() {

@@ -32,7 +32,15 @@ class Scene extends Component {
   }
 
   componentDidMount() {
-
+    if (!this.props.modelLocation) return;
+    this.initiateScene(this.props.modelLocation);
+  }
+  
+  /**
+   * Initiate scene of visualizer 
+   * @param  {} modelLocation
+   */
+  initiateScene(modelLocation) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -130,7 +138,7 @@ class Scene extends Component {
 
 
     this.loader = new GLTFLoader();
-    this.loader.load(this.props.modelLocation, function(self) {
+    this.loader.load(modelLocation, function(self) {
 
       return function (gltf) {
 
@@ -181,10 +189,43 @@ class Scene extends Component {
     return false;
   }
 
+
+  /**
+   * Reset the environment for three js
+   */
+  resetScene() {
+    this.clock = this.renderer = this.scene = this.camera = this.controls = this.loader = null;
+  }
+  
+  /**
+   * Initiate highlighting object in the model
+   * @param  {} inp
+   */
+  initiateHighlighting(inp) {
+    this.clearObjectHighlight();
+    const object = this.scene.getObjectByName(inp.ID);
+    if (object != null) {
+      this.highlightObject(object);
+    }
+  }
+
+  /**
+   * Initiate marking defect object in the model
+   * @param  {} defects
+   */
+  initiateDefects(defects) {
+    defects.forEach(element => {
+      const object = this.scene.getObjectByName(element.ID);
+      if (object != null) {
+        this.markDefectObject(object);
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
 
     // update camera position & orientation
-    if (this.props.camera !== nextProps.camera) {
+    if (this.props.camera != nextProps.camera) {
 
       const camSet = nextProps.camera;
 
@@ -195,35 +236,24 @@ class Scene extends Component {
     }
 
     // un-/highlight object
-    if (this.props.newObject !== nextProps.newObject) {
-
-      this.clearObjectHighlight();
-
-      const object = this.scene.getObjectByName(nextProps.newObject.ID);
-
-      if (object !== null) {
-
-        this.highlightObject(object);
-      }
+    if (this.props.newObject !==nextProps.newObject) {
+      if (this.scene) this.initiateHighlighting(nextProps.newObject);
     }
 
     // defects loaded/changed
-    if (this.props.defects !== nextProps.defects) {
+    if (this.props.defects != nextProps.defects) {
+      if (this.scene) this.initiateDefects(nextProps.defects);
+    }
 
-      nextProps.defects.forEach(element => {
-
-        const object = this.scene.getObjectByName(element.ID);
-
-        if (object !== null) {
-
-          this.markDefectObject(object);
-        }
-      });
+    // model location changed
+    if (this.props.modelLocation != nextProps.modelLocation) {
+      this.resetScene();
+      this.initiateScene(nextProps.modelLocation);
+      // this.initiateDefects(this.props.defects);
     }
   }
 
   markDefectObject(object) {
-
     object.currentHex = object.material.emissive.getHex();
     object.material.emissive.setHex(0xff0000);
   }

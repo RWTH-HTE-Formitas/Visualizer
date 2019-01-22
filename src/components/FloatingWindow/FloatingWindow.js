@@ -133,7 +133,7 @@ class FloatingWindow extends Component {
                                             return (
                                                 <tr key={i}>
                                                     <td className="text">
-                                                        <a href="#" onClick={e => this.showDetail('text', link)}>{item}</a>
+                                                        <span onClick={e => this.showDetail('text', link)}><u>{item}</u></span>
                                                     </td>
                                                     <td className="date">
                                                         <span><Moment format="MMM DD, YYYY">{dateRaw}</Moment></span>
