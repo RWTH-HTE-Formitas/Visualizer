@@ -2,26 +2,30 @@
 import React, { Component } from "react";
 import * as THREE from "three";
 import Controls from "camera-controls";
-import GLTFLoader from 'three-gltf-loader';
+import GLTFLoader from "three-gltf-loader";
 
-const width = 1000;
-const height = 400;
-
+/**
+ * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
+ * through the scene.
+ *
+ * Properties:
+ * - url : Location of model file
+ * - width/height : In pixels
+ * - onClickObject : Hook is called when an object has been clicked.
+ */
 class Scene extends Component {
 
   constructor(props) {
 
     super(props);
 
-    this.clock = null;
     this.renderer = null;
     this.scene = null;
     this.camera = null;
     this.controls = null;
     this.loader = null;
 
-    this.objectSelection = 1; // Select mode: 0 = Transparency on, 1 = Object selection on/transparency off
-    this.selectedObjectId = null;
+    this.originalAppearances = {};
   }
 
   render() {
@@ -38,81 +42,18 @@ class Scene extends Component {
 
     this.camera = new THREE.PerspectiveCamera(
       50,
-      width/height,
+      this.props.width/this.props.height,
       0.1,
       2000
     );
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(this.props.width, this.props.height);
     this.renderer.setClearColor(0xffffff, 1.0);
-    this.renderer.domElement.addEventListener("click", function(self) {
-
-      // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
-      return function(event) {
-
-        const mouseVector = new THREE.Vector3(
-          (event.offsetX / width) * 2 - 1,
-          -(event.offsetY / height) * 2 + 1,
-          0.5
-        );
-        mouseVector.unproject(self.camera);
-
-        const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
-        const intersects = raycaster.intersectObjects(self.scene.children, true);
-        const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
-
-        // reset currently selected object
-        self.clearObjectHighlight();
-
-        // nothing hit
-        if (clickedObject === null) {
-
-          self.props.callBack();
-
-          return;
-        }
-
-        self.highlightObject(clickedObject);
-
-        self.props.callBack({
-          id: clickedObject.id,
-          name: clickedObject.name
-        });
-      };
-      
-    }(this), false);
-    this.renderer.domElement.addEventListener("keydown", function(self) {
-      
-      return function(event) {
-
-        const moveSpeed = 5;
-        const truckSpeed = 0.5;
-        const rotationSpeed = 0.5;
-
-        switch (event.key) {
-
-          case "t":
-
-            // Toggle object transparency
-            self.objectSelection = (self.objectSelection === 1) ? 0 : 1;
-
-            break;
-
-          case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
-          case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
-          case "s": case "ArrowDown": self.moveForward(-moveSpeed); break;
-          case "w": case "ArrowUp": self.moveForward(moveSpeed); break;
-          case "a": self.controls.truck(-truckSpeed, 0, true); break;
-          case "d": self.controls.truck(truckSpeed, 0, true); break;
-
-          default: break;
-        }
-      };
-      
-    }(this), false);
+    this.renderer.domElement.addEventListener("click", this._onClick(this), false);
+    this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
-    this.renderer.domElement.addEventListener("click", function(event) { event.target.focus(); });
+    this.renderer.domElement.addEventListener("click", (event) => { event.target.focus(); });
 
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
@@ -120,6 +61,7 @@ class Scene extends Component {
     this.controls.truckSpeed = 1000;
 
 
+    // add lighting
     const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
     lightA.position.set(1000, 1000, 1000);
     this.scene.add(lightA);
@@ -128,51 +70,14 @@ class Scene extends Component {
     lightB.position.set(-1000, 1000, -1000);
     this.scene.add(lightB);
 
-
+    // load model
     this.loader = new GLTFLoader();
-    this.loader.load(this.props.modelLocation, function(self) {
-
-      return function (gltf) {
-
-        const rootObject = gltf.scene.children[0];
-        const box = new THREE.Box3().setFromObject(rootObject);
-        const boxCenter = box.getCenter(new THREE.Vector3());
-        const boxSize = box.getSize(new THREE.Vector3());
-
-        // move model to world center
-        rootObject.position.x = -1 * boxCenter.x;
-        rootObject.position.y = -1 * boxCenter.y;
-        rootObject.position.z = -1 * boxCenter.z;
-
-        self.scene.add(rootObject);
-
-        self.setCamera(boxSize, boxCenter.sub(boxSize));
-      };
-
-    }(this));
+    this.loader.load(this.props.url, this._onModelLoad(this));
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.clock = new THREE.Clock();
-
-    const animate = function(self) {
-
-      return function(forceRendering = false) {
-
-        const delta = self.clock.getDelta();
-        const updated = self.controls.update(delta);
-
-        requestAnimationFrame(animate);
-
-        if (forceRendering || updated) {
-
-          self.renderer.render(self.scene, self.camera);
-        }
-      };
-
-    }(this);
-
-    animate(true);
+    // start animation cycle
+    this._animate(this)(true);
   }
 
   shouldComponentUpdate() {
@@ -181,83 +86,122 @@ class Scene extends Component {
     return false;
   }
 
-  componentWillReceiveProps(nextProps) {
+  /**
+   * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
+   * The following settings are available:
+   *
+   * - color : as hex-code
+   * - emissive : as hex-code
+   * - opacity : as number e [0, 1]
+   *
+   * Returns the previous appearance settings.
+   *
+   * @param objectName
+   * @param settings
+   * @param permanent
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  updateObjectAppearance(objectName, settings, permanent) {
 
-    // update camera position & orientation
-    if (this.props.camera !== nextProps.camera) {
+    const oldSettings = this.getObjectAppearance(objectName);
+    const newSettings = {};
 
-      const camSet = nextProps.camera;
+    // save original values
+    if (!permanent && !(objectName in this.originalAppearances)) {
 
-      const position = new THREE.Vector3(camSet.pX, camSet.pY, camSet.pZ);
-      const direction = new THREE.Vector3(camSet.rX - camSet.pX, camSet.rY - camSet.pY, camSet.rZ - camSet.pZ);
-
-      this.setCamera(position, direction, true);
+      this.originalAppearances[objectName] = this.getObjectAppearance(objectName);
     }
 
-    // un-/highlight object
-    if (this.props.newObject !== nextProps.newObject) {
+    Object.assign(newSettings, oldSettings);
+    Object.assign(newSettings, settings);
 
-      this.clearObjectHighlight();
+    const material = this.scene.getObjectByName(objectName).material;
+    material.color.setHex(newSettings.color);
+    material.emissive.setHex(newSettings.emissive);
+    material.opacity = newSettings.opacity;
+    material.transparent = newSettings.opacity < 1.0;
 
-      const object = this.scene.getObjectByName(nextProps.newObject.ID);
+    return oldSettings;
+  }
 
-      if (object !== null) {
+  /**
+   * Resets the appearance of the object with the given name to its original settings.
+   *
+   * @param objectName
+   */
+  resetObjectAppearance(objectName) {
 
-        this.highlightObject(object);
-      }
-    }
+    if (objectName in this.originalAppearances) {
 
-    // defects loaded/changed
-    if (this.props.defects !== nextProps.defects) {
+      this.updateObjectAppearance(objectName, this.originalAppearances[objectName]);
 
-      nextProps.defects.forEach(element => {
-
-        const object = this.scene.getObjectByName(element.ID);
-
-        if (object !== null) {
-
-          this.markDefectObject(object);
-        }
-      });
+      delete this.originalAppearances[objectName];
     }
   }
 
-  markDefectObject(object) {
+  /**
+   * Returns the current object appearance settings for the object with the given name.
+   *
+   * @see updateObjectAppearance
+   * @param objectName
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  getObjectAppearance(objectName) {
 
-    object.currentHex = object.material.emissive.getHex();
-    object.material.emissive.setHex(0xff0000);
-  }
+    const object = this.scene.getObjectByName(objectName);
 
-  highlightObject(object) {
+    if (!object) {
 
-    this.clearObjectHighlight();
+      console.error("Invalid object name given: " + objectName);
 
-    object.currentHex = object.material.emissive.getHex();
-    object.material.emissive.setHex(0xffff00);
-
-    // toggle opacity
-    if (this.objectSelection === 0) {
-
-      object.material.transparent = true;
-      object.material.opacity = (object.material.opacity < 1) ? 1.0 : 0.3;
+      return;
     }
 
-    this.selectedObjectId = object.id;
+    const material = object.material;
+
+    return {
+      color: material.color.getHex(),
+      emissive: material.emissive.getHex(),
+      opacity: material.opacity
+    };
   }
 
-  clearObjectHighlight() {
+  /**
+   * Returns the original object appearance as it has been when it has been loaded.
+   *
+   * @param objectName
+   * @returns {{color: *, emissive: *, opacity: *}}
+   */
+  getOriginalObjectAppearance(objectName) {
 
-    if (this.selectedObjectId !== null) {
+    return this.originalAppearances[objectName] ? this.originalAppearances[objectName] : this.getObjectAppearance(objectName);
+  }
 
-      const selectedObject = this.scene.getObjectById(this.selectedObjectId, true);
+  /**
+   * Accepts the current appearance as the original one.
+   *
+   * @param objectName
+   */
+  markCurrentAppearanceAsOriginal(objectName) {
 
-      selectedObject.material.emissive.setHex(selectedObject.currentHex);
+    if (objectName in this.originalAppearances) {
 
-      this.selectedObjectId = null;
+      delete this.originalAppearances[objectName];
     }
   }
 
-  setCamera(position, direction, transition) {
+  /**
+   * Moves the camera to the given position and viewing direction.
+   * If the parameter transition is truthy, the change will be animated.
+   *
+   * @param position Target position
+   * @param direction Viewing direction from position
+   * @param transition
+   */
+  navigateCameraTo(position, direction, transition) {
+
+    position = Scene._objectToVector(position);
+    direction = Scene._objectToVector(direction);
 
     // normalize direction vector to keep navigation consistent
     direction.divideScalar(direction.length() * 10);
@@ -269,18 +213,117 @@ class Scene extends Component {
     );
   }
 
-  getCameraDirection() {
+  /**
+   * Moves the camera forward/backward w.r.t. the current viewing direction.
+   * Positive values move the camera forward, negative values move the camera backward.
+   *
+   * todo: generalize to any direction using vector argument
+   *
+   * @param distance
+   */
+  moveForward(distance) {
+
+    const target = this.controls.getPosition().add(
+      this._getCurrentCameraDirection().multiplyScalar(distance)
+    );
+
+    this.navigateCameraTo(target, this._getCurrentCameraDirection(), true);
+  }
+
+  _getCurrentCameraDirection() {
 
     return this.controls.getTarget().sub(this.controls.getPosition());
   }
 
-  moveForward(distance) {
+  _onModelLoad(self) {
 
-    const target = this.controls.getPosition().add(
-      this.getCameraDirection().multiplyScalar(distance)
-    );
+    return (gltf) => {
 
-    this.setCamera(target, this.getCameraDirection(), true);
+      const rootObject = gltf.scene.children[0];
+      const box = new THREE.Box3().setFromObject(rootObject);
+      const boxCenter = box.getCenter(new THREE.Vector3());
+      const boxSize = box.getSize(new THREE.Vector3());
+
+      // move model to world center
+      rootObject.position.x = -1 * boxCenter.x;
+      rootObject.position.y = -1 * boxCenter.y;
+      rootObject.position.z = -1 * boxCenter.z;
+
+      self.scene.add(rootObject);
+
+      self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
+    };
+  }
+
+  _animate(self) {
+
+    const clock = new THREE.Clock();
+
+    const animate = (forceRendering = false) => {
+
+      const delta = clock.getDelta();
+      const updated = self.controls.update(delta);
+
+      requestAnimationFrame(animate);
+
+      if (forceRendering || updated) {
+
+        self.renderer.render(self.scene, self.camera);
+      }
+    };
+
+    return animate;
+  }
+
+  _onClick(self) {
+
+    // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
+    return (event) => {
+
+      const mouseVector = new THREE.Vector3(
+        (event.offsetX / this.props.width) * 2 - 1,
+        -(event.offsetY / this.props.height) * 2 + 1,
+        0.5
+      );
+      mouseVector.unproject(self.camera);
+
+      const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
+      const intersects = raycaster.intersectObjects(self.scene.children, true);
+      const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
+
+      // call hook
+      if (self.props.onClickObject instanceof Function) {
+
+        self.props.onClickObject(clickedObject ? clickedObject.name : null);
+      }
+    };
+  }
+
+  _onKeyDown(self) {
+
+    return (event) => {
+
+      const moveSpeed = 5;
+      const truckSpeed = 0.5;
+      const rotationSpeed = 0.5;
+
+      switch (event.key) {
+
+        case "ArrowLeft": self.controls.rotate(rotationSpeed, 0, true); break;
+        case "ArrowRight": self.controls.rotate(-rotationSpeed, 0, true); break;
+        case "s": case "ArrowDown": self.moveForward(-moveSpeed); break;
+        case "w": case "ArrowUp": self.moveForward(moveSpeed); break;
+        case "a": self.controls.truck(-truckSpeed, 0, true); break;
+        case "d": self.controls.truck(truckSpeed, 0, true); break;
+
+        default: break;
+      }
+    };
+  }
+
+  static _objectToVector(object) {
+
+    return (object instanceof THREE.Vector3) ? object : new THREE.Vector3(object.x, object.y, object.z);
   }
 }
 
