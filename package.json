@@ -4,12 +4,12 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.8.3",
+    "camera-controls": "^1.10.6",
     "firebase": "^5.7.0",
     "firebase-admin": "^6.3.0",
-    "mapbox-gl": "0.45.0",
+    "mapbox-gl": "^0.45.0",
     "moment": "^2.22.2",
     "node-sass": "^4.10.0",
-    "orbit-controls-es6": "1.0.10",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-modal": "^3.6.1",
@@ -17,15 +17,16 @@
     "react-redux": "5.0.6",
     "react-scripts": "2.1.1",
     "react-swipeable-views": "^0.13.0",
+    "react-native": "^0.57.8",
     "react-tabs": "^2.3.0",
-    "redux": "3.7.2",
-    "three": "0.98.0",
+    "redux": "^3.7.2",
+    "three": "^0.98.0",
     "three-gltf-loader": "^1.97.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -36,5 +37,36 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "jest": {
+    "preset": "react-native",
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "transform": {
+      "^.+\\.ts?$": "ts-jest",
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+    },
+    "transformIgnorePatterns": []
+  },
+  "devDependencies": {
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5"
+  }
 }

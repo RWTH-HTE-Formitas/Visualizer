@@ -1,128 +1,164 @@
-import React, { Component } from 'react';
+
+import React, {Component} from "react";
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
 import InfoWindow from "../InfoWindow/InfoWindow";
-import firebase from '../Firebase/Firebase.js';
-import { withStyles } from '@material-ui/core/styles';
 
+/**
+ * This is a managing component coordinating the communication with the data-source and the visualization components.
+ *
+ * Properties:
+ *
+ * - database : Firebase database that the annotation data is loaded from
+ */
 class Visualizer extends Component {
 
-    constructor(props) {
-        super(props);
-        this.callBackObject = this.callBackObject.bind(this);
-    }
+  constructor(props) {
 
-    modelLocation = "https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf";
+    super(props);
 
-
-    state = {
-        showWindow: false,
-        objectData: {}
+    this.state = {
+      showWindow: false,
+      selectedObjectName: null,
+      selectedAnnotatedObject: null
     };
 
+    this._scene = null;
+  }
 
-    /* Queries all objects that have notes attached to them from Firebase
-        returns: an array containing the fetched JSON objects
-    */
-    getAnnotatedObjects(){
-        var db = firebase.database();
-        var jsonResults = [];
-        // get all objects that have a note attached
-        var objectsRef = db.ref("Projects/17/Objects");
-        objectsRef.orderByKey().on("value", function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                jsonResults.push(childSnapshot.val());
-            });
-        });
-        return jsonResults;
+  /**
+   * Selects the object with the given name.
+   *
+   * @param objectName
+   */
+  selectObject(objectName) {
+
+    this.unSelectObject();
+
+    // highlight object as being selected
+    this._scene.updateObjectAppearance(objectName, {
+      emissive: 0xffff00,
+      // opacity: 0.3 // todo: make configurable
+    });
+    this.setState({
+      selectedObjectName: objectName,
+      selectedAnnotatedObject: null
+    });
+
+    // fetch and display annotations
+    this._getAnnotatedObjects().then(objects => {
+
+      const annotatedObject = objects.find(obj => obj.ID === objectName);
+
+      // object does not have annotations to show
+      if (!annotatedObject) {
+
+        return;
+      }
+
+      // move camera to object
+      const position = annotatedObject.Status.CameraPosition;
+      const rotation = annotatedObject.Status.CameraRotation;
+      const direction = {
+        x: rotation.x - position.x,
+        y: rotation.y - position.y,
+        z: rotation.z - position.z
+      };
+      this._scene.navigateCameraTo(position, direction, true);
+
+      // show details
+      this.setState({
+        showWindow: true,
+        selectedAnnotatedObject: annotatedObject
+      });
+    });
+  }
+
+  /**
+   * Un-selects any currently selected object.
+   */
+  unSelectObject() {
+
+    if (this.state.selectedObjectName) {
+
+      // remove visual highlighting
+      this._scene.resetObjectAppearance(this.state.selectedObjectName);
+
+      this.setState({
+        selectedObjectName: null,
+        selectedAnnotatedObject: null,
+        showWindow: false
+      });
+    }
+  }
+
+  /**
+   * Callback for Scene component that gets called when the user clicks on anything in the scene.
+   *
+   * @param objectName
+   */
+  onClickObject(objectName) {
+
+    this.setState({
+      showWindow: false
+    });
+
+    if (objectName) {
+
+      this.selectObject(objectName);
     }
 
+    else {
 
-    callBackObject(data) {
-        if (data) {
-            this.fetch_object_data(data);
-        } else {
-            this.setState({
-                showWindow: false
-            });
-        }
+      this.unSelectObject();
     }
+  }
 
-    highlightObject(oData) {
-        if (!oData || !oData.Status) {
-            this.setState({
-                showWindow: false
-            });
-            return;
-        }
-        this.setState({
-            showWindow: true,
-            objectData: oData,
-            camera: {
-                pX: oData.Status.CameraPosition.x,
-                pY: oData.Status.CameraPosition.y,
-                pZ: oData.Status.CameraPosition.z,
-                rX: oData.Status.CameraRotation.x,
-                rY: oData.Status.CameraRotation.y,
-                rZ: oData.Status.CameraRotation.z,
-            },
-            newObject: oData
-        });
+  componentDidMount() {
 
-    }
+    // mark objects having defect note
+    this._getAnnotatedObjects().then(objects => {
 
-    markDefects(data) {
-        console.log(data)
-        this.setState({
-            defects: data
-        })
-    }
+      objects.forEach(object => {
 
-    fetch_object_data(data){
-        // create Array with all objects that have notes attached (in sample firebase: 3 ojects)
-        var jsonResults = this.getAnnotatedObjects();
-        if (!jsonResults.length) {
-            return;
-        }
+        this._scene.updateObjectAppearance(object.ID, {
+          emissive: 0xff0000
+        }, true);
+      });
+    });
+  }
 
-        var oData = jsonResults.find(x=> x.ID == data.name);
-        if (!oData || !oData.Status) {
-            this.setState({
-                showWindow: false
-            });
-            return;
-        }
+  render() {
 
-        this.setState({
-            showWindow: true,
-            objectData: oData,
-            camera: {
-                pX: oData.Status.CameraPosition.x,
-                pY: oData.Status.CameraPosition.y,
-                pZ: oData.Status.CameraPosition.z,
-                rX: oData.Status.CameraRotation.x,
-                rY: oData.Status.CameraRotation.y,
-                rZ: oData.Status.CameraRotation.z,
-            }
-        });
+    return (
+      <div>
+        <InfoWindow data={this.state} />
+        <FloatingWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} />
+        <Scene ref={element => { this._scene = element; }}
+          url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
+          width="1000"
+          height="400"
+          onClickObject={objectName => { this.onClickObject(objectName); }}
+        />
+      </div>
+    );
+  }
 
-    }
+  /**
+   * Queries all objects that have notes attached to them from Firebase.
+   *
+   * @private
+   * @returns Promise for an array containing the fetched JSON objects
+   */
+  _getAnnotatedObjects() {
 
+    return this.props.database.ref("Projects/17/Objects")
+      .once("value")
+      .then(snapshot => {
 
-
-    render() {
-
-        return (
-            <div>            
-                    <InfoWindow data={this.state} />
-                    <Scene  modelLocation={this.modelLocation}
-                            newObject={this.state.newObject}
-                            defects={this.state.defects}
-                            camera={this.state.camera}
-                            callBack={this.callBackObject} />
-            </div>
-        );
-    }
+        return Object.values(snapshot.exportVal());
+      });
+  }
 }
 
 export default Visualizer;
