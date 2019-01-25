@@ -2,6 +2,7 @@
 import React, {Component} from "react";
 import Scene from "./Scene";
 import FloatingWindow from "../FloatingWindow/FloatingWindow";
+import InfoWindow from "../InfoWindow/InfoWindow";
 
 /**
  * This is a managing component coordinating the communication with the data-source and the visualization components.
@@ -131,6 +132,7 @@ class Visualizer extends Component {
 
     return (
       <div>
+        {/* <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} /> */}
         <FloatingWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} />
         <Scene ref={element => { this._scene = element; }}
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"

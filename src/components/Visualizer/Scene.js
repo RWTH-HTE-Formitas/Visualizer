@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import * as THREE from "three";
+import InfoContent from "../InfoWindow/InfoContent";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
 
@@ -31,7 +32,10 @@ class Scene extends Component {
   render() {
 
     return (
-      <div ref={el => (this.container = el)} className="border" />
+      <React.Fragment>
+      <div ref={el => (this.container = el)} className="border">
+      </div>
+      </React.Fragment>
     );
   }
 
