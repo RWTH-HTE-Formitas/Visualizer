@@ -3,6 +3,11 @@ import React, { Component } from "react";
 import * as THREE from "three";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
+import './Scene.scss'
+import { ClipLoader } from 'react-spinners';
+
+
+const spinnerCss = `position: absolute; transform: translateX(-50%);-webkit-transform: translateX(-50%);`;
 
 /**
  * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
@@ -19,7 +24,6 @@ class Scene extends Component {
   constructor(props) {
 
     super(props);
-
     this.renderer = null;
     this.scene = null;
     this.camera = null;
@@ -27,17 +31,27 @@ class Scene extends Component {
     this.loader = null;
 
     this.originalAppearances = {};
+
+    this.state = {
+      loading: true
+    }
   }
 
   render() {
-
     return (
-      <div ref={el => (this.container = el)} className="border" />
+      <div ref={el => (this.container = el)} className="border">
+        <ClipLoader
+          css={spinnerCss}
+          sizeUnit={"px"}
+          size={150}
+          color={'#123abc'}
+          loading={this.state.loading}
+        />
+      </div>
     );
   }
 
   componentDidMount() {
-
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -81,11 +95,11 @@ class Scene extends Component {
     this._animate(this)(true);
   }
 
-  shouldComponentUpdate() {
+  // shouldComponentUpdate() {
 
-    // the canvas has internal state and thus must not be updated
-    return false;
-  }
+  //   // the canvas has internal state and thus must not be updated
+  //   return false;
+  // }
 
   /**
    * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
@@ -253,6 +267,10 @@ class Scene extends Component {
       self.scene.add(rootObject);
 
       self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
+
+      self.setState({
+        loading: false
+      })
 
       // call hook
       if (self.props.onLoad instanceof Function) {
