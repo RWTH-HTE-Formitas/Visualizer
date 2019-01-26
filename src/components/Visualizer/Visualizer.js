@@ -113,7 +113,7 @@ class Visualizer extends Component {
     }
   }
 
-  componentDidMount() {
+  onLoad() {
 
     // mark objects having defect note
     this._getAnnotatedObjects().then(objects => {
@@ -136,6 +136,7 @@ class Visualizer extends Component {
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
           height="400"
+          onLoad={() => this.onLoad()}
           onClickObject={objectName => { this.onClickObject(objectName); }}
         />
       </div>

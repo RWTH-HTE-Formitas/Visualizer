@@ -11,6 +11,7 @@ import GLTFLoader from "three-gltf-loader";
  * Properties:
  * - url : Location of model file
  * - width/height : In pixels
+ * - onLoad : Hook is called when model is fully loaded
  * - onClickObject : Hook is called when an object has been clicked.
  */
 class Scene extends Component {
@@ -252,6 +253,12 @@ class Scene extends Component {
       self.scene.add(rootObject);
 
       self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
+
+      // call hook
+      if (self.props.onLoad instanceof Function) {
+
+        self.props.onLoad();
+      }
     };
   }
 
