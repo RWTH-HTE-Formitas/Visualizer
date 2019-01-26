@@ -24,7 +24,6 @@ class Scene extends Component {
   constructor(props) {
 
     super(props);
-
     this.renderer = null;
     this.scene = null;
     this.camera = null;
@@ -35,11 +34,10 @@ class Scene extends Component {
 
     this.state = {
       loading: true
-  }
+    }
   }
 
   render() {
-
     return (
       <div ref={el => (this.container = el)} className="border">
         <ClipLoader
@@ -54,7 +52,6 @@ class Scene extends Component {
   }
 
   componentDidMount() {
-
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -98,11 +95,11 @@ class Scene extends Component {
     this._animate(this)(true);
   }
 
-  shouldComponentUpdate() {
+  // shouldComponentUpdate() {
 
-    // the canvas has internal state and thus must not be updated
-    return false;
-  }
+  //   // the canvas has internal state and thus must not be updated
+  //   return false;
+  // }
 
   /**
    * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
