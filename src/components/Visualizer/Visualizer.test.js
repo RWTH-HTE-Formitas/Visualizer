@@ -11,12 +11,12 @@ describe("Visualizer component rendering", () => {
   // Tests whether Visualizer is rendered without problems
   test("Renders correctly", () => {
 
-    const wrapper = shallow(<Visualizer database={firebase.database()} />);
+    const wrapper = shallow(<Visualizer />);
 
     expect(wrapper.exists()).toBe(true);
   });
 });
-
+/*
 describe("Visualizer markDefects(data)", () => {
 
   const mockDataEmpty = null;
@@ -33,9 +33,9 @@ describe("Visualizer markDefects(data)", () => {
   // Tests whether defects are added correctly to the state
   test("State with empty data correct", () => {
 
-    const wrapper = shallow(<Visualizer database={firebase.database()} />);
+    const wrapper = shallow(<Visualizer />);
 
-    wrapper.instance().markDefects(mockDataEmpty);
+    wrapper.instance().up
     wrapper.update();
 
     expect(wrapper.state('defects')).toEqual(mockDataEmpty);
@@ -43,7 +43,7 @@ describe("Visualizer markDefects(data)", () => {
 
   test("State with filled data correct", () => {
 
-    const wrapper = shallow(<Visualizer database={firebase.database()} />);
+    const wrapper = shallow(<Visualizer />);
 
     wrapper.instance().markDefects(mockDataFull);
     wrapper.update();
@@ -60,7 +60,7 @@ describe("Visualizer selectObject(oData)", () => {
   // tests that state 'showWindow' is set to false when element does not have a defect note
   test("Element without oData handled correctly", () => {
 
-    const wrapper = shallow(<Visualizer database={firebase.database()} />);
+    const wrapper = shallow(<Visualizer />);
 
     wrapper.instance().selectObject(mockODataEmpty);
 
@@ -68,18 +68,18 @@ describe("Visualizer selectObject(oData)", () => {
   });
 
   // tests that state is set correctly when element has a defect note
-  /* test("Element with oData handled correctly", () => {
+  test("Element with oData handled correctly", () => {
        const wrapper = shallow(<Visualizer database={firebase.database()} />);
        wrapper.instance().selectObject(mockODataFull);
        wrapper.update();
        expect(wrapper.state('showWindow')).toBe(true);
        expect(wrapper.state('objectData')).toEqual(mockODataFull);
 
-   });*/
+   });
 });
 
 
-/*describe("Visualizer getAnnotatedObjects", () => {
+describe("Visualizer getAnnotatedObjects", () => {
 
     // Expects function to successfully fetch non-empty JSON objects
     test("Non-empty objects", () => {
@@ -99,4 +99,5 @@ describe("Visualizer selectObject(oData)", () => {
             expect.not.arrayContaining([])
         );
     });
-});*/
+});
+*/

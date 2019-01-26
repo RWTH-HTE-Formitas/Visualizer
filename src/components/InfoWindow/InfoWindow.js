@@ -169,7 +169,7 @@ class InfoWindow extends React.Component {
                     <tr key={i}>
                       <td className="text">
                         <a href="/" onClick={e => {this.showImage(link); return false;}}>
-                          <img src={link} style={{maxWidth: 100}} />
+                          <img src={link} style={{maxWidth: 100}} alt=""/>
                         </a>
                       </td>
                       <td className="date">
