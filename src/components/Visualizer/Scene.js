@@ -1,7 +1,6 @@
 
 import React, { Component } from "react";
 import * as THREE from "three";
-import InfoContent from "../InfoWindow/InfoContent";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
 
