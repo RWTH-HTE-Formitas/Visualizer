@@ -14,6 +14,10 @@ deploy:
   provider: firebase
   token:
     secure: "lHK1zm7WStYtxvsDd4ye0tegI9wM5dPBkVFC3pXY/Q+xE+v5Z71NMiZbmO6IhbX/z+K5JnznAHAnPI2Z145i3TRJ+3yRm8WaIMo/AGVqG6fXprzCSRuNnUik8XotRkbaAEaAB3ZhJQJFDuXIBGpWsQ3Phl8Xil3WU9/+YxO8x7ZQF6AW+AZ+dgJxoBhIncm5raXRrCXqbA26AjMtm+uzXz3bh+qFgvQQq7NzGA9Ft1tMhenROMhMl0aaO32UYB77b8lZWZZpgWgfeBpyFgEfzEBYD8XG/hpCpSWREh4L6PuukKrZyN7OfRSWHaJD23Wsz/wOoVUX6RHuBTtNfpR1KDtex/aJXXJ752bSnWSRbWNoJ8Rs+aSvEOGvV++qdPnYYP7Szs+co5J8LEwTnkjtTgRXfM0uECmdUHY9htl+lSediSKQwaiUNRP41hAmQQWXLAuLncNknOdji9mt3RiYmQAmtkcfcExveImU2wzHZ6gmVnufjYV8udPiYYvq1nMd3GUJkn/0cQ7nnHXShny8Fdom7EVb7akl4znXLI6GQNJfYz2Pghjyc/PZ7my1PdLN+uh/vk/0jzaYt9+b6fQ8zJXOX1ogU1AqwMfoS8lT2ylBBSses9cNH3KzHwM6bE6F/hIsx/6hleKITY8cyTMjwyM/s9cP1m1J0i6VGxDAU0I="
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^master|develop$
 branches:
   only:
     - develop
+    - master
