@@ -41,15 +41,15 @@ class InfoWindow extends React.Component {
 
   render() {
 
-    const inpData = this.props.data.objectData;
+    const object = this.props.selectedAnnotatedObject;
 
     let textNotes = [];
     let audioNotes = [];
     let imageNotes = [];
 
-    if (inpData != null && inpData.Notes != null) {
+    if (object != null && object.Notes != null) {
 
-      Object.values(inpData.Notes).map((note, i) => {
+      Object.values(object.Notes).map((note, i) => {
 
         if (note.TextNotes != null) {
 
@@ -109,9 +109,9 @@ class InfoWindow extends React.Component {
             <table className="table table-text">
               <tbody>
               {
-                Object.keys(inpData ? inpData : {}).map((k, i) => {
+                Object.keys(object ? object : {}).map((k, i) => {
 
-                  const val = inpData[k];
+                  const val = object[k];
 
                   if (typeof (val) == 'string') {
 

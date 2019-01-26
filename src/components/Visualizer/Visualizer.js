@@ -131,7 +131,7 @@ class Visualizer extends Component {
 
     return (
       <div>
-        <InfoWindow data={{showWindow: this.state.showWindow, objectData: this.state.selectedAnnotatedObject}} />
+        <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
         <Scene ref={element => { this._scene = element; }}
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
