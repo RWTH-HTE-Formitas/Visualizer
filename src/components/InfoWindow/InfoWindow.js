@@ -49,7 +49,7 @@ class InfoWindow extends React.Component {
 
     if (object != null && object.Notes != null) {
 
-      Object.values(object.Notes).map((note, i) => {
+      Object.values(object.Notes).forEach((note, i) => {
 
         if (note.TextNotes != null) {
 
@@ -114,13 +114,15 @@ class InfoWindow extends React.Component {
                   const val = object[k];
 
                   if (typeof (val) == 'string') {
-
                     return (
                       <tr key={i}>
                         <td>{k}:</td>
                         <td>{val}</td>
                       </tr>
                     );
+                  }
+                  else {
+                    return (null);
                   }
                 })
               }
@@ -166,7 +168,7 @@ class InfoWindow extends React.Component {
                   return (
                     <tr key={i}>
                       <td className="text">
-                        <a href="#" onClick={e => this.showImage(link)}>
+                        <a href="/" onClick={e => {this.showImage(link); return false;}}>
                           <img src={link} style={{maxWidth: 100}} />
                         </a>
                       </td>
