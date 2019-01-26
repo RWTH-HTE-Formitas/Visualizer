@@ -37,10 +37,12 @@ class InfoContent extends React.Component {
   };
 
   handleChange = (event, value) => {
+
     this.setState({value});
   };
 
   handleChangeIndex = index => {
+
     this.setState({value: index});
   };
 
