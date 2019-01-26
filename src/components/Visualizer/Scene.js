@@ -38,6 +38,7 @@ class Scene extends Component {
   }
 
   render() {
+
     return (
       <div ref={el => (this.container = el)} className="border">
         <ClipLoader
@@ -52,6 +53,7 @@ class Scene extends Component {
   }
 
   componentDidMount() {
+
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -94,12 +96,6 @@ class Scene extends Component {
     // start animation cycle
     this._animate(this)(true);
   }
-
-  // shouldComponentUpdate() {
-
-  //   // the canvas has internal state and thus must not be updated
-  //   return false;
-  // }
 
   /**
    * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
