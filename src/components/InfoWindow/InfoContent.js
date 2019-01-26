@@ -125,7 +125,6 @@ class InfoContent extends React.Component {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            fullWidth
           >
             <Tab label="Info"/>
             <Tab label="Text"/>
@@ -142,7 +141,7 @@ class InfoContent extends React.Component {
             <table className="table table-text">
               <tbody>
               {
-                Object.keys(inpData).map((k, i) => {
+                Object.keys(inpData ? inpData : {}).map((k, i) => {
 
                   const val = inpData[k];
 
