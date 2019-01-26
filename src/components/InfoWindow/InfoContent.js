@@ -1,7 +1,5 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -9,26 +7,14 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
 
-function TabContainer({children, dir}) {
+function TabContainer({children}) {
 
   return (
-    <Typography component="div" dir={dir} style={{padding: 3 * 2}}>
+    <Typography component="div" style={{padding: 3 * 2}}>
       {children}
     </Typography>
   );
 }
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-  dir: PropTypes.string.isRequired,
-};
-
-const styles = theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
-  },
-});
 
 class InfoContent extends React.Component {
 
@@ -53,18 +39,9 @@ class InfoContent extends React.Component {
 
   render() {
 
-    const {classes, theme} = this.props;
-
-    const showWindow = this.props.data.showWindow;
     const inpData = this.props.data.objectData;
 
     let textNotes = [];
-    let text0 = "";
-    let text1 = "";
-
-    //this.setState({rawtexts: rawtexts})
-
-
     let audioNotes = [];
     let imageNotes = [];
 
@@ -91,34 +68,23 @@ class InfoContent extends React.Component {
             })
           });
 
-
           textNotes = textNotes.concat(Object.values(note.TextNotes));
         }
 
         if (note.AudioNotes != null) {
 
           audioNotes = audioNotes.concat(Object.values(note.AudioNotes));
-
-          /*
-          let link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.mp3';
-          fetch(link).then(response => {response.text().then(text => {
-              if(i == 0)
-                this.setState({text0: text})
-              if(i == 1)
-                this.setState({text1: text})
-          })});
-          */
         }
 
         if (note.ImageNotes != null) {
 
           imageNotes = imageNotes.concat(Object.values(note.ImageNotes));
         }
-      })
+      });
     }
 
     return (
-      <div className={classes.root}>
+      <div>
         <AppBar position="static" color="default">
           <Tabs
             value={this.state.value}
@@ -134,11 +100,10 @@ class InfoContent extends React.Component {
           </Tabs>
         </AppBar>
         <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
-          <TabContainer dir={theme.direction}>
+          <TabContainer>
             <table className="table table-text">
               <tbody>
               {
@@ -160,23 +125,11 @@ class InfoContent extends React.Component {
               </tbody>
             </table>
           </TabContainer>
-          <TabContainer dir={theme.direction}>
+          <TabContainer>
             <table className="table table-text">
               <tbody>
               {
                 textNotes.map((data, i) => {
-
-                  let item = data.URL.split('/').slice(-1)[0];
-                  let link = data.URL;
-
-                  /*
-                  link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.txt';
-                  fetch(link).then(response => {response.text().then(text => {
-                    this.setState({rawtexts: rawtexts})
-                    console.log(this.state.test)
-                  })
-                  })
-                  */
 
                   const dateRaw = new Date(data.Date * 1000);
 
@@ -196,17 +149,17 @@ class InfoContent extends React.Component {
               </tbody>
             </table>
           </TabContainer>
-          <TabContainer dir={theme.direction}>
+          <TabContainer>
             <table className="table table-picture">
               <tbody>
               {
                 imageNotes.map((data, i) => {
 
-                  let link = data.URL;
-                  let dateRaw = new Date(data.Date * 1000);
+                  //const link = data.URL;
+                  const dateRaw = new Date(data.Date * 1000);
 
                   // override
-                  link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
+                  const link = 'https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.jpg';
 
                   return (
                     <tr key={i}>
@@ -226,15 +179,13 @@ class InfoContent extends React.Component {
               </tbody>
             </table>
           </TabContainer>
-          <TabContainer dir={theme.direction}>
+          <TabContainer>
             <table className="table table-audio">
               <tbody>
               {
                 audioNotes.map((data, i) => {
 
-                  var item = data.URL.split('/').slice(-1)[0];
-                  var link = data.URL;
-                  var dateRaw = new Date(data.Date * 1000);
+                  const dateRaw = new Date(data.Date * 1000);
 
                   return (
                     <tr key={i}>
@@ -262,9 +213,4 @@ class InfoContent extends React.Component {
   }
 }
 
-InfoContent.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles, {withTheme: true})(InfoContent);
+export default (InfoContent);

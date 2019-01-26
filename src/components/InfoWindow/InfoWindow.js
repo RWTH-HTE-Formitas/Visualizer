@@ -1,36 +1,15 @@
 
 import React, {Component} from "react";
-import {Typography, Button, Paper} from "@material-ui/core/";
-import {withStyles} from '@material-ui/core/styles';
 import InfoContent from './InfoContent';
-
-const styles = {
-
-  root: {},
-
-};
 
 class InfoWindow extends Component {
 
-  constructor() {
-
-    super();
-
-    this.state = {
-      showModal: false
-    };
-  }
-
   render() {
 
-    const {classes} = this.props;
-
     return (
-      <React.Fragment>
-        <div className={classes.root}><InfoContent data={this.props.data}></InfoContent></div>
-      </React.Fragment>
+      <InfoContent data={this.props.data} />
     );
   }
 }
 
-export default withStyles(styles)(InfoWindow);
+export default (InfoWindow);
