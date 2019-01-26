@@ -44,8 +44,9 @@ class InfoContent extends React.Component {
     this.setState({value: index});
   };
 
-  showDetail(type, source) {
+  showImage(url) {
 
+    // todo: display image in large
   }
 
   render() {
@@ -208,7 +209,7 @@ class InfoContent extends React.Component {
                   return (
                     <tr key={i}>
                       <td className="text">
-                        <a href="#" onClick={e => this.showDetail('image', link)}>
+                        <a href="#" onClick={e => this.showImage(link)}>
                           <img src={link}/>
                         </a>
                       </td>
