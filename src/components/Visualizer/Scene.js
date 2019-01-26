@@ -163,9 +163,7 @@ class Scene extends Component {
 
     if (!object) {
 
-      console.error("Invalid object name given: " + objectName);
-
-      return;
+      throw "Invalid object name given: " + objectName;
     }
 
     const material = object.material;
