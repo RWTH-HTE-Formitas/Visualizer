@@ -18,18 +18,20 @@ function TabContainer({children}) {
 
 class InfoWindow extends React.Component {
 
-  state = {
-    value: 0,
-  };
+  constructor(props) {
 
-  handleChange = (event, value) => {
+    super(props);
 
-    this.setState({value});
-  };
+    this.state = {
+      activeTab: 0,
+    };
+  }
 
-  handleChangeIndex = index => {
+  onChangeTab(newTab) {
 
-    this.setState({value: index});
+    this.setState({
+      activeTab: newTab
+    });
   };
 
   showImage(url) {
@@ -87,8 +89,8 @@ class InfoWindow extends React.Component {
       <div>
         <AppBar position="static" color="default">
           <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
+            value={this.state.activeTab}
+            onChange={(_, index) => this.onChangeTab(index)}
             indicatorColor="primary"
             textColor="primary"
             variant="fullWidth"
@@ -100,8 +102,8 @@ class InfoWindow extends React.Component {
           </Tabs>
         </AppBar>
         <SwipeableViews
-          index={this.state.value}
-          onChangeIndex={this.handleChangeIndex}
+          index={this.state.activeTab}
+          onChangeIndex={(index) => this.onChangeTab(index)}
         >
           <TabContainer>
             <table className="table table-text">
