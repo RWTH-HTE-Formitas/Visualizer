@@ -36,8 +36,8 @@ class App extends Component {
             <div className="col-xs-12" style={{width: '100%'}}>
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item"><a href="#">Formitas</a></li>
-                  <li className="breadcrumb-item"><a href="#">Project ABC</a></li>
+                  <li className="breadcrumb-item"><a href="/">Formitas</a></li>
+                  <li className="breadcrumb-item"><a href="/">Project ABC</a></li>
                   <li className="breadcrumb-item active" aria-current="page">Defect Notes</li>
                 </ol>
               </nav>
@@ -69,10 +69,10 @@ class App extends Component {
                     <tr key={i}>
                       <td>{data.ID}</td>
                       <td>{data.Name}</td>
-                      <td className="text-right"><a href="#" className="pull-right" onClick={() => {
+                      <td className="text-right"><button className="pull-right" onClick={() => {
                         this._visualizer.selectObject(data.ID);
                         return false;
-                      }}>Show</a></td>
+                      }}>Show</button></td>
                     </tr>
                   );
                 })
