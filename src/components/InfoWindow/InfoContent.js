@@ -212,7 +212,7 @@ class InfoContent extends React.Component {
                     <tr key={i}>
                       <td className="text">
                         <a href="#" onClick={e => this.showImage(link)}>
-                          <img src={link}/>
+                          <img src={link} style={{maxWidth: 100}} />
                         </a>
                       </td>
                       <td className="date">
