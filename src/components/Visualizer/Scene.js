@@ -31,10 +31,7 @@ class Scene extends Component {
   render() {
 
     return (
-      <React.Fragment>
-      <div ref={el => (this.container = el)} className="border">
-      </div>
-      </React.Fragment>
+      <div ref={el => (this.container = el)} className="border" />
     );
   }
 
