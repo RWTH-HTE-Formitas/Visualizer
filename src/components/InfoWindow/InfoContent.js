@@ -78,11 +78,11 @@ class InfoContent extends React.Component {
 
             response.text().then(text => {
 
-              if (i == 0) {
+              if (i === 0) {
 
                 this.setState({text0: text})
               }
-              else if (i == 1) {
+              else if (i === 1) {
 
                 this.setState({text1: text})
               }
