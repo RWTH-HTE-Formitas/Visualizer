@@ -21,9 +21,6 @@ class InfoWindow extends Component {
     };
   }
 
-  componentDidMount() {
-  }
-
   render() {
 
     const {classes} = this.props;
