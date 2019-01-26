@@ -264,7 +264,7 @@ class Scene extends Component {
 
       self.setState({
         loading: false
-      })
+      });
 
       // call hook
       if (self.props.onLoad instanceof Function) {
