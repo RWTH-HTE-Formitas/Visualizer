@@ -91,28 +91,6 @@ class Visualizer extends Component {
     }
   }
 
-  /**
-   * Callback for Scene component that gets called when the user clicks on anything in the scene.
-   *
-   * @param objectName
-   */
-  onClickObject(objectName) {
-
-    this.setState({
-      showWindow: false
-    });
-
-    if (objectName) {
-
-      this.selectObject(objectName);
-    }
-
-    else {
-
-      this.unSelectObject();
-    }
-  }
-
   onLoad() {
 
     // mark objects having defect note
@@ -137,10 +115,32 @@ class Visualizer extends Component {
           width="1000"
           height="400"
           onLoad={() => this.onLoad()}
-          onClickObject={objectName => { this.onClickObject(objectName); }}
+          onClickObject={objectName => { this._onClickObject(objectName); }}
         />
       </div>
     );
+  }
+
+  /**
+   * Callback for Scene component that gets called when the user clicks on anything in the scene.
+   *
+   * @param objectName
+   */
+  _onClickObject(objectName) {
+
+    this.setState({
+      showWindow: false
+    });
+
+    if (objectName) {
+
+      this.selectObject(objectName);
+    }
+
+    else {
+
+      this.unSelectObject();
+    }
   }
 
   /**
