@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import * as THREE from "three";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
+import { ClipLoader } from 'react-spinners';
 
 /**
  * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
@@ -27,12 +28,23 @@ class Scene extends Component {
     this.loader = null;
 
     this.originalAppearances = {};
+
+    this.state = {
+      loading: true
+  }
   }
 
   render() {
 
     return (
-      <div ref={el => (this.container = el)} className="border" />
+      <div ref={el => (this.container = el)} className="border">
+        <ClipLoader
+          sizeUnit={"px"}
+          size={150}
+          color={'#123abc'}
+          loading={this.state.loading}
+        />
+      </div>
     );
   }
 
@@ -253,6 +265,10 @@ class Scene extends Component {
       self.scene.add(rootObject);
 
       self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
+
+      self.setState({
+        loading: false
+      })
 
       // call hook
       if (self.props.onLoad instanceof Function) {
