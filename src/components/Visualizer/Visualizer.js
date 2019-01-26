@@ -1,7 +1,6 @@
 
 import React, {Component} from "react";
 import Scene from "./Scene";
-import FloatingWindow from "../FloatingWindow/FloatingWindow";
 import InfoWindow from "../InfoWindow/InfoWindow";
 
 /**
@@ -132,8 +131,7 @@ class Visualizer extends Component {
 
     return (
       <div>
-        {/* <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} /> */}
-        <FloatingWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} visible={this.state.showWindow} />
+        <InfoWindow data={{showWindow: this.state.showWindow, objectData: this.state.selectedAnnotatedObject}} />
         <Scene ref={element => { this._scene = element; }}
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
