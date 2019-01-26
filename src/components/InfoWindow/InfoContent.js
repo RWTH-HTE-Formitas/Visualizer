@@ -125,6 +125,7 @@ class InfoContent extends React.Component {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
+            variant="fullWidth"
           >
             <Tab label="Info"/>
             <Tab label="Text"/>
