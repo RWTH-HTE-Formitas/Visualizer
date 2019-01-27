@@ -22,6 +22,7 @@ class Scene extends Component {
   constructor(props) {
 
     super(props);
+
     this.renderer = null;
     this.scene = null;
     this.camera = null;
@@ -65,11 +66,12 @@ class Scene extends Component {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.props.width, this.props.height);
     this.renderer.setClearColor(0xffffff, 1.0);
-    this.renderer.domElement.addEventListener("click", this._onClick(this), false);
     this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
-    this.renderer.domElement.addEventListener("click", (event) => { event.target.focus(); });
-    this.renderer.domElement.addEventListener("contextmenu", this._onContextMenu(this), false);
+    this.renderer.domElement.addEventListener("mousedown", (event) => { event.target.focus(); }, false);
+    this.renderer.domElement.addEventListener("mousedown", this._onMouseDown(this), false);
+    this.renderer.domElement.addEventListener("mousemove", this._onMouseMove(this), false);
+    this.renderer.domElement.addEventListener("mouseup", this._onMouseUp(this), false);
 
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
@@ -327,29 +329,49 @@ class Scene extends Component {
     return animate;
   }
 
-  _onClick(self) {
+  _onMouseDown(self) {
 
-    return (event) => {
+    return () => {
 
-      const clickedObject = self._castRayFromCursor(event);
-
-      if (self.props.onClickObject instanceof Function) {
-
-        self.props.onClickObject(clickedObject ? clickedObject.name : null);
-      }
+      self.dragging = false;
     };
   }
 
-  _onContextMenu(self) {
+  _onMouseMove(self) {
+
+    return () => {
+
+      self.dragging = true;
+    };
+  }
+
+  _onMouseUp(self) {
 
     return (event) => {
 
-      const clickedObject = self._castRayFromCursor(event);
+      // only call handlers if not clicked for navigation
+      if (!self.dragging) {
 
-      if (self.props.onRightClickObject instanceof Function) {
+        const clickedObject = self._castRayFromCursor(event);
 
-        self.props.onRightClickObject(clickedObject ? clickedObject.name : null);
+        if (event.button === 0) {
+
+          if (self.props.onClickObject instanceof Function) {
+
+            self.props.onClickObject(clickedObject ? clickedObject.name : null);
+          }
+        }
+
+        else if (event.button === 2) {
+
+          if (self.props.onRightClickObject instanceof Function) {
+
+            self.props.onRightClickObject(clickedObject ? clickedObject.name : null);
+          }
+        }
       }
+
+      self.dragging = false;
     };
   }
 
