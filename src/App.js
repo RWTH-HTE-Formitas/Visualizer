@@ -68,7 +68,7 @@ class App extends Component {
                                 </Typography>
                               </TableCell>
                               <TableCell align="right">
-                                <Button onClick={() => { this._visualizer.selectObject(data.ID); window.scrollTo(0, 0); }} variant="contained" size="small" color="primary">Show</Button>
+                                <Button onClick={() => { this._visualizer.selectObject(data.ID); window.scrollTo(0, 100); }} variant="contained" size="small" color="primary">Show</Button>
                               </TableCell>
                             </TableRow>
                           );

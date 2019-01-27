@@ -3,8 +3,10 @@ import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
-import { AppBar, Tabs, Tab } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Button } from '@material-ui/core';
 import { Table, TableRow, TableCell, TableBody } from '@material-ui/core';
+import ReactModal from 'react-modal';
+import './InfoWindow.scss'
 
 function TabContainer({children}) {
 
@@ -23,8 +25,14 @@ class InfoWindow extends React.Component {
 
     this.state = {
       activeTab: 0,
+      showModal: false
     };
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.showImage = this.showImage.bind(this);
   }
+
+  detail = null;
 
   onChangeTab(newTab) {
 
@@ -34,8 +42,16 @@ class InfoWindow extends React.Component {
   };
 
   showImage(url) {
+    this.detail = <img src={url} alt="" />;
+    this.handleOpenModal();
+  }
 
-    // todo: display image in large
+  handleOpenModal() {
+    this.setState({ showModal: true });
+  }
+
+  handleCloseModal() {
+    this.setState({ showModal: false });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -194,9 +210,7 @@ class InfoWindow extends React.Component {
                   return (
                     <TableRow key={i}>
                       <TableCell className="text">
-                        <a href="/" onClick={e => {this.showImage(link); return false;}}>
-                          <img src={link} style={{maxWidth: 100}} alt=""/>
-                        </a>
+                        <img src={link} style={{maxWidth: 100}}  onClick={() => this.showImage(link)} alt=""/>
                       </TableCell>
                       <TableCell>
                         <Typography variant="body1">{data.email}</Typography>
@@ -248,6 +262,21 @@ class InfoWindow extends React.Component {
             </Table>
           </TabContainer>
         </SwipeableViews>
+        <ReactModal
+          isOpen={this.state.showModal}
+          contentLabel="onRequestClose Example"
+          onRequestClose={this.handleCloseModal}
+          className="Modal"
+          overlayClassName="Overlay"
+        >
+          <div className="header">
+              <Button onClick={this.handleCloseModal} variant="contained" size="small" color="secondary">X</Button>
+          </div>
+          <div className="body frame">
+              <span className="helper"></span>
+              {this.detail}
+          </div>
+        </ReactModal>
       </div>
     );
   }

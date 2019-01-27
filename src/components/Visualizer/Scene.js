@@ -293,7 +293,21 @@ class Scene extends Component {
       rootObject.position.x = -1 * boxCenter.x;
       rootObject.position.z = -1 * boxCenter.z;
 
-      self.scene.add(rootObject);
+      // // highlighting edges
+      var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 1 } );
+      rootObject.children.forEach(
+        (mesh) => {
+          try {
+            var geo = new THREE.EdgesGeometry( mesh.geometry );
+            var wireframe = new THREE.LineSegments( geo, mat );
+            mesh.add(wireframe);
+          } catch (error){
+            // console.log(error);  // catch error for mesh wtihout buffer geometry
+          }
+        }
+      )
+
+      self.scene.add(rootObject)
 
       self.navigateCameraTo(boxSize, boxCenter.sub(boxSize));
 
@@ -408,9 +422,9 @@ class Scene extends Component {
 
     const raycaster = new THREE.Raycaster(this.camera.position, mouseVector.sub(this.camera.position).normalize());
     const intersects = raycaster.intersectObjects(this.scene.children, true);
-    const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
+    const clickedObject = (intersects.length === 0) ? null : intersects.find(x => x.object.type === "Mesh");
 
-    return clickedObject;
+    return clickedObject ? clickedObject.object : null;
   }
 
   static _objectToVector(object) {
