@@ -180,7 +180,16 @@ class Scene extends Component {
    */
   getOriginalObjectAppearance(objectName) {
 
-    return this.originalAppearances[objectName] ? this.originalAppearances[objectName] : this.getObjectAppearance(objectName);
+    if (objectName in this.originalAppearances) {
+
+      const settings = {};
+
+      Object.assign(settings, this.originalAppearances[objectName]);
+
+      return settings;
+    }
+
+    return this.getObjectAppearance(objectName);
   }
 
   /**
