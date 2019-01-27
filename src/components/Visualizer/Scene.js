@@ -4,10 +4,7 @@ import * as THREE from "three";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
 import './Scene.scss'
-import { ClipLoader } from 'react-spinners';
-
-
-const spinnerCss = `position: absolute; transform: translateX(-50%);-webkit-transform: translateX(-50%);`;
+import { BarLoader } from 'react-spinners';
 
 /**
  * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
@@ -41,10 +38,10 @@ class Scene extends Component {
 
     return (
       <div ref={el => (this.container = el)} className="border">
-        <ClipLoader
-          css={spinnerCss}
-          sizeUnit={"px"}
-          size={150}
+        <BarLoader
+          css={`position: absolute !important; margin: 0 auto;`}
+          widthUnit={"px"}
+          width={300}
           color={'#123abc'}
           loading={this.state.loading}
         />
