@@ -95,14 +95,21 @@ class Scene extends Component {
     grid.material.transparent = true;
     this.scene.add(grid);
 
-    // add lighting
-    const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    lightA.position.set(1000, 1000, 1000);
-    this.scene.add(lightA);
+    // light
+    var light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+    light.position.set(0, 200, 0);
+    this.scene.add(light);
 
-    const lightB = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    lightB.position.set(-1000, 1000, -1000);
-    this.scene.add(lightB);
+    light = new THREE.DirectionalLight(0xffffff, 0.8);
+    light.position.set(0, 20, 10);
+    light.castShadow = true;
+    light.shadow.camera.top = 18;
+    light.shadow.camera.bottom = - 10;
+    light.shadow.camera.left = - 12;
+    light.shadow.camera.right = 12;
+    this.scene.add(light);
+
+
 
     // load model
     this.loader = new GLTFLoader();
