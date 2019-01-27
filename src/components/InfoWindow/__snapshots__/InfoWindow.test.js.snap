@@ -1,0 +1,780 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfoWindow component rendering render a label 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <InfoWindow />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <WithStyles(AppBar)
+          color="default"
+          position="static"
+        >
+          <WithStyles(Tabs)
+            indicatorColor="primary"
+            onChange={[Function]}
+            textColor="primary"
+            value={0}
+            variant="fullWidth"
+          >
+            <WithStyles(Tab)
+              label="Info"
+            />
+            <WithStyles(Tab)
+              label="Text"
+            />
+            <WithStyles(Tab)
+              label="Picture"
+            />
+            <WithStyles(Tab)
+              label="Voice"
+            />
+          </WithStyles(Tabs)>
+        </WithStyles(AppBar)>,
+        <ReactSwipableView
+          animateHeight={false}
+          animateTransitions={true}
+          axis="x"
+          disableLazyLoading={false}
+          disabled={false}
+          enableMouseEvents={false}
+          hysteresis={0.6}
+          ignoreNativeScroll={false}
+          index={0}
+          onChangeIndex={[Function]}
+          resistance={false}
+          springConfig={
+            Object {
+              "delay": "0s",
+              "duration": "0.35s",
+              "easeFunction": "cubic-bezier(0.15, 0.3, 0.25, 1)",
+            }
+          }
+          threshold={5}
+        >
+          <TabContainer>
+            <WithStyles(Table)>
+              <WithStyles(TableBody) />
+            </WithStyles(Table)>
+          </TabContainer>
+          <TabContainer>
+            <WithStyles(Table)>
+              <WithStyles(TableBody) />
+            </WithStyles(Table)>
+          </TabContainer>
+          <TabContainer>
+            <WithStyles(Table)>
+              <WithStyles(TableBody) />
+            </WithStyles(Table)>
+          </TabContainer>
+          <TabContainer>
+            <WithStyles(Table)>
+              <WithStyles(TableBody) />
+            </WithStyles(Table)>
+          </TabContainer>
+        </ReactSwipableView>,
+      ],
+      "style": Object {
+        "display": "none",
+      },
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": <WithStyles(Tabs)
+            indicatorColor="primary"
+            onChange={[Function]}
+            textColor="primary"
+            value={0}
+            variant="fullWidth"
+          >
+            <WithStyles(Tab)
+              label="Info"
+            />
+            <WithStyles(Tab)
+              label="Text"
+            />
+            <WithStyles(Tab)
+              label="Picture"
+            />
+            <WithStyles(Tab)
+              label="Voice"
+            />
+          </WithStyles(Tabs)>,
+          "color": "default",
+          "position": "static",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": Array [
+              <WithStyles(Tab)
+                label="Info"
+              />,
+              <WithStyles(Tab)
+                label="Text"
+              />,
+              <WithStyles(Tab)
+                label="Picture"
+              />,
+              <WithStyles(Tab)
+                label="Voice"
+              />,
+            ],
+            "indicatorColor": "primary",
+            "onChange": [Function],
+            "textColor": "primary",
+            "value": 0,
+            "variant": "fullWidth",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "label": "Info",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "label": "Text",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "label": "Picture",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "label": "Voice",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "animateHeight": false,
+          "animateTransitions": true,
+          "axis": "x",
+          "children": Array [
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>,
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>,
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>,
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>,
+          ],
+          "disableLazyLoading": false,
+          "disabled": false,
+          "enableMouseEvents": false,
+          "hysteresis": 0.6,
+          "ignoreNativeScroll": false,
+          "index": 0,
+          "onChangeIndex": [Function],
+          "resistance": false,
+          "springConfig": Object {
+            "delay": "0s",
+            "duration": "0.35s",
+            "easeFunction": "cubic-bezier(0.15, 0.3, 0.25, 1)",
+          },
+          "threshold": 5,
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <WithStyles(TableBody) />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": Array [],
+                },
+                "ref": null,
+                "rendered": Array [],
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <WithStyles(TableBody) />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": Array [],
+                },
+                "ref": null,
+                "rendered": Array [],
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <WithStyles(TableBody) />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": Array [],
+                },
+                "ref": null,
+                "rendered": Array [],
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <WithStyles(TableBody) />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": Array [],
+                },
+                "ref": null,
+                "rendered": Array [],
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <WithStyles(AppBar)
+            color="default"
+            position="static"
+          >
+            <WithStyles(Tabs)
+              indicatorColor="primary"
+              onChange={[Function]}
+              textColor="primary"
+              value={0}
+              variant="fullWidth"
+            >
+              <WithStyles(Tab)
+                label="Info"
+              />
+              <WithStyles(Tab)
+                label="Text"
+              />
+              <WithStyles(Tab)
+                label="Picture"
+              />
+              <WithStyles(Tab)
+                label="Voice"
+              />
+            </WithStyles(Tabs)>
+          </WithStyles(AppBar)>,
+          <ReactSwipableView
+            animateHeight={false}
+            animateTransitions={true}
+            axis="x"
+            disableLazyLoading={false}
+            disabled={false}
+            enableMouseEvents={false}
+            hysteresis={0.6}
+            ignoreNativeScroll={false}
+            index={0}
+            onChangeIndex={[Function]}
+            resistance={false}
+            springConfig={
+              Object {
+                "delay": "0s",
+                "duration": "0.35s",
+                "easeFunction": "cubic-bezier(0.15, 0.3, 0.25, 1)",
+              }
+            }
+            threshold={5}
+          >
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>
+            <TabContainer>
+              <WithStyles(Table)>
+                <WithStyles(TableBody) />
+              </WithStyles(Table)>
+            </TabContainer>
+          </ReactSwipableView>,
+        ],
+        "style": Object {
+          "display": "none",
+        },
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": <WithStyles(Tabs)
+              indicatorColor="primary"
+              onChange={[Function]}
+              textColor="primary"
+              value={0}
+              variant="fullWidth"
+            >
+              <WithStyles(Tab)
+                label="Info"
+              />
+              <WithStyles(Tab)
+                label="Text"
+              />
+              <WithStyles(Tab)
+                label="Picture"
+              />
+              <WithStyles(Tab)
+                label="Voice"
+              />
+            </WithStyles(Tabs)>,
+            "color": "default",
+            "position": "static",
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": Array [
+                <WithStyles(Tab)
+                  label="Info"
+                />,
+                <WithStyles(Tab)
+                  label="Text"
+                />,
+                <WithStyles(Tab)
+                  label="Picture"
+                />,
+                <WithStyles(Tab)
+                  label="Voice"
+                />,
+              ],
+              "indicatorColor": "primary",
+              "onChange": [Function],
+              "textColor": "primary",
+              "value": 0,
+              "variant": "fullWidth",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "label": "Info",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "label": "Text",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "label": "Picture",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "label": "Voice",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+            ],
+            "type": [Function],
+          },
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "animateHeight": false,
+            "animateTransitions": true,
+            "axis": "x",
+            "children": Array [
+              <TabContainer>
+                <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>
+              </TabContainer>,
+              <TabContainer>
+                <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>
+              </TabContainer>,
+              <TabContainer>
+                <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>
+              </TabContainer>,
+              <TabContainer>
+                <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>
+              </TabContainer>,
+            ],
+            "disableLazyLoading": false,
+            "disabled": false,
+            "enableMouseEvents": false,
+            "hysteresis": 0.6,
+            "ignoreNativeScroll": false,
+            "index": 0,
+            "onChangeIndex": [Function],
+            "resistance": false,
+            "springConfig": Object {
+              "delay": "0s",
+              "duration": "0.35s",
+              "easeFunction": "cubic-bezier(0.15, 0.3, 0.25, 1)",
+            },
+            "threshold": 5,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <WithStyles(TableBody) />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": Array [],
+                  },
+                  "ref": null,
+                  "rendered": Array [],
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <WithStyles(TableBody) />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": Array [],
+                  },
+                  "ref": null,
+                  "rendered": Array [],
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <WithStyles(TableBody) />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": Array [],
+                  },
+                  "ref": null,
+                  "rendered": Array [],
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": <WithStyles(Table)>
+                  <WithStyles(TableBody) />
+                </WithStyles(Table)>,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <WithStyles(TableBody) />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": Array [],
+                  },
+                  "ref": null,
+                  "rendered": Array [],
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
