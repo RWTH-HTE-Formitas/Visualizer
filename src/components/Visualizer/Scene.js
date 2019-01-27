@@ -75,6 +75,25 @@ class Scene extends Component {
     this.controls.dollySpeed = 0; // disable dollying/zooming
     this.controls.truckSpeed = 1000;
 
+    // ground
+    var geometry = new THREE.PlaneBufferGeometry(30000, 30000);
+    var material = new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false });
+    var ground = new THREE.Mesh(geometry, material);
+    ground.position.set(0, -5, 0);
+    ground.rotation.x = - Math.PI / 2;
+    ground.receiveShadow = true;
+    this.scene.add(ground);
+
+    // background and fog
+    this.scene.background = new THREE.Color(0xa0a0a0);
+    this.scene.fog = new THREE.Fog(0xa0a0a0, 70, 200);
+
+    // grid helper
+    var grid = new THREE.GridHelper(500, 100, 0x000000, 0x000000);
+    grid.position.y = - 5;
+    grid.material.opacity = 0.2;
+    grid.material.transparent = true;
+    this.scene.add(grid);
 
     // add lighting
     const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
