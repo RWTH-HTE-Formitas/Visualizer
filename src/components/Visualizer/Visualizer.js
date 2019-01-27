@@ -161,7 +161,6 @@ class Visualizer extends Component {
 
     return (
       <div>
-        <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
         <Scene ref={element => { this._scene = element; }}
           url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
           width="1000"
@@ -170,6 +169,7 @@ class Visualizer extends Component {
           onClickObject={objectName => { this._onClickObject(objectName); }}
           onRightClickObject={objectName => { this._onRightClickObject(objectName); }}
         />
+        <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
       </div>
     );
   }
