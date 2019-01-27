@@ -69,24 +69,39 @@ class InfoWindow extends React.Component {
               }
             })
           });
-
-          textNotes = textNotes.concat(Object.values(note.TextNotes));
+          Object.values(note.TextNotes).forEach(
+            (data) => {
+              const obj = data;
+              obj.email = note.Email;
+              textNotes.push(obj);
+        }
+          );
         }
 
         if (note.AudioNotes != null) {
-
-          audioNotes = audioNotes.concat(Object.values(note.AudioNotes));
+          Object.values(note.AudioNotes).forEach(
+            (data) => {
+              const obj = data;
+              obj.email = note.Email;
+              audioNotes.push(obj);
+        }
+          );
         }
 
         if (note.ImageNotes != null) {
-
-          imageNotes = imageNotes.concat(Object.values(note.ImageNotes));
+          Object.values(note.ImageNotes).forEach(
+            (data) => {
+              const obj = data;
+              obj.email = note.Email;
+              imageNotes.push(obj);
+        }
+          );
         }
       });
     }
 
     return (
-      <div>
+      <div style={ object ? {} : { display: 'none'} }>
         <AppBar position="static" color="default">
           <Tabs
             value={this.state.activeTab}
