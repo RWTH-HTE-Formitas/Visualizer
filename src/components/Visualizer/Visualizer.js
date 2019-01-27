@@ -92,6 +92,16 @@ class Visualizer extends Component {
   }
 
   /**
+   * Returns the name of the currently selected object or null if no object is selected.
+   *
+   * @returns {null|string}
+   */
+  getSelectedObject() {
+
+    return this.state.selectedObjectName;
+  }
+
+  /**
    * Makes the object with the given name transparent.
    *
    * @param objectName
