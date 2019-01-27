@@ -38,7 +38,7 @@ class Scene extends Component {
   render() {
 
     return (
-      <div ref={el => (this.container = el)} className="border">
+      <div ref={el => (this.container = el)} className="scene">
         <BarLoader
           css={`position: absolute !important; margin: 0 auto;`}
           widthUnit={"px"}
@@ -76,15 +76,41 @@ class Scene extends Component {
     this.controls.dollySpeed = 0; // disable dollying/zooming
     this.controls.truckSpeed = 1000;
 
+    // ground
+    var geometry = new THREE.PlaneBufferGeometry(30000, 30000);
+    var material = new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false });
+    var ground = new THREE.Mesh(geometry, material);
+    ground.position.set(0, -5, 0);
+    ground.rotation.x = - Math.PI / 2;
+    ground.receiveShadow = true;
+    this.scene.add(ground);
 
-    // add lighting
-    const lightA = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    lightA.position.set(1000, 1000, 1000);
-    this.scene.add(lightA);
+    // background and fog
+    this.scene.background = new THREE.Color(0xa0a0a0);
+    this.scene.fog = new THREE.Fog(0xa0a0a0, 70, 200);
 
-    const lightB = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-    lightB.position.set(-1000, 1000, -1000);
-    this.scene.add(lightB);
+    // grid helper
+    var grid = new THREE.GridHelper(500, 100, 0x000000, 0x000000);
+    grid.position.y = - 5;
+    grid.material.opacity = 0.2;
+    grid.material.transparent = true;
+    this.scene.add(grid);
+
+    // light
+    var light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+    light.position.set(0, 200, 0);
+    this.scene.add(light);
+
+    light = new THREE.DirectionalLight(0xffffff, 0.8);
+    light.position.set(0, 20, 10);
+    light.castShadow = true;
+    light.shadow.camera.top = 18;
+    light.shadow.camera.bottom = - 10;
+    light.shadow.camera.left = - 12;
+    light.shadow.camera.right = 12;
+    this.scene.add(light);
+
+
 
     // load model
     this.loader = new GLTFLoader();
@@ -162,7 +188,7 @@ class Scene extends Component {
 
     if (!object) {
 
-      throw "Invalid object name given: " + objectName;
+      throw new Error("Invalid object name given: " + objectName);
     }
 
     const material = object.material;
@@ -263,7 +289,6 @@ class Scene extends Component {
 
       // move model to world center
       rootObject.position.x = -1 * boxCenter.x;
-      rootObject.position.y = -1 * boxCenter.y;
       rootObject.position.z = -1 * boxCenter.z;
 
       self.scene.add(rootObject);
