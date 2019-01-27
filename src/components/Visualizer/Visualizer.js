@@ -19,7 +19,8 @@ class Visualizer extends Component {
     this.state = {
       showWindow: false,
       selectedObjectName: null,
-      selectedAnnotatedObject: null
+      selectedAnnotatedObject: null,
+      transparentObjectNames: []
     };
 
     this._scene = null;
@@ -34,15 +35,12 @@ class Visualizer extends Component {
 
     this.unSelectObject();
 
-    // highlight object as being selected
-    this._scene.updateObjectAppearance(objectName, {
-      emissive: 0xffff00,
-      // opacity: 0.3 // todo: make configurable
-    });
     this.setState({
       selectedObjectName: objectName,
       selectedAnnotatedObject: null
     });
+
+    this._updateObjectAppearance(objectName);
 
     // fetch and display annotations
     this._getAnnotatedObjects().then(objects => {
@@ -80,15 +78,69 @@ class Visualizer extends Component {
 
     if (this.state.selectedObjectName) {
 
-      // remove visual highlighting
-      this._scene.resetObjectAppearance(this.state.selectedObjectName);
+      const objectName = this.state.selectedObjectName;
 
       this.setState({
         selectedObjectName: null,
         selectedAnnotatedObject: null,
         showWindow: false
       });
+
+      this._updateObjectAppearance(objectName);
     }
+  }
+
+  /**
+   * Makes the object with the given name transparent.
+   *
+   * @param objectName
+   */
+  makeObjectTransparent(objectName) {
+
+    const transparentObjectNames = [...this.state.transparentObjectNames];
+    const index = transparentObjectNames.indexOf(objectName);
+
+    if (index === -1) {
+
+      this.setState({
+        transparentObjectNames: [...this.state.transparentObjectNames, objectName]
+      });
+
+      this._updateObjectAppearance(objectName);
+    }
+  }
+
+  /**
+   * Makes the object with the given name solid.
+   *
+   * @param objectName
+   */
+  makeObjectSolid(objectName) {
+
+    const transparentObjectNames = [...this.state.transparentObjectNames];
+    const index = transparentObjectNames.indexOf(objectName);
+
+    if (index !== -1) {
+
+      transparentObjectNames.splice(index, 1);
+
+      this.setState({
+        transparentObjectNames: transparentObjectNames
+      });
+
+      this._updateObjectAppearance(objectName);
+    }
+  }
+
+  /**
+   * Tests whether the object with the given name is transparent.
+   *
+   * @param objectName
+   * @returns {boolean}
+   */
+  isObjectTransparent(objectName) {
+
+    return this.state.transparentObjectNames.indexOf(objectName) !== -1;
   }
 
   onLoad() {
@@ -116,9 +168,27 @@ class Visualizer extends Component {
           height="400"
           onLoad={() => this.onLoad()}
           onClickObject={objectName => { this._onClickObject(objectName); }}
+          onRightClickObject={objectName => { this._onRightClickObject(objectName); }}
         />
       </div>
     );
+  }
+
+  _updateObjectAppearance(objectName) {
+
+    const settings = this._scene.getOriginalObjectAppearance(objectName);
+
+    if (this.state.selectedObjectName === objectName) {
+
+      settings.emissive = 0xffff00;
+    }
+
+    if (this.isObjectTransparent(objectName)) {
+
+      settings.opacity = .3;
+    }
+
+    this._scene.updateObjectAppearance(objectName, settings);
   }
 
   /**
@@ -136,6 +206,23 @@ class Visualizer extends Component {
     else {
 
       this.unSelectObject();
+    }
+  }
+
+  _onRightClickObject(objectName) {
+
+    if (objectName) {
+
+      // Toggle object transparency.
+
+      if (this.isObjectTransparent(objectName)) {
+
+        this.makeObjectSolid(objectName);
+      }
+      else {
+
+        this.makeObjectTransparent(objectName);
+      }
     }
   }
 

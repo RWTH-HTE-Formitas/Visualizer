@@ -15,6 +15,7 @@ import { BarLoader } from 'react-spinners';
  * - width/height : In pixels
  * - onLoad : Hook is called when model is fully loaded
  * - onClickObject : Hook is called when an object has been clicked.
+ * - onRightClickObject : Hook is called when an object has been right-clicked.
  */
 class Scene extends Component {
 
@@ -68,6 +69,7 @@ class Scene extends Component {
     this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
     this.renderer.domElement.addEventListener("click", (event) => { event.target.focus(); });
+    this.renderer.domElement.addEventListener("contextmenu", this._onContextMenu(this), false);
 
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
@@ -302,24 +304,26 @@ class Scene extends Component {
 
   _onClick(self) {
 
-    // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
     return (event) => {
 
-      const mouseVector = new THREE.Vector3(
-        (event.offsetX / this.props.width) * 2 - 1,
-        -(event.offsetY / this.props.height) * 2 + 1,
-        0.5
-      );
-      mouseVector.unproject(self.camera);
+      const clickedObject = self._castRayFromCursor(event);
 
-      const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
-      const intersects = raycaster.intersectObjects(self.scene.children, true);
-      const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
-
-      // call hook
       if (self.props.onClickObject instanceof Function) {
 
         self.props.onClickObject(clickedObject ? clickedObject.name : null);
+      }
+    };
+  }
+
+  _onContextMenu(self) {
+
+    return (event) => {
+
+      const clickedObject = self._castRayFromCursor(event);
+
+      if (self.props.onRightClickObject instanceof Function) {
+
+        self.props.onRightClickObject(clickedObject ? clickedObject.name : null);
       }
     };
   }
@@ -344,6 +348,22 @@ class Scene extends Component {
         default: break;
       }
     };
+  }
+
+  _castRayFromCursor(event) {
+
+    const mouseVector = new THREE.Vector3(
+      (event.offsetX / this.props.width) * 2 - 1,
+      -(event.offsetY / this.props.height) * 2 + 1,
+      0.5
+    );
+    mouseVector.unproject(this.camera);
+
+    const raycaster = new THREE.Raycaster(this.camera.position, mouseVector.sub(this.camera.position).normalize());
+    const intersects = raycaster.intersectObjects(this.scene.children, true);
+    const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
+
+    return clickedObject;
   }
 
   static _objectToVector(object) {
