@@ -128,10 +128,6 @@ class Visualizer extends Component {
    */
   _onClickObject(objectName) {
 
-    this.setState({
-      showWindow: false
-    });
-
     if (objectName) {
 
       this.selectObject(objectName);
