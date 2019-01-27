@@ -38,6 +38,13 @@ class InfoWindow extends React.Component {
     // todo: display image in large
   }
 
+  componentWillReceiveProps(nextProps) {
+    // set active tab to 0 again if new data comes
+    this.setState({
+      activeTab: 0
+    });
+  }
+
   render() {
 
     const object = this.props.selectedAnnotatedObject;

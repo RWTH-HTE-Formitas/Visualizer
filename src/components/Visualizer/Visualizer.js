@@ -169,7 +169,7 @@ class Visualizer extends Component {
               width="1200"
               height="600"
               onLoad={() => this.onLoad()}
-              onClickObject={objectName => { this.onClickObject(objectName); }}
+              onClickObject={objectName => { this._onClickObject(objectName); }}
               onRightClickObject={objectName => { this._onRightClickObject(objectName); }}
             />
             <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
