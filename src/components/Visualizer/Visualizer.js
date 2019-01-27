@@ -39,9 +39,9 @@ class Visualizer extends Component {
     this.setState({
       selectedObjectName: objectName,
       selectedAnnotatedObject: null
+    }, () => {
+      this._updateObjectAppearance(objectName);
     });
-
-    this._updateObjectAppearance(objectName);
 
     // fetch and display annotations
     this._getAnnotatedObjects().then(objects => {
@@ -85,9 +85,9 @@ class Visualizer extends Component {
         selectedObjectName: null,
         selectedAnnotatedObject: null,
         showWindow: false
+      }, () => {
+        this._updateObjectAppearance(objectName);
       });
-
-      this._updateObjectAppearance(objectName);
     }
   }
 
