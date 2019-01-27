@@ -4,10 +4,7 @@ import * as THREE from "three";
 import Controls from "camera-controls";
 import GLTFLoader from "three-gltf-loader";
 import './Scene.scss'
-import { ClipLoader } from 'react-spinners';
-
-
-const spinnerCss = `position: absolute; transform: translateX(-50%);-webkit-transform: translateX(-50%);`;
+import { BarLoader } from 'react-spinners';
 
 /**
  * This component loads an external gltf/glb model from a given location and offers easy first-person navigation
@@ -18,6 +15,7 @@ const spinnerCss = `position: absolute; transform: translateX(-50%);-webkit-tran
  * - width/height : In pixels
  * - onLoad : Hook is called when model is fully loaded
  * - onClickObject : Hook is called when an object has been clicked.
+ * - onRightClickObject : Hook is called when an object has been right-clicked.
  */
 class Scene extends Component {
 
@@ -38,12 +36,13 @@ class Scene extends Component {
   }
 
   render() {
+
     return (
       <div ref={el => (this.container = el)} className="scene">
-        <ClipLoader
-          css={spinnerCss}
-          sizeUnit={"px"}
-          size={150}
+        <BarLoader
+          css={`position: absolute !important; margin: 0 auto;`}
+          widthUnit={"px"}
+          width={300}
           color={'#123abc'}
           loading={this.state.loading}
         />
@@ -52,6 +51,7 @@ class Scene extends Component {
   }
 
   componentDidMount() {
+
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -69,6 +69,7 @@ class Scene extends Component {
     this.renderer.domElement.addEventListener("keydown", this._onKeyDown(this), false);
     this.renderer.domElement.setAttribute("tabindex", -1); // required for canvas-element to be focusable which is required for handling keyboard events
     this.renderer.domElement.addEventListener("click", (event) => { event.target.focus(); });
+    this.renderer.domElement.addEventListener("contextmenu", this._onContextMenu(this), false);
 
     Controls.install({THREE: THREE});
     this.controls = new Controls(this.camera, this.renderer.domElement);
@@ -120,12 +121,6 @@ class Scene extends Component {
     // start animation cycle
     this._animate(this)(true);
   }
-
-  // shouldComponentUpdate() {
-
-  //   // the canvas has internal state and thus must not be updated
-  //   return false;
-  // }
 
   /**
    * Updates the appearance of an scene object. This is abstracted to be independent of Three.js
@@ -193,9 +188,7 @@ class Scene extends Component {
 
     if (!object) {
 
-      console.error("Invalid object name given: " + objectName);
-
-      return;
+      throw new Error("Invalid object name given: " + objectName);
     }
 
     const material = object.material;
@@ -215,7 +208,16 @@ class Scene extends Component {
    */
   getOriginalObjectAppearance(objectName) {
 
-    return this.originalAppearances[objectName] ? this.originalAppearances[objectName] : this.getObjectAppearance(objectName);
+    if (objectName in this.originalAppearances) {
+
+      const settings = {};
+
+      Object.assign(settings, this.originalAppearances[objectName]);
+
+      return settings;
+    }
+
+    return this.getObjectAppearance(objectName);
   }
 
   /**
@@ -295,7 +297,7 @@ class Scene extends Component {
 
       self.setState({
         loading: false
-      })
+      });
 
       // call hook
       if (self.props.onLoad instanceof Function) {
@@ -327,24 +329,26 @@ class Scene extends Component {
 
   _onClick(self) {
 
-    // Either make objects transparent/opaque or select and color them on mouse click event depending on selected mode
     return (event) => {
 
-      const mouseVector = new THREE.Vector3(
-        (event.offsetX / this.props.width) * 2 - 1,
-        -(event.offsetY / this.props.height) * 2 + 1,
-        0.5
-      );
-      mouseVector.unproject(self.camera);
+      const clickedObject = self._castRayFromCursor(event);
 
-      const raycaster = new THREE.Raycaster(self.camera.position, mouseVector.sub(self.camera.position).normalize());
-      const intersects = raycaster.intersectObjects(self.scene.children, true);
-      const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
-
-      // call hook
       if (self.props.onClickObject instanceof Function) {
 
         self.props.onClickObject(clickedObject ? clickedObject.name : null);
+      }
+    };
+  }
+
+  _onContextMenu(self) {
+
+    return (event) => {
+
+      const clickedObject = self._castRayFromCursor(event);
+
+      if (self.props.onRightClickObject instanceof Function) {
+
+        self.props.onRightClickObject(clickedObject ? clickedObject.name : null);
       }
     };
   }
@@ -369,6 +373,22 @@ class Scene extends Component {
         default: break;
       }
     };
+  }
+
+  _castRayFromCursor(event) {
+
+    const mouseVector = new THREE.Vector3(
+      (event.offsetX / this.props.width) * 2 - 1,
+      -(event.offsetY / this.props.height) * 2 + 1,
+      0.5
+    );
+    mouseVector.unproject(this.camera);
+
+    const raycaster = new THREE.Raycaster(this.camera.position, mouseVector.sub(this.camera.position).normalize());
+    const intersects = raycaster.intersectObjects(this.scene.children, true);
+    const clickedObject = (intersects.length === 0) ? null : intersects[0].object;
+
+    return clickedObject;
   }
 
   static _objectToVector(object) {

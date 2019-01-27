@@ -20,7 +20,8 @@ class Visualizer extends Component {
     this.state = {
       showWindow: false,
       selectedObjectName: null,
-      selectedAnnotatedObject: null
+      selectedAnnotatedObject: null,
+      transparentObjectNames: []
     };
 
     this._scene = null;
@@ -35,15 +36,12 @@ class Visualizer extends Component {
 
     this.unSelectObject();
 
-    // highlight object as being selected
-    this._scene.updateObjectAppearance(objectName, {
-      emissive: 0xffff00,
-      // opacity: 0.3 // todo: make configurable
-    });
     this.setState({
       selectedObjectName: objectName,
       selectedAnnotatedObject: null
     });
+
+    this._updateObjectAppearance(objectName);
 
     // fetch and display annotations
     this._getAnnotatedObjects().then(objects => {
@@ -81,37 +79,69 @@ class Visualizer extends Component {
 
     if (this.state.selectedObjectName) {
 
-      // remove visual highlighting
-      this._scene.resetObjectAppearance(this.state.selectedObjectName);
+      const objectName = this.state.selectedObjectName;
 
       this.setState({
         selectedObjectName: null,
         selectedAnnotatedObject: null,
         showWindow: false
       });
+
+      this._updateObjectAppearance(objectName);
     }
   }
 
   /**
-   * Callback for Scene component that gets called when the user clicks on anything in the scene.
+   * Makes the object with the given name transparent.
    *
    * @param objectName
    */
-  onClickObject(objectName) {
+  makeObjectTransparent(objectName) {
 
-    this.setState({
-      showWindow: false
-    });
+    const transparentObjectNames = [...this.state.transparentObjectNames];
+    const index = transparentObjectNames.indexOf(objectName);
 
-    if (objectName) {
+    if (index === -1) {
 
-      this.selectObject(objectName);
+      this.setState({
+        transparentObjectNames: [...this.state.transparentObjectNames, objectName]
+      });
+
+      this._updateObjectAppearance(objectName);
     }
+  }
 
-    else {
+  /**
+   * Makes the object with the given name solid.
+   *
+   * @param objectName
+   */
+  makeObjectSolid(objectName) {
 
-      this.unSelectObject();
+    const transparentObjectNames = [...this.state.transparentObjectNames];
+    const index = transparentObjectNames.indexOf(objectName);
+
+    if (index !== -1) {
+
+      transparentObjectNames.splice(index, 1);
+
+      this.setState({
+        transparentObjectNames: transparentObjectNames
+      });
+
+      this._updateObjectAppearance(objectName);
     }
+  }
+
+  /**
+   * Tests whether the object with the given name is transparent.
+   *
+   * @param objectName
+   * @returns {boolean}
+   */
+  isObjectTransparent(objectName) {
+
+    return this.state.transparentObjectNames.indexOf(objectName) !== -1;
   }
 
   onLoad() {
@@ -140,12 +170,65 @@ class Visualizer extends Component {
               height="600"
               onLoad={() => this.onLoad()}
               onClickObject={objectName => { this.onClickObject(objectName); }}
+              onRightClickObject={objectName => { this._onRightClickObject(objectName); }}
             />
             <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
           </CardContent>
         </Card>
       </div>
     );
+  }
+
+  _updateObjectAppearance(objectName) {
+
+    const settings = this._scene.getOriginalObjectAppearance(objectName);
+
+    if (this.state.selectedObjectName === objectName) {
+
+      settings.emissive = 0xffff00;
+    }
+
+    if (this.isObjectTransparent(objectName)) {
+
+      settings.opacity = .3;
+    }
+
+    this._scene.updateObjectAppearance(objectName, settings);
+  }
+
+  /**
+   * Callback for Scene component that gets called when the user clicks on anything in the scene.
+   *
+   * @param objectName
+   */
+  _onClickObject(objectName) {
+
+    if (objectName) {
+
+      this.selectObject(objectName);
+    }
+
+    else {
+
+      this.unSelectObject();
+    }
+  }
+
+  _onRightClickObject(objectName) {
+
+    if (objectName) {
+
+      // Toggle object transparency.
+
+      if (this.isObjectTransparent(objectName)) {
+
+        this.makeObjectSolid(objectName);
+      }
+      else {
+
+        this.makeObjectTransparent(objectName);
+      }
+    }
   }
 
   /**
