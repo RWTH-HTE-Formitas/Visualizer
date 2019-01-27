@@ -39,7 +39,7 @@ class Scene extends Component {
 
   render() {
     return (
-      <div ref={el => (this.container = el)} className="border">
+      <div ref={el => (this.container = el)} className="scene">
         <ClipLoader
           css={spinnerCss}
           sizeUnit={"px"}
@@ -261,7 +261,6 @@ class Scene extends Component {
 
       // move model to world center
       rootObject.position.x = -1 * boxCenter.x;
-      rootObject.position.y = -1 * boxCenter.y;
       rootObject.position.z = -1 * boxCenter.z;
 
       self.scene.add(rootObject);
