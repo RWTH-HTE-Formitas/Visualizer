@@ -2,6 +2,7 @@
 import React, {Component} from "react";
 import Scene from "./Scene";
 import InfoWindow from "../InfoWindow/InfoWindow";
+import { Card, CardContent } from "@material-ui/core";
 
 /**
  * This is a managing component coordinating the communication with the data-source and the visualization components.
@@ -131,14 +132,18 @@ class Visualizer extends Component {
 
     return (
       <div>
-        <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
-        <Scene ref={element => { this._scene = element; }}
-          url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
-          width="1000"
-          height="400"
-          onLoad={() => this.onLoad()}
-          onClickObject={objectName => { this.onClickObject(objectName); }}
-        />
+        <Card>
+          <CardContent style={{padding: "0"}}>
+            <Scene ref={element => { this._scene = element; }}
+              url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
+              width="1200"
+              height="600"
+              onLoad={() => this.onLoad()}
+              onClickObject={objectName => { this.onClickObject(objectName); }}
+            />
+            <InfoWindow selectedAnnotatedObject={this.state.selectedAnnotatedObject} />
+          </CardContent>
+        </Card>
       </div>
     );
   }
