@@ -21,11 +21,15 @@ class Visualizer extends Component {
       showWindow: false,
       selectedObjectName: null,
       selectedAnnotatedObject: null,
-      transparentObjectNames: []
+      transparentObjectNames: [],
+      modelLocation: null
     };
 
     this._scene = null;
+    this.offline();
   }
+
+  modelLocation = null;
 
   /**
    * Selects the object with the given name.
@@ -157,15 +161,56 @@ class Visualizer extends Component {
   onLoad() {
 
     // mark objects having defect note
-    this._getAnnotatedObjects().then(objects => {
+    // this._getAnnotatedObjects().then(objects => {
 
-      objects.forEach(object => {
+    //   objects.forEach(object => {
 
-        this._scene.updateObjectAppearance(object.ID, {
-          emissive: 0xff0000
-        }, true);
-      });
-    });
+    //     this._scene.updateObjectAppearance(object.ID, {
+    //       emissive: 0xff0000
+    //     }, true);
+    //   });
+    // });
+  }
+
+  offline() {
+    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+    var self = this;
+    function onInitFs(fs) {
+      console.log('Opened file system: ' + fs.name);
+      fs.root.getFile('sample.gltf', { create: true }, function (fileEntry) {
+        fileEntry.createWriter(function (fileWriter) {
+          fileWriter.onwriteend = function (e) {
+            console.log('Write completed.');
+          };
+
+          fileWriter.onerror = function (e) {
+            console.log('Write failed: ' + e.toString())
+          }
+
+          fetch('https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf')
+            .then(function (response) {
+              return response.text();
+            })
+            .then(function (myJson) {
+              var blob = new Blob([myJson], { type: 'text/plain' })
+              fileWriter.write(blob)
+            });
+
+          self.setState({
+            modelLocation: fileEntry.toURL()
+          })
+        }, errorHandler)
+      }, errorHandler)
+    }
+
+    function errorHandler(e) {
+      var msg = '';
+      console.log('Error: ' + '');
+    }
+
+
+
+    window.requestFileSystem(window.TEMPORARY, 5 * 1024 * 1024 /*5MB*/, onInitFs, errorHandler);
   }
 
   render() {
@@ -175,7 +220,7 @@ class Visualizer extends Component {
         <Card>
           <CardContent style={{padding: "0"}}>
             <Scene ref={element => { this._scene = element; }}
-              url="https://raw.githubusercontent.com/RWTH-HTE-Formitas/Visualizer/tmp/sample.gltf"
+              url={this.state.modelLocation}
               width="1200"
               height="600"
               onLoad={() => this.onLoad()}

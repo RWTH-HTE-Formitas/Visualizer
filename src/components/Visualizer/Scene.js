@@ -51,8 +51,23 @@ class Scene extends Component {
     );
   }
 
-  componentDidMount() {
+  componentWillReceiveProps(nextProps) {
+    // model location changed
+    
+    if (this.props.url != nextProps.url) {
+      console.log(nextProps)
+      this.resetScene();
+      this.initiateScene(nextProps.url);
+      // this.initiateDefects(this.props.defects);
+    }
+  }
 
+  resetScene() {
+    this.renderer = this.scene = this.camera = this.controls = this.loader = null;
+  }
+
+  initiateScene(namea) {
+    console.log('initiate')
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
 
@@ -89,7 +104,7 @@ class Scene extends Component {
 
     // background and fog
     this.scene.background = new THREE.Color(0xa0a0a0);
-    this.scene.fog = new THREE.Fog(0xa0a0a0, 70, 200);
+    // this.scene.fog = new THREE.Fog(0xa0a0a0, 70, 200);
 
     // grid helper
     var grid = new THREE.GridHelper(500, 100, 0x000000, 0x000000);
@@ -116,12 +131,17 @@ class Scene extends Component {
 
     // load model
     this.loader = new GLTFLoader();
-    this.loader.load(this.props.url, this._onModelLoad(this));
+    this.loader.load(namea, this._onModelLoad(this));
 
     this.container.appendChild(this.renderer.domElement);
 
     // start animation cycle
     this._animate(this)(true);
+  }
+
+  componentDidMount() {
+    // this.initiateScene();
+    
   }
 
   /**
@@ -293,19 +313,19 @@ class Scene extends Component {
       rootObject.position.x = -1 * boxCenter.x;
       rootObject.position.z = -1 * boxCenter.z;
 
-      // // highlighting edges
-      var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 1 } );
-      rootObject.children.forEach(
-        (mesh) => {
-          try {
-            var geo = new THREE.EdgesGeometry( mesh.geometry );
-            var wireframe = new THREE.LineSegments( geo, mat );
-            mesh.add(wireframe);
-          } catch (error){
-            // console.log(error);  // catch error for mesh wtihout buffer geometry
-          }
-        }
-      )
+      // // // highlighting edges
+      // var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 1 } );
+      // rootObject.children.forEach(
+      //   (mesh) => {
+      //     try {
+      //       var geo = new THREE.EdgesGeometry( mesh.geometry );
+      //       var wireframe = new THREE.LineSegments( geo, mat );
+      //       mesh.add(wireframe);
+      //     } catch (error){
+      //       // console.log(error);  // catch error for mesh wtihout buffer geometry
+      //     }
+      //   }
+      // )
 
       self.scene.add(rootObject)
 
